@@ -1,0 +1,718 @@
+<project>
+    <shortName>Unvanquished</shortName>
+    <fullName>Unvanquished</fullName>
+    <version>0.11.0</version>
+    <readmeFile>README</readmeFile>
+    <licenseFile>GPL.txt</licenseFile>
+    <leftImage>sideBar.png</leftImage>
+    <logoImage>unv-shadowed.png</logoImage>
+    <splashImage>splash.png</splashImage>
+    <componentList>
+        <component>
+            <name>core</name>
+            <description>Core Features</description>
+            <canBeEdited>0</canBeEdited>
+            <detailedDescription>Essential features of the application.
+(as it is essential, it is not editable and always installed)</detailedDescription>
+            <selected>1</selected>
+            <show>0</show>
+            <desktopShortcutList>
+                <shortcut>
+                    <comment>Play Unvanquished</comment>
+                    <exec></exec>
+                    <icon></icon>
+                    <name>Unvanquished</name>
+                    <path></path>
+                    <platforms>windows</platforms>
+                    <runAsAdmin>0</runAsAdmin>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}/Daemon.exe</windowsExec>
+                    <windowsExecArgs>+set cl_renderer GL3,GL</windowsExecArgs>
+                    <windowsIcon>${installdir}/unvanquished.ico</windowsIcon>
+                    <windowsPath>${installdir}</windowsPath>
+                </shortcut>
+                <shortcut>
+                    <comment>Play Unvanquished (for slower computers)</comment>
+                    <exec></exec>
+                    <icon></icon>
+                    <name>Unvanquished (Vanilla Renderer)</name>
+                    <path></path>
+                    <platforms>windows</platforms>
+                    <runAsAdmin>0</runAsAdmin>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}/Daemon.exe</windowsExec>
+                    <windowsExecArgs>+set cl_renderer GL</windowsExecArgs>
+                    <windowsIcon>${installdir}/unvanquished.ico</windowsIcon>
+                    <windowsPath>${installdir}</windowsPath>
+                </shortcut>
+                <shortcut>
+                    <comment>Play Unvanquished</comment>
+                    <exec>${installdir}/unvanquished +set cl_renderer GL3,GL</exec>
+                    <icon>${installdir}/unvanquished.png</icon>
+                    <name>Unvanquished</name>
+                    <path>${installdir}</path>
+                    <platforms>linux</platforms>
+                    <runAsAdmin>0</runAsAdmin>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec></windowsExec>
+                    <windowsExecArgs></windowsExecArgs>
+                    <windowsIcon></windowsIcon>
+                    <windowsPath></windowsPath>
+                </shortcut>
+                <shortcut>
+                    <comment>Play Unvanquished, with the old renderer</comment>
+                    <exec>${installdir}/unvanquished +set cl_renderer GL</exec>
+                    <icon>${installdir}/unvanquished.png</icon>
+                    <name>Unvanquished (Vanilla Renderer)</name>
+                    <path>${installdir}</path>
+                    <platforms>linux</platforms>
+                    <runAsAdmin>0</runAsAdmin>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec></windowsExec>
+                    <windowsExecArgs></windowsExecArgs>
+                    <windowsIcon></windowsIcon>
+                    <windowsPath></windowsPath>
+                </shortcut>
+                <shortcut>
+                    <comment>Play Unvanquished</comment>
+                    <exec>${installdir}/unvanquished +set cl_renderer GL3,GL</exec>
+                    <icon>${installdir}/unvanquished.png</icon>
+                    <name>Unvanquished</name>
+                    <path>${installdir}</path>
+                    <platforms>linux-x64</platforms>
+                    <runAsAdmin>0</runAsAdmin>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec></windowsExec>
+                    <windowsExecArgs></windowsExecArgs>
+                    <windowsIcon></windowsIcon>
+                    <windowsPath></windowsPath>
+                </shortcut>
+                <shortcut>
+                    <comment>Play Unvanquished, with the old renderer</comment>
+                    <exec>${installdir}/unvanquished +set cl_renderer GL</exec>
+                    <icon>${installdir}/unvanquished.png</icon>
+                    <name>Unvanquished (Vanilla Renderer)</name>
+                    <path>${installdir}</path>
+                    <platforms>linux-x64</platforms>
+                    <runAsAdmin>0</runAsAdmin>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec></windowsExec>
+                    <windowsExecArgs></windowsExecArgs>
+                    <windowsIcon></windowsIcon>
+                    <windowsPath></windowsPath>
+                </shortcut>
+            </desktopShortcutList>
+            <folderList>
+                <folder>
+                    <description>Daemon Engine</description>
+                    <destination>${installdir}</destination>
+                    <name>core_linuxamd64</name>
+                    <platforms>linux-x64</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <allowWildcards>1</allowWildcards>
+                            <origin>../../../tmp/unv64/*</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>unvanquishd.png</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Daemon Engine</description>
+                    <destination>${installdir}</destination>
+                    <name>core_win</name>
+                    <platforms>windows</platforms>
+                    <actionList>
+                        <registrySet>
+                            <key>HKEY_CLASSES_ROOT\unv</key>
+                            <name></name>
+                            <type>REG_SZ</type>
+                            <value>URL: Unvanquished Protocol</value>
+                        </registrySet>
+                        <registrySet>
+                            <key>HKEY_CLASSES_ROOT\unv\DefaultIcon</key>
+                            <name></name>
+                            <type>REG_SZ</type>
+                            <value>${installdir}/Daemon.exe,1</value>
+                        </registrySet>
+                        <registrySet>
+                            <key>HKEY_CLASSES_ROOT\unv</key>
+                            <name>URL Protocol</name>
+                            <type>REG_SZ</type>
+                            <value></value>
+                        </registrySet>
+                        <registrySet>
+                            <key>HKEY_CLASSES_ROOT\unv\shell\open\command</key>
+                            <name></name>
+                            <type>REG_SZ</type>
+                            <value>"${installdir}/Daemon.exe" +set fs_basepath "${installdir}" +connect "%1"</value>
+                        </registrySet>
+                    </actionList>
+                    <distributionFileList>
+                        <distributionFile>
+                            <allowWildcards>1</allowWildcards>
+                            <origin>tmp/win32/*</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>unvanquished.ico</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Daemon Engine</description>
+                    <destination>${installdir}</destination>
+                    <name>core_osx</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <allowWildcards>1</allowWildcards>
+                            <origin>../../../home/modi/unv/installerfiles/osx/*</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Daemon Engine</description>
+                    <destination>${installdir}</destination>
+                    <name>core_linux32</name>
+                    <platforms>linux</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>../../../home/modi/unv/installerfiles/unvanquished.png</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <allowWildcards>1</allowWildcards>
+                            <origin>../../../home/modi/unv/installerfiles/linux32/*</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+                <folder>
+                    <description>Protocol URI</description>
+                    <destination>${user_home_directory}/.local/share/applications</destination>
+                    <name>proto_linux</name>
+                    <platforms>linux</platforms>
+                    <actionList>
+                        <iniFileSet>
+                            <file>${user_home_directory}/.local/share/applications/unvanquished.desktop</file>
+                            <key>Exec</key>
+                            <section>Desktop Entry</section>
+                            <value>${installdir}/unvanquished</value>
+                            <ruleList>
+                                <platformTest>
+                                    <type>linux</type>
+                                </platformTest>
+                            </ruleList>
+                        </iniFileSet>
+                        <iniFileSet>
+                            <file>${user_home_directory}/.local/share/applications/unvanquished.desktop</file>
+                            <key>Icon</key>
+                            <section>Desktop Entry</section>
+                            <value>${installdir}/unvanquished.png</value>
+                        </iniFileSet>
+                    </actionList>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>../../../home/modi/unv/installerfiles/unvanquished.desktop</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                    <ruleList>
+                        <platformTest>
+                            <type>linux</type>
+                        </platformTest>
+                    </ruleList>
+                </folder>
+            </folderList>
+            <startMenuShortcutList>
+                <startMenuShortcut>
+                    <comment>Play Unvanquished</comment>
+                    <name>Unvanquished</name>
+                    <runAsAdmin>0</runAsAdmin>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}/Daemon.exe</windowsExec>
+                    <windowsExecArgs>+set cl_renderer GL3,GL</windowsExecArgs>
+                    <windowsIcon></windowsIcon>
+                    <windowsPath>${installdir}</windowsPath>
+                </startMenuShortcut>
+                <startMenuShortcut>
+                    <comment>Play Unvanquished, for slower computers</comment>
+                    <name>Unvanquished (Vanilla Renderer)</name>
+                    <runAsAdmin>0</runAsAdmin>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}/Daemon.exe</windowsExec>
+                    <windowsExecArgs>+set cl_renderer GL</windowsExecArgs>
+                    <windowsIcon></windowsIcon>
+                    <windowsPath>${installdir}</windowsPath>
+                </startMenuShortcut>
+            </startMenuShortcutList>
+        </component>
+        <componentGroup>
+            <name>assets</name>
+            <description>Assets</description>
+            <canBeEdited>1</canBeEdited>
+            <detailedDescription>Unvanquished Game Assets
+
+These are the game assets such as models, textures, sounds, and maps that are required to play the game. Note that selecting both of them will result in large download of ~400 MiB. If you are installing to the same directory as a previous install, existing assets will be skipped and only new assets will be downloaded.</detailedDescription>
+            <selected>1</selected>
+            <show>1</show>
+            <componentList>
+                <component>
+                    <name>gpaks</name>
+                    <description>Game Paks</description>
+                    <canBeEdited>1</canBeEdited>
+                    <detailedDescription>These contain the game models, textures, ui files, and sounds. These files are required to play. </detailedDescription>
+                    <selected>1</selected>
+                    <show>1</show>
+                    <folderList>
+                        <folder>
+                            <description>Paks</description>
+                            <destination>${installdir}/main</destination>
+                            <name>pakfolder</name>
+                            <platforms>linux linux-x64 windows</platforms>
+                            <distributionFileList>
+                                <distributionFile>
+                                    <origin>paklist</origin>
+                                </distributionFile>
+                            </distributionFileList>
+                        </folder>
+                        <folder>
+                            <description>Paks</description>
+                            <destination>${installdir}/Unvanquished.app/Contents/Resources/Unvanquished/main/</destination>
+                            <name>pakfolder_osx</name>
+                            <platforms>osx</platforms>
+                            <distributionFileList>
+                                <distributionFile>
+                                    <origin>paklist</origin>
+                                </distributionFile>
+                            </distributionFileList>
+                        </folder>
+                    </folderList>
+                </component>
+                <component>
+                    <name>maps</name>
+                    <description>Maps</description>
+                    <canBeEdited>1</canBeEdited>
+                    <detailedDescription>Download all the maps</detailedDescription>
+                    <selected>1</selected>
+                    <show>1</show>
+                    <folderList>
+                        <folder>
+                            <description>Maps</description>
+                            <destination>${installdir}/main</destination>
+                            <name>mapsfolder</name>
+                            <platforms>linux linux-x64 windows</platforms>
+                            <distributionFileList>
+                                <distributionFile>
+                                    <origin>maplist</origin>
+                                </distributionFile>
+                            </distributionFileList>
+                        </folder>
+                        <folder>
+                            <description>Maps</description>
+                            <destination>${installdir}/Unvanquished.app/Contents/Resources/Unvanquished/main/</destination>
+                            <name>mapsfolder_osx</name>
+                            <platforms>osx</platforms>
+                            <distributionFileList>
+                                <distributionFile>
+                                    <origin>maplist</origin>
+                                </distributionFile>
+                            </distributionFileList>
+                        </folder>
+                    </folderList>
+                </component>
+            </componentList>
+        </componentGroup>
+        <component>
+            <name>osavul</name>
+            <description>Osavul</description>
+            <canBeEdited>1</canBeEdited>
+            <detailedDescription>Unvanquished's external server browser with a built in IRC client.</detailedDescription>
+            <selected>1</selected>
+            <show>1</show>
+            <desktopShortcutList>
+                <shortcut>
+                    <comment>Unvanquished server browser</comment>
+                    <exec></exec>
+                    <icon></icon>
+                    <name>Osavul</name>
+                    <path></path>
+                    <platforms>windows</platforms>
+                    <runAsAdmin>0</runAsAdmin>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}/osavul.exe</windowsExec>
+                    <windowsExecArgs></windowsExecArgs>
+                    <windowsIcon>${installdir}/Daemon.exe</windowsIcon>
+                    <windowsPath>${installdir}</windowsPath>
+                </shortcut>
+            </desktopShortcutList>
+            <folderList>
+                <folder>
+                    <description>Osavul</description>
+                    <destination>${installdir}/</destination>
+                    <name>osavul</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>tmp/osavul/osavul.exe</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+            </folderList>
+            <startMenuShortcutList>
+                <startMenuShortcut>
+                    <comment>Unvanquished server browser</comment>
+                    <name>Osavul</name>
+                    <runAsAdmin>0</runAsAdmin>
+                    <runInTerminal>0</runInTerminal>
+                    <windowsExec>${installdir}/osavul.exe</windowsExec>
+                    <windowsExecArgs></windowsExecArgs>
+                    <windowsIcon>${installdir}/Daemon.exe</windowsIcon>
+                    <windowsPath>${installdir}</windowsPath>
+                </startMenuShortcut>
+            </startMenuShortcutList>
+        </component>
+    </componentList>
+    <readyToInstallActionList>
+        <setInstallerVariable>
+            <name>project.installationType</name>
+            <value>upgrade</value>
+            <ruleList>
+                <fileExists>
+                    <path>${installdir}/</path>
+                </fileExists>
+            </ruleList>
+        </setInstallerVariable>
+    </readyToInstallActionList>
+    <postInstallationActionList>
+        <showProgressDialog>
+            <explanation>Downloading Required Files...</explanation>
+            <title>Downloading Maps...</title>
+            <actionList>
+                <readFile>
+                    <name>maplist</name>
+                    <path>${installdir}/main/maplist</path>
+                </readFile>
+                <setInstallerVariable>
+                    <name>mapCount</name>
+                    <value>0</value>
+                </setInstallerVariable>
+                <foreach>
+                    <values>${maplist}</values>
+                    <variables>map</variables>
+                    <actionList>
+                        <mathExpression>
+                            <abortOnError>0</abortOnError>
+                            <showMessageOnError>0</showMessageOnError>
+                            <text>${mapCount} + 1</text>
+                            <variable>mapCount</variable>
+                        </mathExpression>
+                        <if>
+                            <actionList>
+                                <showProgressDialog>
+                                    <abortOnError>0</abortOnError>
+                                    <title>Downloading [${mapCount}/24] ${map}...</title>
+                                    <actionList>
+                                        <httpGet>
+                                            <abortOnError>0</abortOnError>
+                                            <filename>${installdir}/main/${map}</filename>
+                                            <progressText>Downloading Map [${mapcount}/24]</progressText>
+                                            <url>http://sourceforge.net/projects/unvanquished/files/Assets/${map}</url>
+                                        </httpGet>
+                                    </actionList>
+                                </showProgressDialog>
+                            </actionList>
+                            <conditionRuleList>
+                                <fileExists>
+                                    <negate>1</negate>
+                                    <path>${installdir}/main/${map}</path>
+                                </fileExists>
+                            </conditionRuleList>
+                        </if>
+                    </actionList>
+                </foreach>
+            </actionList>
+            <ruleList>
+                <isTrue>
+                    <value>${project.component(Assets).selected}</value>
+                </isTrue>
+                <isTrue>
+                    <value>${project.component(Assets).component(Maps).selected}</value>
+                </isTrue>
+                <platformTest>
+                    <negate>1</negate>
+                    <type>osx</type>
+                </platformTest>
+            </ruleList>
+        </showProgressDialog>
+        <showProgressDialog>
+            <explanation>Downloading Required Files...</explanation>
+            <title>Downloading Asset Paks...</title>
+            <actionList>
+                <readFile>
+                    <name>paklist</name>
+                    <path>${installdir}/main/paklist</path>
+                </readFile>
+                <setInstallerVariable>
+                    <name>pakCount</name>
+                    <value>0</value>
+                </setInstallerVariable>
+                <foreach>
+                    <values>${paklist}</values>
+                    <variables>pak</variables>
+                    <actionList>
+                        <mathExpression>
+                            <text>${pakCount} + 1</text>
+                            <variable>pakCount</variable>
+                        </mathExpression>
+                        <if>
+                            <actionList>
+                                <showProgressDialog>
+                                    <title>Downloading [${pakCount}/6] ${pak}...</title>
+                                    <actionList>
+                                        <httpGet>
+                                            <filename>${installdir}/main/${pak}</filename>
+                                            <progressText>Downloading Map [${pakcount}/5]</progressText>
+                                            <url>http://sourceforge.net/projects/unvanquished/files/Assets/${pak}</url>
+                                        </httpGet>
+                                    </actionList>
+                                </showProgressDialog>
+                            </actionList>
+                            <conditionRuleList>
+                                <fileExists>
+                                    <negate>1</negate>
+                                    <path>${installdir}/main/${pak}</path>
+                                </fileExists>
+                            </conditionRuleList>
+                        </if>
+                    </actionList>
+                </foreach>
+            </actionList>
+            <ruleList>
+                <isTrue>
+                    <value>${project.component(Assets).selected}</value>
+                </isTrue>
+                <isTrue>
+                    <value>${project.component(Assets).component(gpaks).selected}</value>
+                </isTrue>
+                <platformTest>
+                    <negate>1</negate>
+                    <type>osx</type>
+                </platformTest>
+            </ruleList>
+        </showProgressDialog>
+        <showProgressDialog>
+            <explanation>Downloading Required Files...</explanation>
+            <title>Downloading Maps...</title>
+            <actionList>
+                <readFile>
+                    <name>maplist</name>
+                    <path>${installdir}/Unvanquished.app/Contents/Resources/Unvanquished/main/maplist</path>
+                </readFile>
+                <setInstallerVariable>
+                    <name>mapCount</name>
+                    <value>0</value>
+                </setInstallerVariable>
+                <foreach>
+                    <values>${maplist}</values>
+                    <variables>map</variables>
+                    <actionList>
+                        <mathExpression>
+                            <text>${mapCount} + 1</text>
+                            <variable>mapCount</variable>
+                        </mathExpression>
+                        <if>
+                            <actionList>
+                                <showProgressDialog>
+                                    <title>Downloading [${mapCount}/24] ${map}...</title>
+                                    <actionList>
+                                        <httpGet>
+                                            <filename>${installdir}/Unvanquished.app/Contents/Resources/Unvanquished/main/${map}</filename>
+                                            <progressText>Downloading Map [${mapcount}/24]</progressText>
+                                            <url>http://sourceforge.net/projects/unvanquished/files/Assets/${map}</url>
+                                        </httpGet>
+                                    </actionList>
+                                </showProgressDialog>
+                            </actionList>
+                            <conditionRuleList>
+                                <fileExists>
+                                    <negate>1</negate>
+                                    <path>${installdir}/Unvanquished.app/Contents/Resources/Unvanquished/main/${map}</path>
+                                </fileExists>
+                            </conditionRuleList>
+                        </if>
+                    </actionList>
+                </foreach>
+            </actionList>
+            <ruleList>
+                <isTrue>
+                    <value>${project.component(Assets).selected}</value>
+                </isTrue>
+                <isTrue>
+                    <value>${project.component(Assets).component(Maps).selected}</value>
+                </isTrue>
+                <platformTest>
+                    <type>osx</type>
+                </platformTest>
+            </ruleList>
+        </showProgressDialog>
+        <showProgressDialog>
+            <explanation>Downloading Required Files...</explanation>
+            <title>Downloading Asset Paks...</title>
+            <actionList>
+                <readFile>
+                    <name>paklist</name>
+                    <path>${installdir}/Unvanquished.app/Contents/Resources/Unvanquished/main/paklist</path>
+                </readFile>
+                <setInstallerVariable>
+                    <name>pakCount</name>
+                    <value>0</value>
+                </setInstallerVariable>
+                <foreach>
+                    <values>${paklist}</values>
+                    <variables>pak</variables>
+                    <actionList>
+                        <mathExpression>
+                            <text>${pakCount} + 1</text>
+                            <variable>pakCount</variable>
+                        </mathExpression>
+                        <if>
+                            <actionList>
+                                <showProgressDialog>
+                                    <title>Downloading [${pakCount}/6] ${pak}...</title>
+                                    <actionList>
+                                        <httpGet>
+                                            <filename>${installdir}/Unvanquished.app/Contents/Resources/Unvanquished/main/${pak}</filename>
+                                            <progressText>Downloading Map [${pakcount}/5]</progressText>
+                                            <url>http://sourceforge.net/projects/unvanquished/files/Assets/${pak}</url>
+                                        </httpGet>
+                                    </actionList>
+                                </showProgressDialog>
+                            </actionList>
+                            <conditionRuleList>
+                                <fileExists>
+                                    <negate>1</negate>
+                                    <path>${installdir}/Unvanquished.app/Contents/Resources/Unvanquished/main/${pak}</path>
+                                </fileExists>
+                            </conditionRuleList>
+                        </if>
+                    </actionList>
+                </foreach>
+            </actionList>
+            <ruleList>
+                <isTrue>
+                    <value>${project.component(Assets).selected}</value>
+                </isTrue>
+                <isTrue>
+                    <value>${project.component(Assets).component(gpaks).selected}</value>
+                </isTrue>
+                <platformTest>
+                    <type>osx</type>
+                </platformTest>
+            </ruleList>
+        </showProgressDialog>
+        <showQuestion>
+            <default>yes</default>
+            <explanation>Old vms load old data and may potentially lead to crashes.</explanation>
+            <text>Delete old vms pk3s from fs_homepath</text>
+            <variable>deleteoldvms</variable>
+        </showQuestion>
+        <if>
+            <actionList>
+                <deleteFile>
+                    <abortOnError>0</abortOnError>
+                    <path>~/.Unvanquished/main/vms-*.pk3</path>
+                    <ruleList>
+                        <platformTest>
+                            <type>linux</type>
+                        </platformTest>
+                    </ruleList>
+                </deleteFile>
+                <deleteFile>
+                    <abortOnError>0</abortOnError>
+                    <path>%APPDATA%\main\vms-*.pk3</path>
+                    <ruleList>
+                        <platformTest>
+                            <type>windows</type>
+                        </platformTest>
+                    </ruleList>
+                </deleteFile>
+                <deleteFile>
+                    <abortOnError>0</abortOnError>
+                    <path>~/Library/Application Support/Unvanquished/main/vms-*.pk3</path>
+                    <ruleList>
+                        <platformTest>
+                            <type>osx</type>
+                        </platformTest>
+                    </ruleList>
+                </deleteFile>
+            </actionList>
+            <conditionRuleList>
+                <isTrue>
+                    <value>${deleteoldvms}</value>
+                </isTrue>
+            </conditionRuleList>
+        </if>
+    </postInstallationActionList>
+    <postUninstallerCreationActionList>
+        <renameFile>
+            <abortOnError>0</abortOnError>
+            <destination>${installdir}/Uninstall Unvanquished.app</destination>
+            <origin>${installdir}/uninstall.app</origin>
+            <showMessageOnError>0</showMessageOnError>
+            <ruleList>
+                <platformTest>
+                    <type>osx</type>
+                </platformTest>
+                <fileExists>
+                    <negate>1</negate>
+                    <path>${installdir}/Uninstall Unvanquished.app</path>
+                </fileExists>
+            </ruleList>
+        </renameFile>
+    </postUninstallerCreationActionList>
+    <allowComponentSelection>1</allowComponentSelection>
+    <componentsDirectory>components/${project.shortName}-${project.version}</componentsDirectory>
+    <componentsDownloadDirectory>${components_download_directory}</componentsDownloadDirectory>
+    <componentsUrl>${components_download_url}</componentsUrl>
+    <compressionAlgorithm>lzma</compressionAlgorithm>
+    <enableDebugger>1</enableDebugger>
+    <enableRollback>0</enableRollback>
+    <enableTimestamp>1</enableTimestamp>
+    <saveRelativePaths>1</saveRelativePaths>
+    <vendor>Unvanquished Development</vendor>
+    <parameterList>
+        <directoryParameter>
+            <name>installdir</name>
+            <description>Installer.Parameter.installdir.description</description>
+            <explanation>Installer.Parameter.installdir.explanation</explanation>
+            <value></value>
+            <default>${default_install_path}</default>
+            <allowEmptyValue>0</allowEmptyValue>
+            <cliOptionName>prefix</cliOptionName>
+            <mustBeWritable>1</mustBeWritable>
+            <mustExist>0</mustExist>
+            <width>40</width>
+            <preShowPageActionList>
+                <if>
+                    <actionList>
+                        <setInstallerVariable>
+                            <name>default_install_path</name>
+                            <value>${platform_install_prefix}/</value>
+                        </setInstallerVariable>
+                    </actionList>
+                    <conditionRuleList>
+                        <platformTest>
+                            <type>osx</type>
+                        </platformTest>
+                    </conditionRuleList>
+                    <elseActionList>
+                        <setInstallerVariable>
+                            <name>default_install_path</name>
+                            <value>${platform_install_prefix}/${product_shortname}</value>
+                        </setInstallerVariable>
+                    </elseActionList>
+                </if>
+            </preShowPageActionList>
+        </directoryParameter>
+    </parameterList>
+</project>
+
