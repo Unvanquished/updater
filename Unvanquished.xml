@@ -361,9 +361,59 @@ These are the game assets such as models, textures, sounds, and maps that are re
         </setInstallerVariable>
     </readyToInstallActionList>
     <postInstallationActionList>
-        <showProgressDialog>
+        <actionGroup>
             <explanation>Downloading Required Files...</explanation>
-            <title>Downloading Maps...</title>
+            <actionList>
+                <readFile>
+                    <name>paklist</name>
+                    <path>${mainDir}/paklist</path>
+                </readFile>
+                <setInstallerVariable>
+                    <name>pakCount</name>
+                    <value>0</value>
+                </setInstallerVariable>
+                <foreach>
+                    <values>${paklist}</values>
+                    <variables>pak</variables>
+                    <actionList>
+                        <mathExpression>
+                            <text>${pakCount} + 1</text>
+                            <variable>pakCount</variable>
+                        </mathExpression>
+                        <if>
+                            <actionList>
+                                <showProgressDialog>
+                                    <title>Downloading [${pakCount}/6] ${pak}...</title>
+                                    <actionList>
+                                        <httpGet>
+                                            <filename>${mainDir}/${pak}</filename>
+                                            <progressText>Downloading Map [${pakcount}/5]</progressText>
+                                            <url>http://sourceforge.net/projects/unvanquished/files/Assets/${pak}</url>
+                                        </httpGet>
+                                    </actionList>
+                                </showProgressDialog>
+                            </actionList>
+                            <conditionRuleList>
+                                <fileExists>
+                                    <negate>1</negate>
+                                    <path>${mainDir}/${pak}</path>
+                                </fileExists>
+                            </conditionRuleList>
+                        </if>
+                    </actionList>
+                </foreach>
+            </actionList>
+            <ruleList>
+                <isTrue>
+                    <value>${project.component(Assets).selected}</value>
+                </isTrue>
+                <isTrue>
+                    <value>${project.component(Assets).component(gpaks).selected}</value>
+                </isTrue>
+            </ruleList>
+        </actionGroup>
+        <actionGroup>
+            <explanation>Downloading maps2</explanation>
             <actionList>
                 <readFile>
                     <name>maplist</name>
@@ -416,59 +466,7 @@ These are the game assets such as models, textures, sounds, and maps that are re
                     <value>${project.component(Assets).component(Maps).selected}</value>
                 </isTrue>
             </ruleList>
-        </showProgressDialog>
-        <showProgressDialog>
-            <explanation>Downloading Required Files...</explanation>
-            <title>Downloading Asset Paks...</title>
-            <actionList>
-                <readFile>
-                    <name>paklist</name>
-                    <path>${mainDir}/paklist</path>
-                </readFile>
-                <setInstallerVariable>
-                    <name>pakCount</name>
-                    <value>0</value>
-                </setInstallerVariable>
-                <foreach>
-                    <values>${paklist}</values>
-                    <variables>pak</variables>
-                    <actionList>
-                        <mathExpression>
-                            <text>${pakCount} + 1</text>
-                            <variable>pakCount</variable>
-                        </mathExpression>
-                        <if>
-                            <actionList>
-                                <showProgressDialog>
-                                    <title>Downloading [${pakCount}/6] ${pak}...</title>
-                                    <actionList>
-                                        <httpGet>
-                                            <filename>${mainDir}/${pak}</filename>
-                                            <progressText>Downloading Map [${pakcount}/5]</progressText>
-                                            <url>http://sourceforge.net/projects/unvanquished/files/Assets/${pak}</url>
-                                        </httpGet>
-                                    </actionList>
-                                </showProgressDialog>
-                            </actionList>
-                            <conditionRuleList>
-                                <fileExists>
-                                    <negate>1</negate>
-                                    <path>${mainDir}/${pak}</path>
-                                </fileExists>
-                            </conditionRuleList>
-                        </if>
-                    </actionList>
-                </foreach>
-            </actionList>
-            <ruleList>
-                <isTrue>
-                    <value>${project.component(Assets).selected}</value>
-                </isTrue>
-                <isTrue>
-                    <value>${project.component(Assets).component(gpaks).selected}</value>
-                </isTrue>
-            </ruleList>
-        </showProgressDialog>
+        </actionGroup>
         <showQuestion>
             <default>yes</default>
             <explanation>Old vms load old data and may potentially lead to crashes.</explanation>
