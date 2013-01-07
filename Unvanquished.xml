@@ -167,7 +167,7 @@
                     <distributionFileList>
                         <distributionFile>
                             <allowWildcards>1</allowWildcards>
-                            <origin>../../../home/modi/unv/installerfiles/osx/*</origin>
+                            <origin>tmp/OSX/*</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
@@ -267,18 +267,7 @@ These are the game assets such as models, textures, sounds, and maps that are re
                             <description>Paks</description>
                             <destination>${installdir}/main</destination>
                             <name>pakfolder</name>
-                            <platforms>linux linux-x64 windows</platforms>
-                            <distributionFileList>
-                                <distributionFile>
-                                    <origin>paklist</origin>
-                                </distributionFile>
-                            </distributionFileList>
-                        </folder>
-                        <folder>
-                            <description>Paks</description>
-                            <destination>${installdir}/Unvanquished.app/Contents/Resources/Unvanquished/main/</destination>
-                            <name>pakfolder_osx</name>
-                            <platforms>osx</platforms>
+                            <platforms>all</platforms>
                             <distributionFileList>
                                 <distributionFile>
                                     <origin>paklist</origin>
@@ -299,18 +288,7 @@ These are the game assets such as models, textures, sounds, and maps that are re
                             <description>Maps</description>
                             <destination>${installdir}/main</destination>
                             <name>mapsfolder</name>
-                            <platforms>linux linux-x64 windows</platforms>
-                            <distributionFileList>
-                                <distributionFile>
-                                    <origin>maplist</origin>
-                                </distributionFile>
-                            </distributionFileList>
-                        </folder>
-                        <folder>
-                            <description>Maps</description>
-                            <destination>${installdir}/Unvanquished.app/Contents/Resources/Unvanquished/main/</destination>
-                            <name>mapsfolder_osx</name>
-                            <platforms>osx</platforms>
+                            <platforms>all</platforms>
                             <distributionFileList>
                                 <distributionFile>
                                     <origin>maplist</origin>
