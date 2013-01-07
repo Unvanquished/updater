@@ -111,7 +111,7 @@
                     <distributionFileList>
                         <distributionFile>
                             <allowWildcards>1</allowWildcards>
-                            <origin>../../../tmp/unv64/*</origin>
+                            <origin>../../../private/tmp/unv64/*</origin>
                         </distributionFile>
                         <distributionFile>
                             <origin>unvanquishd.png</origin>
@@ -265,7 +265,7 @@ These are the game assets such as models, textures, sounds, and maps that are re
                     <folderList>
                         <folder>
                             <description>Paks</description>
-                            <destination>${installdir}/main</destination>
+                            <destination>${mainDir}</destination>
                             <name>pakfolder</name>
                             <platforms>all</platforms>
                             <distributionFileList>
@@ -286,7 +286,7 @@ These are the game assets such as models, textures, sounds, and maps that are re
                     <folderList>
                         <folder>
                             <description>Maps</description>
-                            <destination>${installdir}/main</destination>
+                            <destination>${mainDir}</destination>
                             <name>mapsfolder</name>
                             <platforms>all</platforms>
                             <distributionFileList>
@@ -367,7 +367,7 @@ These are the game assets such as models, textures, sounds, and maps that are re
             <actionList>
                 <readFile>
                     <name>maplist</name>
-                    <path>${installdir}/main/maplist</path>
+                    <path>${mainDir}/maplist</path>
                 </readFile>
                 <setInstallerVariable>
                     <name>mapCount</name>
@@ -391,7 +391,7 @@ These are the game assets such as models, textures, sounds, and maps that are re
                                     <actionList>
                                         <httpGet>
                                             <abortOnError>0</abortOnError>
-                                            <filename>${installdir}/main/${map}</filename>
+                                            <filename>${mainDir}/${map}</filename>
                                             <progressText>Downloading Map [${mapcount}/24]</progressText>
                                             <url>http://sourceforge.net/projects/unvanquished/files/Assets/${map}</url>
                                         </httpGet>
@@ -401,7 +401,7 @@ These are the game assets such as models, textures, sounds, and maps that are re
                             <conditionRuleList>
                                 <fileExists>
                                     <negate>1</negate>
-                                    <path>${installdir}/main/${map}</path>
+                                    <path>${mainDir}/${map}</path>
                                 </fileExists>
                             </conditionRuleList>
                         </if>
@@ -415,10 +415,6 @@ These are the game assets such as models, textures, sounds, and maps that are re
                 <isTrue>
                     <value>${project.component(Assets).component(Maps).selected}</value>
                 </isTrue>
-                <platformTest>
-                    <negate>1</negate>
-                    <type>osx</type>
-                </platformTest>
             </ruleList>
         </showProgressDialog>
         <showProgressDialog>
@@ -427,7 +423,7 @@ These are the game assets such as models, textures, sounds, and maps that are re
             <actionList>
                 <readFile>
                     <name>paklist</name>
-                    <path>${installdir}/main/paklist</path>
+                    <path>${mainDir}/paklist</path>
                 </readFile>
                 <setInstallerVariable>
                     <name>pakCount</name>
@@ -447,7 +443,7 @@ These are the game assets such as models, textures, sounds, and maps that are re
                                     <title>Downloading [${pakCount}/6] ${pak}...</title>
                                     <actionList>
                                         <httpGet>
-                                            <filename>${installdir}/main/${pak}</filename>
+                                            <filename>${mainDir}/${pak}</filename>
                                             <progressText>Downloading Map [${pakcount}/5]</progressText>
                                             <url>http://sourceforge.net/projects/unvanquished/files/Assets/${pak}</url>
                                         </httpGet>
@@ -457,7 +453,7 @@ These are the game assets such as models, textures, sounds, and maps that are re
                             <conditionRuleList>
                                 <fileExists>
                                     <negate>1</negate>
-                                    <path>${installdir}/main/${pak}</path>
+                                    <path>${mainDir}/${pak}</path>
                                 </fileExists>
                             </conditionRuleList>
                         </if>
@@ -471,120 +467,6 @@ These are the game assets such as models, textures, sounds, and maps that are re
                 <isTrue>
                     <value>${project.component(Assets).component(gpaks).selected}</value>
                 </isTrue>
-                <platformTest>
-                    <negate>1</negate>
-                    <type>osx</type>
-                </platformTest>
-            </ruleList>
-        </showProgressDialog>
-        <showProgressDialog>
-            <explanation>Downloading Required Files...</explanation>
-            <title>Downloading Maps...</title>
-            <actionList>
-                <readFile>
-                    <name>maplist</name>
-                    <path>${installdir}/Unvanquished.app/Contents/Resources/Unvanquished/main/maplist</path>
-                </readFile>
-                <setInstallerVariable>
-                    <name>mapCount</name>
-                    <value>0</value>
-                </setInstallerVariable>
-                <foreach>
-                    <values>${maplist}</values>
-                    <variables>map</variables>
-                    <actionList>
-                        <mathExpression>
-                            <text>${mapCount} + 1</text>
-                            <variable>mapCount</variable>
-                        </mathExpression>
-                        <if>
-                            <actionList>
-                                <showProgressDialog>
-                                    <title>Downloading [${mapCount}/24] ${map}...</title>
-                                    <actionList>
-                                        <httpGet>
-                                            <filename>${installdir}/Unvanquished.app/Contents/Resources/Unvanquished/main/${map}</filename>
-                                            <progressText>Downloading Map [${mapcount}/24]</progressText>
-                                            <url>http://sourceforge.net/projects/unvanquished/files/Assets/${map}</url>
-                                        </httpGet>
-                                    </actionList>
-                                </showProgressDialog>
-                            </actionList>
-                            <conditionRuleList>
-                                <fileExists>
-                                    <negate>1</negate>
-                                    <path>${installdir}/Unvanquished.app/Contents/Resources/Unvanquished/main/${map}</path>
-                                </fileExists>
-                            </conditionRuleList>
-                        </if>
-                    </actionList>
-                </foreach>
-            </actionList>
-            <ruleList>
-                <isTrue>
-                    <value>${project.component(Assets).selected}</value>
-                </isTrue>
-                <isTrue>
-                    <value>${project.component(Assets).component(Maps).selected}</value>
-                </isTrue>
-                <platformTest>
-                    <type>osx</type>
-                </platformTest>
-            </ruleList>
-        </showProgressDialog>
-        <showProgressDialog>
-            <explanation>Downloading Required Files...</explanation>
-            <title>Downloading Asset Paks...</title>
-            <actionList>
-                <readFile>
-                    <name>paklist</name>
-                    <path>${installdir}/Unvanquished.app/Contents/Resources/Unvanquished/main/paklist</path>
-                </readFile>
-                <setInstallerVariable>
-                    <name>pakCount</name>
-                    <value>0</value>
-                </setInstallerVariable>
-                <foreach>
-                    <values>${paklist}</values>
-                    <variables>pak</variables>
-                    <actionList>
-                        <mathExpression>
-                            <text>${pakCount} + 1</text>
-                            <variable>pakCount</variable>
-                        </mathExpression>
-                        <if>
-                            <actionList>
-                                <showProgressDialog>
-                                    <title>Downloading [${pakCount}/6] ${pak}...</title>
-                                    <actionList>
-                                        <httpGet>
-                                            <filename>${installdir}/Unvanquished.app/Contents/Resources/Unvanquished/main/${pak}</filename>
-                                            <progressText>Downloading Map [${pakcount}/5]</progressText>
-                                            <url>http://sourceforge.net/projects/unvanquished/files/Assets/${pak}</url>
-                                        </httpGet>
-                                    </actionList>
-                                </showProgressDialog>
-                            </actionList>
-                            <conditionRuleList>
-                                <fileExists>
-                                    <negate>1</negate>
-                                    <path>${installdir}/Unvanquished.app/Contents/Resources/Unvanquished/main/${pak}</path>
-                                </fileExists>
-                            </conditionRuleList>
-                        </if>
-                    </actionList>
-                </foreach>
-            </actionList>
-            <ruleList>
-                <isTrue>
-                    <value>${project.component(Assets).selected}</value>
-                </isTrue>
-                <isTrue>
-                    <value>${project.component(Assets).component(gpaks).selected}</value>
-                </isTrue>
-                <platformTest>
-                    <type>osx</type>
-                </platformTest>
             </ruleList>
         </showProgressDialog>
         <showQuestion>
@@ -669,6 +551,27 @@ These are the game assets such as models, textures, sounds, and maps that are re
             <mustBeWritable>1</mustBeWritable>
             <mustExist>0</mustExist>
             <width>40</width>
+            <postShowPageActionList>
+                <if>
+                    <actionList>
+                        <setInstallerVariable>
+                            <name>mainDir</name>
+                            <value>${installdir}/Unvanquished.app/Contents/Resources/Unvanquished/main/</value>
+                        </setInstallerVariable>
+                    </actionList>
+                    <elseActionList>
+                        <setInstallerVariable>
+                            <name>mainDir</name>
+                            <value>${installdir}/main/</value>
+                        </setInstallerVariable>
+                    </elseActionList>
+                    <ruleList>
+                        <platformTest>
+                            <type>osx</type>
+                        </platformTest>
+                    </ruleList>
+                </if>
+            </postShowPageActionList>
             <preShowPageActionList>
                 <if>
                     <actionList>
