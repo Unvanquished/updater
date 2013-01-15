@@ -162,9 +162,8 @@ pip-log.txt
 # Mac crap
 .DS_Store
 
-# Binaries can be safely ignored
-*.exe
-*.dll
+# Ignore temp files
+tmp/*
 
 # BitRock backup file
 *.backup

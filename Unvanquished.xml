@@ -1,7 +1,8 @@
 <project>
     <shortName>Unvanquished</shortName>
     <fullName>Unvanquished</fullName>
-    <version>0.11.0</version>
+    <version>0.11</version>
+    <debugLevel>4</debugLevel>
     <readmeFile>README</readmeFile>
     <licenseFile>GPL.txt</licenseFile>
     <leftImage>sideBar.png</leftImage>
@@ -348,6 +349,26 @@ These are the game assets such as models, textures, sounds, and maps that are re
                 </startMenuShortcut>
             </startMenuShortcutList>
         </component>
+        <component>
+            <name>md5sum</name>
+            <description>md5sum</description>
+            <canBeEdited>0</canBeEdited>
+            <selected>1</selected>
+            <show>0</show>
+            <folderList>
+                <folder>
+                    <description>md5sum</description>
+                    <destination>${system_temp_directory}</destination>
+                    <name>md5sum</name>
+                    <platforms>windows</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>tools/md5sum/md5sum.exe</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
+            </folderList>
+        </component>
     </componentList>
     <readyToInstallActionList>
         <setInstallerVariable>
@@ -362,110 +383,211 @@ These are the game assets such as models, textures, sounds, and maps that are re
     </readyToInstallActionList>
     <postInstallationActionList>
         <actionGroup>
-            <explanation>Downloading Required Files...</explanation>
+            <explanation>Verifying game data</explanation>
             <actionList>
-                <readFile>
-                    <name>paklist</name>
-                    <path>${mainDir}/paklist</path>
-                </readFile>
                 <setInstallerVariable>
-                    <name>pakCount</name>
-                    <value>0</value>
+                    <name>assetsNotVerified</name>
+                    <value>1</value>
                 </setInstallerVariable>
-                <foreach>
-                    <values>${paklist}</values>
-                    <variables>pak</variables>
+
+	<httpGet>
+        <filename>${mainDir}/md5sums${project.version}</filename>
+        <url>http://sourceforge.net/projects/unvanquished/files/Assets/md5sums${project.version}/download</url>
+    </httpGet>
+	<while>
+                    <explanation>Verify Game Data</explanation>
                     <actionList>
-                        <mathExpression>
-                            <text>${pakCount} + 1</text>
-                            <variable>pakCount</variable>
-                        </mathExpression>
-                        <if>
+                        <actionGroup>
+                            <explanation>Downloading Required Files...</explanation>
                             <actionList>
-                                <showProgressDialog>
-                                    <title>Downloading [${pakCount}/6] ${pak}...</title>
+                                <readFile>
+                                    <name>paklist</name>
+                                    <path>${mainDir}/paklist</path>
+                                </readFile>
+                                <setInstallerVariable>
+                                    <name>pakCount</name>
+                                    <value>0</value>
+                                </setInstallerVariable>
+                                <foreach>
+                                    <values>${paklist}</values>
+                                    <variables>pak</variables>
                                     <actionList>
-                                        <httpGet>
-                                            <filename>${mainDir}/${pak}</filename>
-                                            <progressText>Downloading Map [${pakcount}/5]</progressText>
-                                            <url>http://sourceforge.net/projects/unvanquished/files/Assets/${pak}</url>
-                                        </httpGet>
+                                        <mathExpression>
+                                            <text>${pakCount} + 1</text>
+                                            <variable>pakCount</variable>
+                                        </mathExpression>
+                                        <if>
+                                            <actionList>
+                                                <showProgressDialog>
+                                                    <title>Downloading [${pakCount}/6] ${pak}...</title>
+                                                    <actionList>
+                                                        <httpGet>
+                                                            <filename>${mainDir}/${pak}</filename>
+                                                            <progressText>Downloading Map [${pakcount}/5]</progressText>
+                                                            <url>http://sourceforge.net/projects/unvanquished/files/Assets/${pak}</url>
+                                                        </httpGet>
+                                                    </actionList>
+                                                </showProgressDialog>
+                                            </actionList>
+                                            <conditionRuleList>
+                                                <fileExists>
+                                                    <negate>1</negate>
+                                                    <path>${mainDir}/${pak}</path>
+                                                </fileExists>
+                                            </conditionRuleList>
+                                        </if>
                                     </actionList>
-                                </showProgressDialog>
+                                </foreach>
                             </actionList>
-                            <conditionRuleList>
-                                <fileExists>
-                                    <negate>1</negate>
-                                    <path>${mainDir}/${pak}</path>
-                                </fileExists>
-                            </conditionRuleList>
-                        </if>
-                    </actionList>
-                </foreach>
-            </actionList>
-            <ruleList>
-                <isTrue>
-                    <value>${project.component(Assets).selected}</value>
-                </isTrue>
-                <isTrue>
-                    <value>${project.component(Assets).component(gpaks).selected}</value>
-                </isTrue>
-            </ruleList>
-        </actionGroup>
-        <actionGroup>
-            <explanation>Downloading maps2</explanation>
-            <actionList>
-                <readFile>
-                    <name>maplist</name>
-                    <path>${mainDir}/maplist</path>
-                </readFile>
-                <setInstallerVariable>
-                    <name>mapCount</name>
-                    <value>0</value>
-                </setInstallerVariable>
-                <foreach>
-                    <values>${maplist}</values>
-                    <variables>map</variables>
-                    <actionList>
-                        <mathExpression>
-                            <abortOnError>0</abortOnError>
-                            <showMessageOnError>0</showMessageOnError>
-                            <text>${mapCount} + 1</text>
-                            <variable>mapCount</variable>
-                        </mathExpression>
-                        <if>
+                            <ruleList>
+                                <isTrue>
+                                    <value>${project.component(Assets).selected}</value>
+                                </isTrue>
+                                <isTrue>
+                                    <value>${project.component(Assets).component(gpaks).selected}</value>
+                                </isTrue>
+                            </ruleList>
+                        </actionGroup>
+                        <actionGroup>
+                            <explanation>Downloading maps</explanation>
                             <actionList>
-                                <showProgressDialog>
-                                    <abortOnError>0</abortOnError>
-                                    <title>Downloading [${mapCount}/24] ${map}...</title>
+                                <readFile>
+                                    <name>maplist</name>
+                                    <path>${mainDir}/maplist</path>
+                                </readFile>
+                                <setInstallerVariable>
+                                    <name>mapCount</name>
+                                    <value>0</value>
+                                </setInstallerVariable>
+                                <foreach>
+                                    <values>${maplist}</values>
+                                    <variables>map</variables>
                                     <actionList>
-                                        <httpGet>
+                                        <mathExpression>
                                             <abortOnError>0</abortOnError>
-                                            <filename>${mainDir}/${map}</filename>
-                                            <progressText>Downloading Map [${mapcount}/24]</progressText>
-                                            <url>http://sourceforge.net/projects/unvanquished/files/Assets/${map}</url>
-                                        </httpGet>
+                                            <showMessageOnError>0</showMessageOnError>
+                                            <text>${mapCount} + 1</text>
+                                            <variable>mapCount</variable>
+                                        </mathExpression>
+                                        <if>
+                                            <actionList>
+                                                <showProgressDialog>
+                                                    <abortOnError>0</abortOnError>
+                                                    <title>Downloading [${mapCount}/24] ${map}...</title>
+                                                    <actionList>
+                                                        <httpGet>
+                                                            <abortOnError>0</abortOnError>
+                                                            <filename>${mainDir}/${map}</filename>
+                                                            <progressText>Downloading Map [${mapcount}/24]</progressText>
+                                                            <url>http://sourceforge.net/projects/unvanquished/files/Assets/${map}</url>
+                                                        </httpGet>
+                                                    </actionList>
+                                                </showProgressDialog>
+                                            </actionList>
+                                            <conditionRuleList>
+                                                <fileExists>
+                                                    <negate>1</negate>
+                                                    <path>${mainDir}/${map}</path>
+                                                </fileExists>
+                                            </conditionRuleList>
+                                        </if>
                                     </actionList>
-                                </showProgressDialog>
+                                </foreach>
+                            </actionList>
+                            <ruleList>
+                                <isTrue>
+                                    <value>${project.component(Assets).selected}</value>
+                                </isTrue>
+                                <isTrue>
+                                    <value>${project.component(Assets).component(Maps).selected}</value>
+                                </isTrue>
+                            </ruleList>
+                        </actionGroup>
+                        <if>
+                            <explanation>Check MD5 for windows</explanation>
+                            <actionList>
+	<!-- Setting a variable directly from the output of md5sum doesn't work correctly.
+        As such we set it from program_stdout instead. -->
+	<runProgram>
+                                    <abortOnError>0</abortOnError>
+                                    <program>${system_temp_directory}/md5sum.exe</program>
+                                    <programArguments>-c md5sums${project.version}</programArguments>
+                                    <showMessageOnError>0</showMessageOnError>
+                                    <workingDirectory>${mainDir}</workingDirectory>
+                                </runProgram>
+                                <setInstallerVariableFromRegEx>
+                                    <breakpoint>1</breakpoint>
+                                    <name>badAssetList</name>
+                                    <pattern>([a-zA-z0-9_\.-]*:\sOK)|(:\sFAILED)|([a-zA-Z0-9_\.-]*:\sFAILED\sopen\sor\sread)</pattern>
+                                    <substitution></substitution>
+                                    <text>${program_stdout}</text>
+                                </setInstallerVariableFromRegEx>
+                                <stringModify>
+                                    <text>${badAssetList}</text>
+                                    <variable>badAssetList</variable>
+                                </stringModify>
                             </actionList>
                             <conditionRuleList>
-                                <fileExists>
+                                <platformTest>
+                                    <type>windows</type>
+                                </platformTest>
+                            </conditionRuleList>
+                        </if>
+                        <if>
+                            <explanation>If assets fail MD5 then offer to delete and redownload</explanation>
+                            <actionList>
+                                <showQuestion>
+                                    <default>yes</default>
+                                    <text>The following game assets appear to be corrupt:
+${badAssetList}
+
+Would you like to redownload these assets?
+</text>
+                                    <variable>assetsNotVerified</variable>
+                                </showQuestion>
+                            </actionList>
+                            <conditionRuleList>
+                                <compareText>
+                                    <logic>equals</logic>
                                     <negate>1</negate>
-                                    <path>${mainDir}/${map}</path>
-                                </fileExists>
+                                    <text>${badAssetList}</text>
+                                    <value></value>
+                                </compareText>
+                            </conditionRuleList>
+                            <elseActionList>
+                                <setInstallerVariable>
+                                    <name>AssetsNotVerified</name>
+                                    <value>0</value>
+                                </setInstallerVariable>
+                            </elseActionList>
+                        </if>
+                        <if>
+                            <explanation>Delete assets</explanation>
+                            <actionList>
+                                <foreach>
+                                    <values>${badAssetList}</values>
+                                    <variables>badAsset</variables>
+                                    <actionList>
+                                        <deleteFile>
+                                            <path>${mainDir}/${badAsset}</path>
+                                        </deleteFile>
+                                    </actionList>
+                                </foreach>
+                            </actionList>
+                            <conditionRuleList>
+                                <isTrue>
+                                    <value>${assetsNotVerified}</value>
+                                </isTrue>
                             </conditionRuleList>
                         </if>
                     </actionList>
-                </foreach>
+                    <conditionRuleList>
+                        <isTrue>
+                            <value>${assetsNotVerified}</value>
+                        </isTrue>
+                    </conditionRuleList>
+                </while>
             </actionList>
-            <ruleList>
-                <isTrue>
-                    <value>${project.component(Assets).selected}</value>
-                </isTrue>
-                <isTrue>
-                    <value>${project.component(Assets).component(Maps).selected}</value>
-                </isTrue>
-            </ruleList>
         </actionGroup>
         <showQuestion>
             <default>yes</default>
@@ -557,17 +679,17 @@ These are the game assets such as models, textures, sounds, and maps that are re
                             <value>${installdir}/Unvanquished.app/Contents/Resources/Unvanquished/main/</value>
                         </setInstallerVariable>
                     </actionList>
+                    <conditionRuleList>
+                        <platformTest>
+                            <type>osx</type>
+                        </platformTest>
+                    </conditionRuleList>
                     <elseActionList>
                         <setInstallerVariable>
                             <name>mainDir</name>
                             <value>${installdir}/main/</value>
                         </setInstallerVariable>
                     </elseActionList>
-                    <ruleList>
-                        <platformTest>
-                            <type>osx</type>
-                        </platformTest>
-                    </ruleList>
                 </if>
             </postShowPageActionList>
             <preShowPageActionList>
