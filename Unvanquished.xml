@@ -389,12 +389,11 @@ These are the game assets such as models, textures, sounds, and maps that are re
                     <name>assetsNotVerified</name>
                     <value>1</value>
                 </setInstallerVariable>
-
-	<httpGet>
-        <filename>${mainDir}/md5sums${project.version}</filename>
-        <url>http://sourceforge.net/projects/unvanquished/files/Assets/md5sums${project.version}/download</url>
-    </httpGet>
-	<while>
+                <httpGet>
+                    <filename>${mainDir}/md5sums${project.version}</filename>
+                    <url>http://sourceforge.net/projects/unvanquished/files/Assets/md5sums${project.version}/download</url>
+                </httpGet>
+                <while>
                     <explanation>Verify Game Data</explanation>
                     <actionList>
                         <actionGroup>
@@ -404,6 +403,12 @@ These are the game assets such as models, textures, sounds, and maps that are re
                                     <name>paklist</name>
                                     <path>${mainDir}/paklist</path>
                                 </readFile>
+                                <setInstallerVariableFromRegEx>
+                                    <name>pakTotal</name>
+                                    <pattern>^0\.</pattern>
+                                    <substitution></substitution>
+                                    <text>${project.version}</text>
+                                </setInstallerVariableFromRegEx>
                                 <setInstallerVariable>
                                     <name>pakCount</name>
                                     <value>0</value>
@@ -419,7 +424,7 @@ These are the game assets such as models, textures, sounds, and maps that are re
                                         <if>
                                             <actionList>
                                                 <showProgressDialog>
-                                                    <title>Downloading [${pakCount}/6] ${pak}...</title>
+                                                    <title>Downloading [${pakCount}/${pakTotal}] ${pak}...</title>
                                                     <actionList>
                                                         <httpGet>
                                                             <filename>${mainDir}/${pak}</filename>
