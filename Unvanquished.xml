@@ -367,6 +367,17 @@ These are the game assets such as models, textures, sounds, and maps that are re
                         </distributionFile>
                     </distributionFileList>
                 </folder>
+                <folder>
+                    <description>md5</description>
+                    <destination>${system_temp_directory}</destination>
+                    <name>md5</name>
+                    <platforms>osx</platforms>
+                    <distributionFileList>
+                        <distributionFile>
+                            <origin>tools/md5Verification.sh</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                </folder>
             </folderList>
         </component>
     </componentList>
@@ -535,6 +546,22 @@ These are the game assets such as models, textures, sounds, and maps that are re
                             <conditionRuleList>
                                 <platformTest>
                                     <type>windows</type>
+                                </platformTest>
+                            </conditionRuleList>
+                        </if>
+                        <if>
+                            <explanation>Check MD5 for OS X</explanation>
+                            <actionList>
+                                <setInstallerVariableFromScriptOutput>
+                                    <exec>${system_temp_directory}/md5Verification.sh</exec>
+                                    <execArgs></execArgs>
+                                    <name>badAssetList</name>
+                                    <workingDirectory>${mainDir}</workingDirectory>
+                                </setInstallerVariableFromScriptOutput>
+                            </actionList>
+                            <conditionRuleList>
+                                <platformTest>
+                                    <type>osx</type>
                                 </platformTest>
                             </conditionRuleList>
                         </if>
