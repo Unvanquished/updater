@@ -688,7 +688,7 @@ Would you like to redownload these assets?
         <showQuestion>
             <default>yes</default>
             <explanation>Old vms load old data and may potentially lead to crashes.</explanation>
-            <text>Delete old vms pk3s from fs_homepath</text>
+            <text>Delete old vms pk3s</text>
             <variable>deleteoldvms</variable>
         </showQuestion>
         <if>
@@ -719,6 +719,10 @@ Would you like to redownload these assets?
                             <type>osx</type>
                         </platformTest>
                     </ruleList>
+                </deleteFile>
+                <deleteFile>
+                    <excludeFiles>*${project.version}*</excludeFiles>
+                    <path>${mainDir}/vms-*.pk3</path>
                 </deleteFile>
             </actionList>
             <conditionRuleList>
