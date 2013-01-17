@@ -298,6 +298,26 @@ These are the game assets such as models, textures, sounds, and maps that are re
                         </folder>
                     </folderList>
                 </component>
+                <component>
+                    <name>vms</name>
+                    <description>vms</description>
+                    <canBeEdited>0</canBeEdited>
+                    <selected>1</selected>
+                    <show>0</show>
+                    <folderList>
+                        <folder>
+                            <description>vms</description>
+                            <destination>${mainDir}</destination>
+                            <name>vms</name>
+                            <platforms>all</platforms>
+                            <distributionFileList>
+                                <distributionFile>
+                                    <origin>tmp/vms-${project.version}.0.pk3</origin>
+                                </distributionFile>
+                            </distributionFileList>
+                        </folder>
+                    </folderList>
+                </component>
             </componentList>
         </componentGroup>
         <component>
