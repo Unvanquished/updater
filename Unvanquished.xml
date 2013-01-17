@@ -414,36 +414,28 @@ These are the game assets such as models, textures, sounds, and maps that are re
                                     <name>paklist</name>
                                     <path>${mainDir}/paklist</path>
                                 </readFile>
-                                <setInstallerVariableFromRegEx>
-                                    <name>pakTotal</name>
-                                    <pattern>^0\.</pattern>
-                                    <substitution></substitution>
-                                    <text>${project.version}</text>
-                                </setInstallerVariableFromRegEx>
                                 <setInstallerVariable>
-                                    <name>pakCount</name>
+                                    <name>pakTotal</name>
                                     <value>0</value>
                                 </setInstallerVariable>
+                                <setInstallerVariable>
+                                    <name>missingPaks</name>
+                                    <value></value>
+                                </setInstallerVariable>
                                 <foreach>
-                                    <values>${paklist}</values>
+                                    <values>${pakList}</values>
                                     <variables>pak</variables>
                                     <actionList>
-                                        <mathExpression>
-                                            <text>${pakCount} + 1</text>
-                                            <variable>pakCount</variable>
-                                        </mathExpression>
                                         <if>
                                             <actionList>
-                                                <showProgressDialog>
-                                                    <title>Downloading [${pakCount}/${pakTotal}] ${pak}...</title>
-                                                    <actionList>
-                                                        <httpGet>
-                                                            <filename>${mainDir}/${pak}</filename>
-                                                            <progressText>Downloading Map [${pakcount}/5]</progressText>
-                                                            <url>http://sourceforge.net/projects/unvanquished/files/Assets/${pak}</url>
-                                                        </httpGet>
-                                                    </actionList>
-                                                </showProgressDialog>
+                                                <mathExpression>
+                                                    <text>${pakTotal} + 1</text>
+                                                    <variable>pakTotal</variable>
+                                                </mathExpression>
+                                                <setInstallerVariable>
+                                                    <name>missingPaks</name>
+                                                    <value>${missingPaks} ${pak}</value>
+                                                </setInstallerVariable>
                                             </actionList>
                                             <conditionRuleList>
                                                 <fileExists>
@@ -452,6 +444,34 @@ These are the game assets such as models, textures, sounds, and maps that are re
                                                 </fileExists>
                                             </conditionRuleList>
                                         </if>
+                                    </actionList>
+                                </foreach>
+                                <setInstallerVariable>
+                                    <name>pakCount</name>
+                                    <value>0</value>
+                                </setInstallerVariable>
+                                <foreach>
+                                    <values>${missingPaks}</values>
+                                    <variables>pak</variables>
+                                    <actionList>
+                                        <mathExpression>
+                                            <abortOnError>0</abortOnError>
+                                            <showMessageOnError>0</showMessageOnError>
+                                            <text>${pakCount} + 1</text>
+                                            <variable>pakCount</variable>
+                                        </mathExpression>
+                                        <showProgressDialog>
+                                            <abortOnError>0</abortOnError>
+                                            <title>Downloading [${pakCount}/${pakTotal}] ${pak}...</title>
+                                            <actionList>
+                                                <httpGet>
+                                                    <abortOnError>0</abortOnError>
+                                                    <filename>${mainDir}/${pak}</filename>
+                                                    <progressText>Downloading Assets [${pakCount}/${pakTotal}]</progressText>
+                                                    <url>http://sourceforge.net/projects/unvanquished/files/Assets/${pak}</url>
+                                                </httpGet>
+                                            </actionList>
+                                        </showProgressDialog>
                                     </actionList>
                                 </foreach>
                             </actionList>
@@ -472,33 +492,27 @@ These are the game assets such as models, textures, sounds, and maps that are re
                                     <path>${mainDir}/maplist</path>
                                 </readFile>
                                 <setInstallerVariable>
-                                    <name>mapCount</name>
+                                    <name>mapTotal</name>
                                     <value>0</value>
                                 </setInstallerVariable>
+                                <setInstallerVariable>
+                                    <name>missingMaps</name>
+                                    <value></value>
+                                </setInstallerVariable>
                                 <foreach>
-                                    <values>${maplist}</values>
+                                    <values>${mapList}</values>
                                     <variables>map</variables>
                                     <actionList>
-                                        <mathExpression>
-                                            <abortOnError>0</abortOnError>
-                                            <showMessageOnError>0</showMessageOnError>
-                                            <text>${mapCount} + 1</text>
-                                            <variable>mapCount</variable>
-                                        </mathExpression>
                                         <if>
                                             <actionList>
-                                                <showProgressDialog>
-                                                    <abortOnError>0</abortOnError>
-                                                    <title>Downloading [${mapCount}/24] ${map}...</title>
-                                                    <actionList>
-                                                        <httpGet>
-                                                            <abortOnError>0</abortOnError>
-                                                            <filename>${mainDir}/${map}</filename>
-                                                            <progressText>Downloading Map [${mapcount}/24]</progressText>
-                                                            <url>http://sourceforge.net/projects/unvanquished/files/Assets/${map}</url>
-                                                        </httpGet>
-                                                    </actionList>
-                                                </showProgressDialog>
+                                                <mathExpression>
+                                                    <text>${mapTotal} + 1</text>
+                                                    <variable>mapTotal</variable>
+                                                </mathExpression>
+                                                <setInstallerVariable>
+                                                    <name>missingMaps</name>
+                                                    <value>${missingMaps} ${map}</value>
+                                                </setInstallerVariable>
                                             </actionList>
                                             <conditionRuleList>
                                                 <fileExists>
@@ -507,6 +521,34 @@ These are the game assets such as models, textures, sounds, and maps that are re
                                                 </fileExists>
                                             </conditionRuleList>
                                         </if>
+                                    </actionList>
+                                </foreach>
+                                <setInstallerVariable>
+                                    <name>mapCount</name>
+                                    <value>0</value>
+                                </setInstallerVariable>
+                                <foreach>
+                                    <values>${missingMaps}</values>
+                                    <variables>map</variables>
+                                    <actionList>
+                                        <mathExpression>
+                                            <abortOnError>0</abortOnError>
+                                            <showMessageOnError>0</showMessageOnError>
+                                            <text>${mapCount} + 1</text>
+                                            <variable>mapCount</variable>
+                                        </mathExpression>
+                                        <showProgressDialog>
+                                            <abortOnError>0</abortOnError>
+                                            <title>Downloading [${mapCount}/${mapTotal}] ${map}...</title>
+                                            <actionList>
+                                                <httpGet>
+                                                    <abortOnError>0</abortOnError>
+                                                    <filename>${mainDir}/${map}</filename>
+                                                    <progressText>Downloading Map [${mapcount}/${mapTotal}]</progressText>
+                                                    <url>http://sourceforge.net/projects/unvanquished/files/Assets/${map}</url>
+                                                </httpGet>
+                                            </actionList>
+                                        </showProgressDialog>
                                     </actionList>
                                 </foreach>
                             </actionList>
