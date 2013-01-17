@@ -570,6 +570,7 @@ These are the game assets such as models, textures, sounds, and maps that are re
                                     <abortOnError>0</abortOnError>
                                     <program>${system_temp_directory}/md5sum.exe</program>
                                     <programArguments>-c md5sums${project.version}</programArguments>
+                                    <progressText>Verifying assets</progressText>
                                     <showMessageOnError>0</showMessageOnError>
                                     <workingDirectory>${mainDir}</workingDirectory>
                                 </runProgram>
@@ -598,6 +599,7 @@ These are the game assets such as models, textures, sounds, and maps that are re
                                     <exec>${system_temp_directory}/md5Verification.sh</exec>
                                     <execArgs></execArgs>
                                     <name>badAssetList</name>
+                                    <progressText>Verifying assets</progressText>
                                     <workingDirectory>${mainDir}</workingDirectory>
                                 </setInstallerVariableFromScriptOutput>
                             </actionList>
