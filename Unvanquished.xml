@@ -605,6 +605,12 @@ These are the game assets such as models, textures, sounds, and maps that are re
                                     <text>${badAssetList}</text>
                                     <variable>badAssetList</variable>
                                 </stringModify>
+                                <setInstallerVariableFromRegEx>
+                                    <name>badAssetList</name>
+                                    <pattern>\n+</pattern>
+                                    <substitution> </substitution>
+                                    <text>${badAssetList}</text>
+                                </setInstallerVariableFromRegEx>
                             </actionList>
                             <conditionRuleList>
                                 <platformTest>
