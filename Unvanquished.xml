@@ -115,7 +115,7 @@
                             <origin>../../../private/tmp/unv64/*</origin>
                         </distributionFile>
                         <distributionFile>
-                            <origin>unvanquishd.png</origin>
+                            <origin>unvanquished.png</origin>
                         </distributionFile>
                     </distributionFileList>
                 </folder>
