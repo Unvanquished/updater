@@ -584,11 +584,6 @@ These are the game assets such as models, textures, sounds, and maps that are re
                         <if>
                             <explanation>Check MD5 for windows</explanation>
                             <actionList>
-                                <changePermissions>
-                                    <files>${system_temp_directory}/md5Verification.sh</files>
-                                    <permissions>777</permissions>
-                                </changePermissions>
-
 	<!-- Setting a variable directly from the output of md5sum doesn't work correctly.
         As such we set it from program_stdout instead. -->
 	<runProgram>
@@ -626,6 +621,10 @@ These are the game assets such as models, textures, sounds, and maps that are re
                         <if>
                             <explanation>Check MD5 for OS X</explanation>
                             <actionList>
+                                <changePermissions>
+                                    <files>${system_temp_directory}/md5Verification.sh</files>
+                                    <permissions>777</permissions>
+                                </changePermissions>
                                 <setInstallerVariableFromScriptOutput>
                                     <exec>${system_temp_directory}/md5Verification.sh</exec>
                                     <execArgs></execArgs>
