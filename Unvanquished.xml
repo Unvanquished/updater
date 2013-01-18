@@ -741,6 +741,24 @@ Would you like to redownload these assets?
                 </isTrue>
             </conditionRuleList>
         </if>
+        <if>
+            <explanation>Set executable bit of binaries in OS X</explanation>
+            <actionList>
+                <changePermissions>
+                    <files>${install_dir}/Unvanquished.app/Contents/Resources/Unvanquished/daemon</files>
+                    <permissions>655</permissions>
+                </changePermissions>
+                <changePermissions>
+                    <files>${install_dir}/Unvanquished.app/Contents/Resources/Unvanquished/daemonded</files>
+                    <permissions>655</permissions>
+                </changePermissions>
+            </actionList>
+            <conditionRuleList>
+                <platformTest>
+                    <type>osx</type>
+                </platformTest>
+            </conditionRuleList>
+        </if>
     </postInstallationActionList>
     <postUninstallerCreationActionList>
         <renameFile>
