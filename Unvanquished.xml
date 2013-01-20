@@ -798,7 +798,7 @@ Would you like to redownload these assets?
             <cliOptionName>prefix</cliOptionName>
             <mustBeWritable>1</mustBeWritable>
             <mustExist>0</mustExist>
-            <width>40</width>
+            <width>30</width>
             <postShowPageActionList>
                 <if>
                     <actionList>
