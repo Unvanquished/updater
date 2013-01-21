@@ -745,12 +745,12 @@ Would you like to redownload these assets?
             <explanation>Set executable bit of binaries in OS X</explanation>
             <actionList>
                 <changePermissions>
-                    <files>${install_dir}/Unvanquished.app/Contents/Resources/Unvanquished/daemon</files>
-                    <permissions>655</permissions>
+                    <files>${installdir}/Unvanquished.app/Contents/Resources/Unvanquished/daemon</files>
+                    <permissions>755</permissions>
                 </changePermissions>
                 <changePermissions>
-                    <files>${install_dir}/Unvanquished.app/Contents/Resources/Unvanquished/daemonded</files>
-                    <permissions>655</permissions>
+                    <files>${installdir}/Unvanquished.app/Contents/Resources/Unvanquished/daemonded</files>
+                    <permissions>755</permissions>
                 </changePermissions>
             </actionList>
             <conditionRuleList>
