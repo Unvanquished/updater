@@ -698,7 +698,9 @@ Would you like to redownload these assets?
         <showQuestion>
             <default>yes</default>
             <explanation>Old vms load old data and may potentially lead to crashes.</explanation>
-            <text>Delete old vms pk3s</text>
+            <text>Delete old VMS files?
+
+Old VMS files may cause crashes or prevent Unvanquished from starting. It is highly recommended that you delete these files.</text>
             <variable>deleteoldvms</variable>
         </showQuestion>
         <if>
