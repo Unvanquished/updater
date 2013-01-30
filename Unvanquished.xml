@@ -482,6 +482,7 @@ These are the game assets such as models, textures, sounds, and maps that are re
                                         </mathExpression>
                                         <showProgressDialog>
                                             <abortOnError>0</abortOnError>
+                                            <progressText>Assets (sounds, models and textures)</progressText>
                                             <title>Downloading [${pakCount}/${pakTotal}] ${pak}...</title>
                                             <actionList>
                                                 <httpGet>
@@ -559,6 +560,7 @@ These are the game assets such as models, textures, sounds, and maps that are re
                                         </mathExpression>
                                         <showProgressDialog>
                                             <abortOnError>0</abortOnError>
+                                            <progressText>Maps</progressText>
                                             <title>Downloading [${mapCount}/${mapTotal}] ${map}...</title>
                                             <actionList>
                                                 <httpGet>
@@ -789,6 +791,12 @@ Old VMS files may cause crashes or prevent Unvanquished from starting. It is hig
     <enableTimestamp>1</enableTimestamp>
     <saveRelativePaths>1</saveRelativePaths>
     <vendor>Unvanquished Development</vendor>
+    <customLanguageFileList>
+        <language>
+            <code>en</code>
+            <file>custom-en.lng</file>
+        </language>
+    </customLanguageFileList>
     <parameterList>
         <directoryParameter>
             <name>installdir</name>
