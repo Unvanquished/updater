@@ -461,6 +461,10 @@ These are the game assets such as models, textures, sounds, and maps that are re
                                                     <negate>1</negate>
                                                     <path>${mainDir}/${pak}</path>
                                                 </fileExists>
+                                                <fileExists>
+                                                    <negate>1</negate>
+                                                    <path>${home_mainDir}/${pak}</path>
+                                                </fileExists>
                                             </conditionRuleList>
                                         </if>
                                     </actionList>
@@ -538,6 +542,10 @@ These are the game assets such as models, textures, sounds, and maps that are re
                                                 <fileExists>
                                                     <negate>1</negate>
                                                     <path>${mainDir}/${map}</path>
+                                                </fileExists>
+                                                <fileExists>
+                                                    <negate>1</negate>
+                                                    <path>${home_mainDir}/${map}</path>
                                                 </fileExists>
                                             </conditionRuleList>
                                         </if>
@@ -708,28 +716,10 @@ Old VMS files may cause crashes or prevent Unvanquished from starting. It is hig
             <actionList>
                 <deleteFile>
                     <abortOnError>0</abortOnError>
-                    <path>~/.Unvanquished/main/vms-*.pk3</path>
+                    <path>${home_mainDir}/vms-*.pk3</path>
                     <ruleList>
                         <platformTest>
                             <type>linux</type>
-                        </platformTest>
-                    </ruleList>
-                </deleteFile>
-                <deleteFile>
-                    <abortOnError>0</abortOnError>
-                    <path>%APPDATA%\main\vms-*.pk3</path>
-                    <ruleList>
-                        <platformTest>
-                            <type>windows</type>
-                        </platformTest>
-                    </ruleList>
-                </deleteFile>
-                <deleteFile>
-                    <abortOnError>0</abortOnError>
-                    <path>~/Library/Application Support/Unvanquished/main/vms-*.pk3</path>
-                    <ruleList>
-                        <platformTest>
-                            <type>osx</type>
                         </platformTest>
                     </ruleList>
                 </deleteFile>
@@ -815,18 +805,50 @@ Old VMS files may cause crashes or prevent Unvanquished from starting. It is hig
                             <name>mainDir</name>
                             <value>${installdir}/Unvanquished.app/Contents/Resources/Unvanquished/main/</value>
                         </setInstallerVariable>
+                        <setInstallerVariable>
+                            <name>home_mainDir</name>
+                            <value>~/Library/Application\ Support/Unvanquished/main/</value>
+                        </setInstallerVariable>
                     </actionList>
                     <conditionRuleList>
                         <platformTest>
                             <type>osx</type>
                         </platformTest>
                     </conditionRuleList>
-                    <elseActionList>
+                </if>
+                <if>
+                    <actionList>
                         <setInstallerVariable>
                             <name>mainDir</name>
                             <value>${installdir}/main/</value>
                         </setInstallerVariable>
-                    </elseActionList>
+                        <setInstallerVariable>
+                            <name>home_mainDir</name>
+                            <value>%APPDATA%/Daemon/main</value>
+                        </setInstallerVariable>
+                    </actionList>
+                    <conditionRuleList>
+                        <platformTest>
+                            <type>windows</type>
+                        </platformTest>
+                    </conditionRuleList>
+                </if>
+                <if>
+                    <actionList>
+                        <setInstallerVariable>
+                            <name>mainDir</name>
+                            <value>${installdir}/main/</value>
+                        </setInstallerVariable>
+                        <setInstallerVariable>
+                            <name>home_mainDir</name>
+                            <value>~/Unvanquished/main</value>
+                        </setInstallerVariable>
+                    </actionList>
+                    <conditionRuleList>
+                        <platformTest>
+                            <type>linux</type>
+                        </platformTest>
+                    </conditionRuleList>
                 </if>
             </postShowPageActionList>
             <preShowPageActionList>
