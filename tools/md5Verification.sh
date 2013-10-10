@@ -7,7 +7,7 @@ while IFS=" *" read assetMD5 assetName; do
 	if [[ ${MD5Output[0]} != $assetMD5 && ${MD5Output[@]} != *'No such file or directory'  ]]; then
 		badAssets+=($assetName);
 	fi;
-done < md5sums0.19;
+done < md5sums0.20;
 
 for asset in "${badAssets[@]}"; do
 	echo "$asset";
