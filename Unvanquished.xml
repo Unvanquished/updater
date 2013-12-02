@@ -1,7 +1,7 @@
 <project>
     <shortName>Unvanquished</shortName>
     <fullName>Unvanquished</fullName>
-    <version>0.21</version>
+    <version>0.22</version>
     <debugLevel>4</debugLevel>
     <readmeFile>README</readmeFile>
     <licenseFile>GPL.txt</licenseFile>
@@ -159,6 +159,58 @@
                             <origin>unvanquished.ico</origin>
                         </distributionFile>
                     </distributionFileList>
+                    <shouldPackRuleList>
+                        <fileExists>
+                            <negate>1</negate>
+                            <path>/tmp/64</path>
+                        </fileExists>
+                    </shouldPackRuleList>
+                </folder>
+                <folder>
+                    <description>Daemon Engine</description>
+                    <destination>${installdir}</destination>
+                    <name>core_win64</name>
+                    <platforms>windows</platforms>
+                    <actionList>
+                        <registrySet>
+                            <key>HKEY_CLASSES_ROOT\unv</key>
+                            <name></name>
+                            <type>REG_SZ</type>
+                            <value>URL: Unvanquished Protocol</value>
+                        </registrySet>
+                        <registrySet>
+                            <key>HKEY_CLASSES_ROOT\unv\DefaultIcon</key>
+                            <name></name>
+                            <type>REG_SZ</type>
+                            <value>${installdir}/Daemon.exe,1</value>
+                        </registrySet>
+                        <registrySet>
+                            <key>HKEY_CLASSES_ROOT\unv</key>
+                            <name>URL Protocol</name>
+                            <type>REG_SZ</type>
+                            <value></value>
+                        </registrySet>
+                        <registrySet>
+                            <key>HKEY_CLASSES_ROOT\unv\shell\open\command</key>
+                            <name></name>
+                            <type>REG_SZ</type>
+                            <value>"${installdir}/Daemon.exe" +set fs_basepath "${installdir}" +connect "%1"</value>
+                        </registrySet>
+                    </actionList>
+                    <distributionFileList>
+                        <distributionFile>
+                            <allowWildcards>1</allowWildcards>
+                            <origin>tmp/win64/*</origin>
+                        </distributionFile>
+                        <distributionFile>
+                            <origin>unvanquished.ico</origin>
+                        </distributionFile>
+                    </distributionFileList>
+                    <shouldPackRuleList>
+                        <fileExists>
+                            <path>/tmp/64</path>
+                        </fileExists>
+                    </shouldPackRuleList>
                 </folder>
                 <folder>
                     <description>Daemon Engine</description>
