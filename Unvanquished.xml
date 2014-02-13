@@ -1,7 +1,7 @@
 <project>
     <shortName>Unvanquished</shortName>
     <fullName>Unvanquished</fullName>
-    <version>0.22.1</version>
+    <version>0.24.0</version>
     <debugLevel>4</debugLevel>
     <readmeFile>README</readmeFile>
     <licenseFile>GPL.txt</licenseFile>
@@ -363,9 +363,6 @@ These are the game assets such as models, textures, sounds, and maps that are re
                             <name>mainDir</name>
                             <platforms>all</platforms>
                             <distributionFileList>
-                                <distributionFile>
-                                    <origin>tmp/vms-${project.version}.pk3</origin>
-                                </distributionFile>
                                 <distributionFile>
                                     <origin>tmp/md5sums${project.version}</origin>
                                 </distributionFile>
@@ -756,32 +753,6 @@ Would you like to redownload these assets?
                 </while>
             </actionList>
         </actionGroup>
-        <showQuestion>
-            <default>yes</default>
-            <explanation>Old vms load old data and may potentially lead to crashes.</explanation>
-            <text>Delete old VMS files?
-
-Old VMS files may cause crashes or prevent Unvanquished from starting. It is highly recommended that you delete these files.</text>
-            <variable>deleteoldvms</variable>
-        </showQuestion>
-        <if>
-            <actionList>
-                <deleteFile>
-                    <abortOnError>0</abortOnError>
-                    <breakpoint>1</breakpoint>
-                    <path>${home_mainDir}/vms-*.pk3</path>
-                </deleteFile>
-                <deleteFile>
-                    <excludeFiles>*${project.version}*</excludeFiles>
-                    <path>${mainDir}/vms-*.pk3</path>
-                </deleteFile>
-            </actionList>
-            <conditionRuleList>
-                <isTrue>
-                    <value>${deleteoldvms}</value>
-                </isTrue>
-            </conditionRuleList>
-        </if>
         <if>
             <explanation>Set executable bit of binaries in OS X</explanation>
             <actionList>
@@ -851,11 +822,11 @@ Old VMS files may cause crashes or prevent Unvanquished from starting. It is hig
                     <actionList>
                         <setInstallerVariable>
                             <name>mainDir</name>
-                            <value>${installdir}/Unvanquished.app/Contents/Resources/Unvanquished/main/</value>
+                            <value>${installdir}/Unvanquished.app/Contents/Resources/Unvanquished/pkg/</value>
                         </setInstallerVariable>
                         <setInstallerVariable>
                             <name>home_mainDir</name>
-                            <value>~/Library/Application\ Support/Unvanquished/main/</value>
+                            <value>~/Library/Application\ Support/Unvanquished/pkg/</value>
                         </setInstallerVariable>
                     </actionList>
                     <conditionRuleList>
@@ -868,11 +839,11 @@ Old VMS files may cause crashes or prevent Unvanquished from starting. It is hig
                     <actionList>
                         <setInstallerVariable>
                             <name>mainDir</name>
-                            <value>${installdir}/main/</value>
+                            <value>${installdir}/pkg/</value>
                         </setInstallerVariable>
                         <setInstallerVariable>
                             <name>home_mainDir</name>
-                            <value>${env(APPDATA)}/Daemon/main/</value>
+                            <value>${env(APPDATA)}/Daemon/pkg/</value>
                         </setInstallerVariable>
                     </actionList>
                     <conditionRuleList>
@@ -885,11 +856,11 @@ Old VMS files may cause crashes or prevent Unvanquished from starting. It is hig
                     <actionList>
                         <setInstallerVariable>
                             <name>mainDir</name>
-                            <value>${installdir}/main/</value>
+                            <value>${installdir}/pkg/</value>
                         </setInstallerVariable>
                         <setInstallerVariable>
                             <name>home_mainDir</name>
-                            <value>~/Unvanquished/main</value>
+                            <value>~/.unvanquished/pkg</value>
                         </setInstallerVariable>
                     </actionList>
                     <conditionRuleList>
