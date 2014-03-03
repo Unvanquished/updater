@@ -1,7 +1,7 @@
 <project>
     <shortName>Unvanquished</shortName>
     <fullName>Unvanquished</fullName>
-    <version>0.24.1</version>
+    <version>0.25.0</version>
     <debugLevel>4</debugLevel>
     <readmeFile>README</readmeFile>
     <licenseFile>GPL.txt</licenseFile>
