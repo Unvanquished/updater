@@ -25,14 +25,13 @@ void MainWindow::startUpdate(void)
     worker->addUri("http://cdn.unvanquished.net/current.torrent");
     worker->moveToThread(&thread);
     connect(&thread, SIGNAL(finished()), worker, SLOT(deleteLater()));
-    connect(this, SIGNAL(operate()), worker, SLOT(download()));
     connect(worker, SIGNAL(onDownloadEvent(int)), this, SLOT(onDownloadEvent(int)));
     connect(worker, SIGNAL(downloadSpeedChanged(int)), this, SLOT(setDownloadSpeed(int)));
     connect(worker, SIGNAL(uploadSpeedChanged(int)), this, SLOT(setUploadSpeed(int)));
     connect(worker, SIGNAL(totalSizeChanged(int)), this, SLOT(setTotalSize(int)));
     connect(worker, SIGNAL(completedSizeChanged(int)), this, SLOT(setCompletedSize(int)));
+    connect(&thread, SIGNAL(started()), worker, SLOT(download()));
     thread.start();
-    emit operate();
 }
 
 void MainWindow::setDownloadSpeed(int speed)
@@ -57,22 +56,25 @@ void MainWindow::setCompletedSize(int size)
 
 void MainWindow::onDownloadEvent(int event)
 {
+    if (event == aria2::EVENT_ON_DOWNLOAD_START) {
+        ui->textBrowser->append("Download started\n");
+        return;
+    }
     if (event == aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE) {
         ui->textBrowser->append("yay\n");
+        thread.quit();
+        thread.wait();
     }
-
-    thread.quit();
-    thread.wait();
 }
 
 QString MainWindow::sizeToString(int size)
 {
-    static QString sizes[] = { "KiB", "MiB", "GiB" };
+    static QString sizes[] = { "Bytes", "KiB", "MiB", "GiB" };
+    const int num_sizes = 4;
     int i = 0;
-    while (size > 1024) {
-        size %= 1024;
-        i++;
+    while (size > 1024 && i++ < 4) {
+        size /= 1024;
     }
 
-    return QString::number(size) + " " + sizes[i];
+    return QString::number(size) + " " + sizes[std::min(i, num_sizes - 1)];
 }

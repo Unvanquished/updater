@@ -17,9 +17,6 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-signals:
-    void operate();
-
 public slots:
     void setDownloadSpeed(int speed);
     void setUploadSpeed(int speed);
