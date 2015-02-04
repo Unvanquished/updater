@@ -29,5 +29,5 @@ set(updater_FORMS mainwindow.ui)
 QT5_WRAP_UI(updater_FORMS_HEADERS ${updater_FORMS})
 
 add_executable(updater ${updater_SOURCES} ${updater_HEADERS} ${updater_FORMS_HEADERS})
-target_link_libraries(updater Qt5::Widgets ${CMAKE_SOURCE_DIR}/aria2/src/.libs/libaria2.so.0.0.0)
+target_link_libraries(updater Qt5::Widgets ${CMAKE_SOURCE_DIR}/aria2/src/.libs/libaria2.a -lz)
 set_property(TARGET updater PROPERTY CXX_STANDARD 11)
