@@ -1,14 +1,13 @@
 cmake_minimum_required( VERSION 3.1 )
 project(updater)
 
+# Find the QtWidgets library
+find_package(Qt5Widgets)
+
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # Instruct CMake to run moc automatically when needed.
 set(CMAKE_AUTOMOC ON)
-
-
-# Find the QtWidgets library
-find_package(Qt5Widgets)
 
 # Executables fail to build with Qt 5 in the default configuration
 # without -fPIE. We add that here.
@@ -25,6 +24,10 @@ set(updater_HEADERS
   downloadworker.h
   mainwindow.h)
 
-add_executable(updater ${updater_SOURCES} ${updater_HEADERS})
+set(updater_FORMS mainwindow.ui)
+
+QT5_WRAP_UI(updater_FORMS_HEADERS ${updater_FORMS})
+
+add_executable(updater ${updater_SOURCES} ${updater_HEADERS} ${updater_FORMS_HEADERS})
 target_link_libraries(updater Qt5::Widgets ${CMAKE_SOURCE_DIR}/aria2/src/.libs/libaria2.so.0.0.0)
 set_property(TARGET updater PROPERTY CXX_STANDARD 11)
