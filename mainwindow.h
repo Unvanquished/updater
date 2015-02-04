@@ -29,6 +29,8 @@ private:
     QString sizeToString(int size);
 
     Ui::MainWindow *ui;
+    int totalSize;
+    bool updateStarted;
 };
 
 #endif // MAINWINDOW_H

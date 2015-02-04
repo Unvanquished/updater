@@ -6,7 +6,9 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    totalSize(0),
+    updateStarted(false)
 {
     ui->setupUi(this);
     ui->progressBar->setValue(0);
@@ -20,6 +22,11 @@ MainWindow::~MainWindow()
 
 void MainWindow::startUpdate(void)
 {
+    if (!updateStarted) {
+        updateStarted = true;
+    } else {
+        return;
+    }
     ui->textBrowser->append("Starting update\n");
     DownloadWorker* worker = new DownloadWorker();
     worker->addUri("http://cdn.unvanquished.net/current.torrent");
@@ -36,22 +43,24 @@ void MainWindow::startUpdate(void)
 
 void MainWindow::setDownloadSpeed(int speed)
 {
-    ui->downloadSpeed->setText(sizeToString(speed) + "/sec");
+    ui->downloadSpeed->setText(sizeToString(speed) + "/s");
 }
 
 void MainWindow::setUploadSpeed(int speed)
 {
-    ui->uploadSpeed->setText(sizeToString(speed) + "/sec");
+    ui->uploadSpeed->setText(sizeToString(speed) + "/s");
 }
 
 void MainWindow::setTotalSize(int size)
 {
     ui->totalSize->setText(sizeToString(size));
+    totalSize = size;
 }
 
 void MainWindow::setCompletedSize(int size)
 {
     ui->completedSize->setText(sizeToString(size));
+    ui->progressBar->setValue((static_cast<float>(size) / totalSize) * 100);
 }
 
 void MainWindow::onDownloadEvent(int event)
