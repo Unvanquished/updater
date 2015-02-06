@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->progressBar->setValue(0);
     connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startUpdate()));
+    connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
 }
 
 MainWindow::~MainWindow()
