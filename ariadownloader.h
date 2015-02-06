@@ -2,7 +2,7 @@
 #define ARIADOWNLOADER_H
 
 #include "aria2/src/includes/aria2/aria2.h"
-
+#include <list>
 
 class AriaDownloader
 {
@@ -17,6 +17,7 @@ public:
 
     bool addUri(const std::string& uri);
     bool run(void);
+    void toggleDownloads(void);
     void registerCallback(DownloadCallback* callback_);
     void unregisterCallback(DownloadCallback* callback_);
     DownloadCallback* callback(void);
@@ -29,6 +30,7 @@ public:
 private:
     aria2::Session* session;
     DownloadCallback* callback_;
+    std::list<aria2::A2Gid> pausedGids_;
     int downloadSpeed_;
     int uploadSpeed_;
     int completedSize_;

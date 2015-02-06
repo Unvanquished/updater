@@ -15,6 +15,7 @@ AriaDownloader::AriaDownloader() : callback_(nullptr)
     aria2::libraryInit();
     aria2::SessionConfig config;
     config.keepRunning = true;
+    config.useSignalHandler = false;
     config.userData = this;
     config.downloadEventCallback = downloadEventCallback;
     aria2::KeyVals options;
@@ -39,6 +40,22 @@ bool AriaDownloader::run(void)
 {
     int ret = aria2::run(session, aria2::RUN_ONCE);
     return ret == 1;
+}
+
+void AriaDownloader::toggleDownloads(void)
+{
+    if (pausedGids_.empty()) {
+        auto gids = aria2::getActiveDownload(session);
+        for (aria2::A2Gid gid : gids) {
+            aria2::pauseDownload(session, gid, true);
+            pausedGids_.push_back(gid);
+        }
+    } else {
+        while (!pausedGids_.empty()) {
+            aria2::unpauseDownload(session, pausedGids_.front());
+            pausedGids_.pop_front();
+        }
+    }
 }
 
 void AriaDownloader::registerCallback(DownloadCallback* callback)

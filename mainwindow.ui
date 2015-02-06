@@ -27,7 +27,7 @@
    <widget class="QPushButton" name="updateButton">
     <property name="geometry">
      <rect>
-      <x>160</x>
+      <x>110</x>
       <y>200</y>
       <width>80</width>
       <height>22</height>
@@ -120,6 +120,11 @@
       <height>14</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel {
+	qproperty-alignment: AlignRight;
+}</string>
+    </property>
     <property name="text">
      <string/>
     </property>
@@ -146,8 +151,27 @@
       <height>14</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">QLabel { qproperty-alignment: AlignLeft; }</string>
+    </property>
     <property name="text">
      <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="toggleButton">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>210</x>
+      <y>200</y>
+      <width>81</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pause</string>
     </property>
    </widget>
   </widget>

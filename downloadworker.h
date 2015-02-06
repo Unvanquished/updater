@@ -12,6 +12,7 @@ public:
     ~DownloadWorker();
     void onDownloadCallback(int event);
     void addUri(const std::string& uri);
+    void toggle(void);
 
 public slots:
     void download(void);
@@ -25,6 +26,7 @@ signals:
 
 private:
     AriaDownloader downloader;
+    bool paused;
     int downloadSpeed;
     int uploadSpeed;
     int totalSize;

@@ -2,7 +2,7 @@
 #include "downloadworker.h"
 
 DownloadWorker::DownloadWorker(QObject *parent) : QObject(parent), downloadSpeed(0), uploadSpeed(0),
-    totalSize(0), completedSize(0)
+    totalSize(0), completedSize(0), paused(true)
 {
     downloader.registerCallback(this);
 }
@@ -25,6 +25,7 @@ void DownloadWorker::onDownloadCallback(int event)
 void DownloadWorker::download(void)
 {
     auto start = std::chrono::steady_clock::now();
+    paused = false;
     while (downloader.run()) {
         auto now = std::chrono::steady_clock::now();
         auto count = std::chrono::duration_cast<std::chrono::milliseconds>(now - start).count();
@@ -51,4 +52,9 @@ void DownloadWorker::download(void)
             }
         }
     }
+}
+
+void DownloadWorker::toggle(void)
+{
+    downloader.toggleDownloads();
 }

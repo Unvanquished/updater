@@ -8,7 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     totalSize(0),
-    updateStarted(false)
+    paused(false)
 {
     ui->setupUi(this);
     ui->progressBar->setValue(0);
@@ -22,13 +22,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::startUpdate(void)
 {
-    if (!updateStarted) {
-        updateStarted = true;
-    } else {
-        return;
-    }
     ui->textBrowser->append("Starting update\n");
-    DownloadWorker* worker = new DownloadWorker();
+    ui->toggleButton->setEnabled(true);
+    ui->updateButton->setEnabled(false);
+    worker = new DownloadWorker();
     worker->addUri("http://cdn.unvanquished.net/current.torrent");
     worker->moveToThread(&thread);
     connect(&thread, SIGNAL(finished()), worker, SLOT(deleteLater()));
@@ -38,8 +35,21 @@ void MainWindow::startUpdate(void)
     connect(worker, SIGNAL(totalSizeChanged(int)), this, SLOT(setTotalSize(int)));
     connect(worker, SIGNAL(completedSizeChanged(int)), this, SLOT(setCompletedSize(int)));
     connect(&thread, SIGNAL(started()), worker, SLOT(download()));
+    connect(ui->toggleButton, SIGNAL(clicked()), this, SLOT(toggleDownload()));
     thread.start();
 }
+
+void MainWindow::toggleDownload(void)
+{
+    worker->toggle();
+    paused = !paused;
+    if (paused) {
+        ui->toggleButton->setText("Resume");
+    } else {
+        ui->toggleButton->setText("Pause");
+    }
+}
+
 
 void MainWindow::setDownloadSpeed(int speed)
 {
@@ -65,14 +75,32 @@ void MainWindow::setCompletedSize(int size)
 
 void MainWindow::onDownloadEvent(int event)
 {
-    if (event == aria2::EVENT_ON_DOWNLOAD_START) {
-        ui->textBrowser->append("Download started\n");
-        return;
-    }
-    if (event == aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE) {
-        ui->textBrowser->append("yay\n");
-        thread.quit();
-        thread.wait();
+    switch (event) {
+        case aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE:
+            ui->textBrowser->append("yay\n");
+            thread.quit();
+            thread.wait();
+            break;
+
+        case aria2::EVENT_ON_DOWNLOAD_COMPLETE:
+            ui->textBrowser->append("Torrent downloaded\n");
+            break;
+
+        case aria2::EVENT_ON_DOWNLOAD_ERROR:
+            ui->textBrowser->append("Error received while downloading\n");
+            break;
+
+        case aria2::EVENT_ON_DOWNLOAD_PAUSE:
+            ui->textBrowser->append("Download paused\n");
+            break;
+
+        case aria2::EVENT_ON_DOWNLOAD_START:
+            ui->textBrowser->append("Download started\n");
+            break;
+
+        case aria2::EVENT_ON_DOWNLOAD_STOP:
+            ui->textBrowser->append("Download stopped\n");
+            break;
     }
 }
 
