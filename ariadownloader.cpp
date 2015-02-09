@@ -112,3 +112,7 @@ int AriaDownloader::totalSize(void)
     return totalSize_;
 }
 
+void AriaDownloader::setDownloadDirectory(const std::string& dir)
+{
+    aria2::changeGlobalOption(session, { std::pair<std::string, std::string>("dir", dir) });
+}

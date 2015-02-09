@@ -3,6 +3,8 @@
 #include "downloadworker.h"
 #include "aria2/src/includes/aria2/aria2.h"
 
+#include <QDir>
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -23,10 +25,17 @@ MainWindow::~MainWindow()
 
 void MainWindow::startUpdate(void)
 {
-    ui->textBrowser->append("Starting update\n");
+    ui->textBrowser->append("Starting update");
     ui->toggleButton->setEnabled(true);
     ui->updateButton->setEnabled(false);
+    QFile oldTorrent(QDir::temp().filePath("current.torrent"));
+    if (oldTorrent.exists()) {
+        ui->textBrowser->append("Removing old torrent");
+        oldTorrent.remove();
+    }
+    oldTorrent.close();
     worker = new DownloadWorker();
+    worker->setDownloadDirectory(QDir::tempPath().toStdString());
     worker->addUri("http://cdn.unvanquished.net/current.torrent");
     worker->moveToThread(&thread);
     connect(&thread, SIGNAL(finished()), worker, SLOT(deleteLater()));
@@ -78,29 +87,29 @@ void MainWindow::onDownloadEvent(int event)
 {
     switch (event) {
         case aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE:
-            ui->textBrowser->append("yay\n");
+            ui->textBrowser->append("yay");
             thread.quit();
             thread.wait();
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_COMPLETE:
-            ui->textBrowser->append("Torrent downloaded\n");
+            ui->textBrowser->append("Torrent downloaded");
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_ERROR:
-            ui->textBrowser->append("Error received while downloading\n");
+            ui->textBrowser->append("Error received while downloading");
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_PAUSE:
-            ui->textBrowser->append("Download paused\n");
+            ui->textBrowser->append("Download paused");
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_START:
-            ui->textBrowser->append("Download started\n");
+            ui->textBrowser->append("Download started");
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_STOP:
-            ui->textBrowser->append("Download stopped\n");
+            ui->textBrowser->append("Download stopped");
             break;
     }
 }

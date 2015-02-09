@@ -28,9 +28,9 @@ void DownloadWorker::download(void)
     paused = false;
     while (downloader.run()) {
         auto now = std::chrono::steady_clock::now();
-        auto count = std::chrono::duration_cast<std::chrono::milliseconds>(now - start).count();
+
         // Print progress information once per 500ms
-        if(count >= 500) {
+        if(now - start > std::chrono::milliseconds(500)) {
             start = now;
             downloader.updateStats();
 
@@ -57,4 +57,9 @@ void DownloadWorker::download(void)
 void DownloadWorker::toggle(void)
 {
     downloader.toggleDownloads();
+}
+
+void DownloadWorker::setDownloadDirectory(const std::string& dir)
+{
+    downloader.setDownloadDirectory(dir);
 }

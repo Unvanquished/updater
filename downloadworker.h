@@ -12,6 +12,7 @@ public:
     ~DownloadWorker();
     void onDownloadCallback(int event);
     void addUri(const std::string& uri);
+    void setDownloadDirectory(const std::string& dir);
     void toggle(void);
 
 public slots:

@@ -18,6 +18,7 @@ public:
     bool addUri(const std::string& uri);
     bool run(void);
     void toggleDownloads(void);
+    void setDownloadDirectory(const std::string& dir);
     void registerCallback(DownloadCallback* callback_);
     void unregisterCallback(DownloadCallback* callback_);
     DownloadCallback* callback(void);
