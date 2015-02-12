@@ -35,14 +35,16 @@ void MainWindow::startUpdate(void)
 {
     ui->textBrowser->append("Starting update");
     QString installDir = settings.value("settings/installPath").toString();
-    if (!QDir(installDir).exists()) {
+    QDir dir(installDir);
+    if (!dir.exists()) {
         ui->textBrowser->append("Install dir does not exist. Please select another");
         return;
     }
+    ui->textBrowser->append("Installing to " + dir.dirName()); 
     ui->toggleButton->setEnabled(true);
     ui->updateButton->setEnabled(false);
     worker = new DownloadWorker();
-    worker->setDownloadDirectory(QDir::tempPath().toStdString());
+    worker->setDownloadDirectory(dir.dirName().toStdString());
     worker->addUri("http://cdn.unvanquished.net/current.torrent");
     worker->moveToThread(&thread);
     connect(&thread, SIGNAL(finished()), worker, SLOT(deleteLater()));
@@ -95,8 +97,6 @@ void MainWindow::onDownloadEvent(int event)
     switch (event) {
         case aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE:
             ui->textBrowser->append("yay");
-            thread.quit();
-            thread.wait();
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_COMPLETE:
