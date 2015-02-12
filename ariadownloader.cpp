@@ -5,7 +5,7 @@ int downloadEventCallback(aria2::Session* session, aria2::DownloadEvent event,
 {
     AriaDownloader* downloader = static_cast<AriaDownloader*>(userData);
     if (downloader->callback()) {
-        downloader->callback()->onDownloadCallback(event);
+        downloader->callback()->onDownloadCallback(session, event, gid, userData);
     }
     return 1;
 }
@@ -19,8 +19,10 @@ AriaDownloader::AriaDownloader() : callback_(nullptr)
     config.userData = this;
     config.downloadEventCallback = downloadEventCallback;
     aria2::KeyVals options;
-    options.push_back(std::pair<std::string, std::string>("check-integrity", "true"));
-    options.push_back(std::pair<std::string, std::string>("seed-time", "0"));
+    options.push_back({ "check-integrity", "true" });
+    options.push_back({ "seed-time", "0" });
+    options.push_back({ "file-allocation", "none" });
+    options.push_back({ "follow-torrent", "mem" });
     session = aria2::sessionNew(options, config);
 }
 
@@ -114,5 +116,5 @@ int AriaDownloader::totalSize(void)
 
 void AriaDownloader::setDownloadDirectory(const std::string& dir)
 {
-    aria2::changeGlobalOption(session, { std::pair<std::string, std::string>("dir", dir) });
+    aria2::changeGlobalOption(session, {{ "dir", dir }});
 }

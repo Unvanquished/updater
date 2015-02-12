@@ -186,8 +186,9 @@
    </property>
    <widget class="QMenu" name="menuUnvanquished_Launcher">
     <property name="title">
-     <string>Menu</string>
+     <string>Me&amp;nu</string>
     </property>
+    <addaction name="actionSettings"/>
     <addaction name="actionQuit"/>
    </widget>
    <addaction name="menuUnvanquished_Launcher"/>
@@ -203,10 +204,15 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="actionQuit">
    <property name="text">
-    <string>Quit</string>
+    <string>&amp;Quit</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionSettings">
+   <property name="text">
+    <string>Settings</string>
    </property>
   </action>
  </widget>

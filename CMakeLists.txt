@@ -17,14 +17,16 @@ set(updater_SOURCES
   ariadownloader.cpp
   downloadworker.cpp
   main.cpp
+  settingsdialog.cpp
   mainwindow.cpp)
 
 set(updater_HEADERS
   ariadownloader.h
   downloadworker.h
+  settingsdialog.h
   mainwindow.h)
 
-set(updater_FORMS mainwindow.ui)
+set(updater_FORMS mainwindow.ui settingsdialog.ui)
 
 QT5_WRAP_UI(updater_FORMS_HEADERS ${updater_FORMS})
 

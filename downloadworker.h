@@ -10,7 +10,8 @@ class DownloadWorker : public QObject, public AriaDownloader::DownloadCallback
 public:
     explicit DownloadWorker(QObject *parent = 0);
     ~DownloadWorker();
-    void onDownloadCallback(int event);
+    void onDownloadCallback(aria2::Session* session, aria2::DownloadEvent event,
+                            aria2::A2Gid gid, void* userDataevent);
     void addUri(const std::string& uri);
     void setDownloadDirectory(const std::string& dir);
     void toggle(void);
@@ -26,7 +27,16 @@ signals:
     void onDownloadEvent(int event);
 
 private:
+    void setDownloadPathAndFiles(aria2::Session* session, aria2::A2Gid gid);
+    std::string getAriaIndexOut(size_t index, std::string path);
+
+    enum State {
+        IDLE,
+        DOWNLOADING_TORRENT,
+        DOWNLOADING_UNVANQUISHED
+    };
     AriaDownloader downloader;
+    State state;
     bool paused;
     int downloadSpeed;
     int uploadSpeed;

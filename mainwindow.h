@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QSettings>
 #include <QThread>
 
 namespace Ui {
@@ -25,14 +26,18 @@ public slots:
     void setTotalSize(int size);
     void setCompletedSize(int size);
     void onDownloadEvent(int event);
-    void startUpdate(void);
     void toggleDownload(void);
+
+private slots:
+    void startUpdate(void);
+    void openSettings(void);
 
 private:
     QString sizeToString(int size);
 
     Ui::MainWindow *ui;
     DownloadWorker *worker;
+    QSettings settings;
     int totalSize;
     bool paused;
 };

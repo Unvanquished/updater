@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "downloadworker.h"
+#include "settingsdialog.h"
 #include "aria2/src/includes/aria2/aria2.h"
 
 #include <QDir>
@@ -16,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->progressBar->setValue(0);
     connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startUpdate()));
     connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
+    connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(openSettings()));
 }
 
 MainWindow::~MainWindow()
@@ -23,17 +25,22 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::openSettings(void)
+{
+    SettingsDialog dialog(this);
+    dialog.exec();
+}
+
 void MainWindow::startUpdate(void)
 {
     ui->textBrowser->append("Starting update");
+    QString installDir = settings.value("settings/installPath").toString();
+    if (!QDir(installDir).exists()) {
+        ui->textBrowser->append("Install dir does not exist. Please select another");
+        return;
+    }
     ui->toggleButton->setEnabled(true);
     ui->updateButton->setEnabled(false);
-    QFile oldTorrent(QDir::temp().filePath("current.torrent"));
-    if (oldTorrent.exists()) {
-        ui->textBrowser->append("Removing old torrent");
-        oldTorrent.remove();
-    }
-    oldTorrent.close();
     worker = new DownloadWorker();
     worker->setDownloadDirectory(QDir::tempPath().toStdString());
     worker->addUri("http://cdn.unvanquished.net/current.torrent");

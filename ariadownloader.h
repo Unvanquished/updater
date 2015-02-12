@@ -12,7 +12,8 @@ public:
 
     class DownloadCallback {
     public:
-        virtual void onDownloadCallback(int event) = 0;
+        virtual void onDownloadCallback(aria2::Session* session, aria2::DownloadEvent event,
+                                        aria2::A2Gid gid, void* userData) = 0;
     };
 
     bool addUri(const std::string& uri);
