@@ -17,10 +17,13 @@ public:
 
 private slots:
     void saveSettings(void);
+    void openDirectorySelector(void);
+    void setInstallPath(void);
 
 private:
     Ui::Dialog *ui;
     QSettings settings;
+    QFileDialog fileDialog;
 };
 
 #endif
