@@ -40,11 +40,11 @@ void MainWindow::startUpdate(void)
         ui->textBrowser->append("Install dir does not exist. Please select another");
         return;
     }
-    ui->textBrowser->append("Installing to " + dir.dirName()); 
+    ui->textBrowser->append("Installing to " + dir.canonicalPath());
     ui->toggleButton->setEnabled(true);
     ui->updateButton->setEnabled(false);
     worker = new DownloadWorker();
-    worker->setDownloadDirectory(dir.dirName().toStdString());
+    worker->setDownloadDirectory(dir.canonicalPath().toStdString());
     worker->addUri("http://cdn.unvanquished.net/current.torrent");
     worker->moveToThread(&thread);
     connect(&thread, SIGNAL(finished()), worker, SLOT(deleteLater()));
