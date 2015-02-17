@@ -2,6 +2,7 @@
 #define DOWNLOADWORKER_H
 
 #include <QObject>
+#include <atomic>
 #include "ariadownloader.h"
 
 class DownloadWorker : public QObject, public AriaDownloader::DownloadCallback
@@ -15,6 +16,7 @@ public:
     void addUri(const std::string& uri);
     void setDownloadDirectory(const std::string& dir);
     void toggle(void);
+    void stop(void);
 
 public slots:
     void download(void);
@@ -38,6 +40,7 @@ private:
     AriaDownloader downloader;
     State state;
     bool paused;
+    std::atomic_bool running;
     int downloadSpeed;
     int uploadSpeed;
     int totalSize;

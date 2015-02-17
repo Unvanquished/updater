@@ -10,6 +10,7 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
+    worker(nullptr),
     totalSize(0),
     paused(false)
 {
@@ -24,6 +25,13 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+bool MainWindow::close(void)
+{
+    stopAria();
+    return QMainWindow::close();
+}
+
 
 void MainWindow::openSettings(void)
 {
@@ -96,7 +104,8 @@ void MainWindow::onDownloadEvent(int event)
 {
     switch (event) {
         case aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE:
-            ui->textBrowser->append("yay");
+            ui->textBrowser->append("Update downloaded.");
+            stopAria();
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_COMPLETE:
@@ -131,4 +140,13 @@ QString MainWindow::sizeToString(int size)
     }
 
     return QString::number(size) + " " + sizes[std::min(i, num_sizes - 1)];
+}
+
+void MainWindow::stopAria(void)
+{
+    if (worker) {
+        worker->stop();
+        thread.quit();
+        thread.wait();
+    }
 }

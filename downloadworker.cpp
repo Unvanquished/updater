@@ -3,7 +3,7 @@
 #include "downloadworker.h"
 
 DownloadWorker::DownloadWorker(QObject *parent) : QObject(parent), downloadSpeed(0), uploadSpeed(0),
-    totalSize(0), completedSize(0), paused(true), state(IDLE)
+    totalSize(0), completedSize(0), paused(true), state(IDLE), running(false)
 {
     downloader.registerCallback(this);
 }
@@ -80,8 +80,11 @@ std::string DownloadWorker::getAriaIndexOut(size_t index, std::string path)
 void DownloadWorker::download(void)
 {
     auto start = std::chrono::steady_clock::now();
+    bool ret = true;
     paused = false;
-    while (downloader.run()) {
+    running = true;
+    while (ret && running) {
+        ret = downloader.run();
         auto now = std::chrono::steady_clock::now();
 
         // Print progress information once per 500ms
@@ -118,3 +121,9 @@ void DownloadWorker::setDownloadDirectory(const std::string& dir)
 {
     downloader.setDownloadDirectory(dir);
 }
+
+void DownloadWorker::stop(void)
+{
+    running = false;
+}
+

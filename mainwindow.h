@@ -27,6 +27,7 @@ public slots:
     void setCompletedSize(int size);
     void onDownloadEvent(int event);
     void toggleDownload(void);
+    bool close(void);
 
 private slots:
     void startUpdate(void);
@@ -34,6 +35,7 @@ private slots:
 
 private:
     QString sizeToString(int size);
+    void stopAria(void);
 
     Ui::MainWindow *ui;
     DownloadWorker *worker;
