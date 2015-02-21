@@ -1,0 +1,8 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+    <file>fonts/Roboto-Regular.ttf</file>
+</qresource>
+<qresource prefix="/qt/etc">
+    <file>qt.conf</file>
+</qresource>
+</RCC>
