@@ -107,6 +107,11 @@ void MainWindow::onDownloadEvent(int event)
 {
     switch (event) {
         case aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE:
+            ui->toggleButton->setEnabled(false);
+            ui->updateButton->setEnabled(true);
+            ui->updateButton->setText("Quit");
+            disconnect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startUpdate()));
+            connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(close()));
             ui->textBrowser->append("Update downloaded.");
             stopAria();
             break;
