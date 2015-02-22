@@ -13,7 +13,8 @@ int main(int argc, char *argv[])
         font.setPointSize(10);
         a.setFont(font);
     }
-
+    a.setOrganizationName("Unvanquished Development");
+    a.setOrganizationDomain("unvanquished.net");
     w.setWindowTitle("Unvanquished Updater");
     w.show();
 
