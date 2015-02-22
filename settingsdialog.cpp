@@ -36,5 +36,3 @@ void SettingsDialog::setInstallPath(void)
         ui->installPath->setText(files[0]);
     }
 }
-
-

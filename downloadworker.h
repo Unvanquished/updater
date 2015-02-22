@@ -30,6 +30,7 @@ signals:
 
 private:
     void setDownloadPathAndFiles(aria2::Session* session, aria2::A2Gid gid);
+    void extractUpdate(void);
     std::string getAriaIndexOut(size_t index, std::string path);
 
     enum State {
@@ -38,6 +39,7 @@ private:
         DOWNLOADING_UNVANQUISHED
     };
     AriaDownloader downloader;
+    QString downloadDir;
     State state;
     bool paused;
     std::atomic_bool running;

@@ -1,6 +1,7 @@
 #include <chrono>
 #include <sstream>
 #include "downloadworker.h"
+#include "quazip/JlCompress.h"
 
 DownloadWorker::DownloadWorker(QObject *parent) : QObject(parent), downloadSpeed(0), uploadSpeed(0),
     totalSize(0), completedSize(0), paused(true), state(IDLE), running(false)
@@ -23,6 +24,7 @@ void DownloadWorker::onDownloadCallback(aria2::Session* session, aria2::Download
 {
     switch (event) {
         case aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE:
+            extractUpdate();
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_COMPLETE:
@@ -32,6 +34,9 @@ void DownloadWorker::onDownloadCallback(aria2::Session* session, aria2::Download
                 aria2::A2Gid torrentGid = handle->getFollowedBy()[0];
                 setDownloadPathAndFiles(session, torrentGid);
                 aria2::deleteDownloadHandle(handle);
+            } else {
+                event = aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE;
+                extractUpdate();
             }
             break;
 
@@ -119,6 +124,7 @@ void DownloadWorker::toggle(void)
 
 void DownloadWorker::setDownloadDirectory(const std::string& dir)
 {
+    downloadDir = dir.c_str();
     downloader.setDownloadDirectory(dir);
 }
 
@@ -127,3 +133,15 @@ void DownloadWorker::stop(void)
     running = false;
 }
 
+void DownloadWorker::extractUpdate(void)
+{
+    QString filename;
+#ifdef _WIN32
+    filename = "win32.zip";
+#elif defined(__linux__)
+    filename = "linux64.zip";
+#elif defined(__APPLE__)
+    filename = "mac.zip";
+#endif
+    JlCompress::extractDir(downloadDir + "/Unvanquished/win32.zip", downloadDir + "Unvanquished/");
+}
