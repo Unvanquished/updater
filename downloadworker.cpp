@@ -143,5 +143,5 @@ void DownloadWorker::extractUpdate(void)
 #elif defined(__APPLE__)
     filename = "mac.zip";
 #endif
-    JlCompress::extractDir(downloadDir + "/Unvanquished/win32.zip", downloadDir + "Unvanquished/");
+    JlCompress::extractDir(downloadDir + "/Unvanquished/" + filename, downloadDir + "/Unvanquished/");
 }
