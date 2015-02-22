@@ -19,6 +19,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startUpdate()));
     connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
     connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(openSettings()));
+    if (!settings.contains("settings/installPath")) {
+        openSettings();
+    }
 }
 
 MainWindow::~MainWindow()
