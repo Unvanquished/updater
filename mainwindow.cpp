@@ -112,6 +112,8 @@ void MainWindow::onDownloadEvent(int event)
             ui->updateButton->setText("Quit");
             disconnect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startUpdate()));
             connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(close()));
+            setCompletedSize(totalSize);
+            setDownloadSpeed(0);
             ui->textBrowser->append("Update downloaded.");
             stopAria();
             break;
