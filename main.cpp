@@ -2,6 +2,11 @@
 #include <QApplication>
 #include <QFontDatabase>
 
+#ifdef USE_STATIC
+#include <QtPlugin>
+Q_IMPORT_PLUGIN(QXcbIntegrationPlugin)
+#endif
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
