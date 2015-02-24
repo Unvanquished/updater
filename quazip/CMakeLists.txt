@@ -11,7 +11,7 @@ file(GLOB SRCS "*.c" "*.cpp")
 file(GLOB PUBLIC_HEADERS "*.h")
 
 # Must be added to enable export macro
-add_definitions(-DQUAZIP_BUILD -DQUAZIP_STATIC)
+add_definitions(-DQUAZIP_STATIC)
 
 set(SRCS ${SRCS} ${PUBLIC_HEADERS})
 

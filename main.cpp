@@ -4,8 +4,13 @@
 
 #ifdef USE_STATIC
 #include <QtPlugin>
+#ifdef _WIN32
+Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin)
+#elif defined(__linux__)
 Q_IMPORT_PLUGIN(QXcbIntegrationPlugin)
 #endif
+#endif
+
 
 int main(int argc, char *argv[])
 {

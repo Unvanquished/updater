@@ -20,6 +20,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
 # The Qt5Widgets_INCLUDES also includes the include directories for
 # dependencies QtCore and QtGui
 include_directories(${Qt5Widgets_INCLUDES})
+include_directories(${ZLIB_INCLUDE_DIR})
 
 # We need add -DQT_WIDGETS_LIB when using QtWidgets in Qt 5.
 add_definitions(${Qt5Widgets_DEFINITIONS})
@@ -31,7 +32,9 @@ if (USE_STATIC)
     # Qt5 hates CMake for static compiles
     set(OS_LIBS "-lpthread -lm -ldl -lrt")
     set(PLATFORM_LIBS "-L${QT_DIR}/plugins/platforms -lqxcb -lX11 -lX11-xcb -lXi -lSM -lICE -ldbus-1 -lxcb -L${QT_DIR}/lib -lxcb-static -lQt5PlatformSupport -lQt5DBus -lfontconfig -lfreetype -ludev")
-  endif() # UNIX
+  elseif (WIN32)
+    set(PLATFORM_LIBS "-L${QT_DIR}/plugins/platforms -lqwindows -lwinspool -lshlwapi -liphlpapi -L${QT_DIR}/lib -lQt5PlatformSupport -lgdi32 -lcomdlg32 -loleaut32 -limm32 -lwinmm -lqtharfbuzzng -lQt5Core -lole32 -luuid -lws2_32 -ladvapi32 -lshell32 -luser32 -lkernel32 -lmpr")
+  endif()
 else() #STATIC
   set(QT5_LIBS Qt5::Widgets)
 endif() #USE_STATIC
