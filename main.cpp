@@ -14,6 +14,9 @@ Q_IMPORT_PLUGIN(QXcbIntegrationPlugin)
 
 int main(int argc, char *argv[])
 {
+    QCoreApplication::setOrganizationName("Unvanquished Development");
+    QCoreApplication::setOrganizationDomain("unvanquished.net");
+    QCoreApplication::setApplicationName("Unvanquished Updater");
     QApplication a(argc, argv);
     MainWindow w;
 
@@ -23,8 +26,6 @@ int main(int argc, char *argv[])
         font.setPointSize(10);
         a.setFont(font);
     }
-    a.setOrganizationName("Unvanquished Development");
-    a.setOrganizationDomain("unvanquished.net");
     w.setWindowTitle("Unvanquished Updater");
     w.show();
 
