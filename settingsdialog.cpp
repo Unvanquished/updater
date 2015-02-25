@@ -1,6 +1,9 @@
 #include "settingsdialog.h"
 #include "ui_settingsdialog.h"
 
+#include <QDir>
+#include <QErrorMessage>
+
 SettingsDialog::SettingsDialog(QWidget* parent) :
     QDialog(parent),
     ui(new Ui::Dialog)
@@ -21,7 +24,16 @@ SettingsDialog::~SettingsDialog()
 
 void SettingsDialog::saveSettings(void)
 {
-    settings.setValue("settings/installPath", ui->installPath->text());
+    QDir dir(ui->installPath->text());
+    if (!dir.exists()) {
+        if (!dir.mkpath(dir.path())) {
+            QErrorMessage errorMessage;
+            errorMessage.showMessage(dir.canonicalPath() + " does not exist and could not be created");
+            errorMessage.exec();
+            return;
+        }
+    }
+    settings.setValue("settings/installPath", dir.canonicalPath());
 }
 
 void SettingsDialog::openDirectorySelector(void)
