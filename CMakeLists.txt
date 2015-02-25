@@ -57,7 +57,7 @@ set(updater_FORMS mainwindow.ui settingsdialog.ui)
 
 QT5_WRAP_UI(updater_FORMS_HEADERS ${updater_FORMS})
 QT5_ADD_RESOURCES(updater_RESOURCES_RCC resources.qrc)
-add_executable(updater ${updater_SOURCES} ${updater_HEADERS} ${updater_FORMS_HEADERS} ${updater_RESOURCES_RCC})
+add_executable(updater ${updater_SOURCES} ${updater_HEADERS} ${updater_FORMS_HEADERS} ${updater_RESOURCES_RCC} updater.rc)
 set_property(TARGET updater PROPERTY CXX_STANDARD 11)
 QT5_USE_MODULES(updater Widgets)
 target_link_libraries(updater ${CMAKE_SOURCE_DIR}/aria2/src/.libs/libaria2.a quazip ${ZLIB_LIBRARIES} ${QT5_LIBS} ${PLATFORM_LIBS} ${OS_LIBS})
