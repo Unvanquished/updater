@@ -8,6 +8,8 @@
 Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin)
 #elif defined(__linux__)
 Q_IMPORT_PLUGIN(QXcbIntegrationPlugin)
+#else
+Q_IMPORT_PLUGIN(QCocoaIntegrationPlugin)
 #endif
 #endif
 
