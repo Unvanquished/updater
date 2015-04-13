@@ -54,6 +54,11 @@ void MainWindow::startUpdate(void)
         ui->textBrowser->append("Install dir does not exist. Please select another");
         return;
     }
+
+    if (!QFileInfo(installDir).isWritable()) {
+        ui->textBrowser->append("Install dir not writable. Please select another");
+        return;
+    }
     ui->textBrowser->append("Installing to " + dir.canonicalPath());
     ui->toggleButton->setEnabled(true);
     ui->updateButton->setEnabled(false);
