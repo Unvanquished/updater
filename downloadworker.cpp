@@ -2,9 +2,10 @@
 #include <sstream>
 #include "downloadworker.h"
 #include "quazip/JlCompress.h"
+#include "system.h"
 
 DownloadWorker::DownloadWorker(QObject *parent) : QObject(parent), downloadSpeed(0), uploadSpeed(0),
-    totalSize(0), completedSize(0), paused(true), state(IDLE), running(false)
+totalSize(0), completedSize(0), paused(true), state(IDLE), running(false), regex(".*unvanquished_([0-9\\.]+/)")
 {
     downloader.registerCallback(this);
 }
@@ -74,10 +75,9 @@ std::string DownloadWorker::getAriaIndexOut(size_t index, std::string path)
 {
     // TODO: Unhack this function so that it doesn't break when people set the
     // install dir to a directory which contains unvanquished_
-    const std::string prefix = "unvanquished_";
-    auto pos = path.find(prefix);
-    std::string relativePath = path.substr(pos + prefix.size() + 7);
-    return std::to_string(index) + "=" + "Unvanquished/" + relativePath;
+    QString oldPath(path.c_str());
+    oldPath.replace(regex, "");
+    return std::to_string(index) + "=" + oldPath.toStdString();
 }
 
 
@@ -135,13 +135,6 @@ void DownloadWorker::stop(void)
 
 void DownloadWorker::extractUpdate(void)
 {
-    QString filename;
-#ifdef _WIN32
-    filename = "win32.zip";
-#elif defined(__linux__)
-    filename = "linux64.zip";
-#elif defined(__APPLE__)
-    filename = "mac.zip";
-#endif
+    QString filename = Sys::getArchiveName();
     JlCompress::extractDir(downloadDir + "/Unvanquished/" + filename, downloadDir + "/Unvanquished/");
 }

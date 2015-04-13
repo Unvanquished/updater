@@ -3,8 +3,10 @@
 #include "downloadworker.h"
 #include "settingsdialog.h"
 #include "aria2/src/includes/aria2/aria2.h"
+#include "system.h"
 
 #include <QDir>
+#include <QDebug>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -20,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
     connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(openSettings()));
     if (!settings.contains("settings/installPath")) {
+        settings.setValue("settings/installPath", Sys::getDefaultInstallPath());
         openSettings();
     }
 }

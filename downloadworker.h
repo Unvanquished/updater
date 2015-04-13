@@ -1,9 +1,10 @@
 #ifndef DOWNLOADWORKER_H
 #define DOWNLOADWORKER_H
 
-#include <QObject>
-#include <atomic>
 #include "ariadownloader.h"
+#include <atomic>
+#include <QObject>
+#include <QRegularExpression>
 
 class DownloadWorker : public QObject, public AriaDownloader::DownloadCallback
 {
@@ -38,6 +39,7 @@ private:
         DOWNLOADING_TORRENT,
         DOWNLOADING_UNVANQUISHED
     };
+    QRegularExpression regex;
     AriaDownloader downloader;
     QString downloadDir;
     State state;

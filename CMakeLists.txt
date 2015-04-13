@@ -42,12 +42,22 @@ else() #STATIC
   set(QT5_LIBS Qt5::Widgets)
 endif() #USE_STATIC
 
+if (APPLE)
+    set(os_SOURCES osx.cpp)
+elseif(UNIX)
+    set(os_SOURCES unix.cpp)
+elseif(WIN32)
+    set(os_SOURCES win.cpp)
+endif()
+
 set(updater_SOURCES
   ariadownloader.cpp
   downloadworker.cpp
   main.cpp
   settingsdialog.cpp
-  mainwindow.cpp)
+  mainwindow.cpp
+  ${os_SOURCES}
+)
 
 set(updater_HEADERS
   ariadownloader.h

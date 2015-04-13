@@ -2,7 +2,4 @@
 <qresource>
     <file>fonts/Roboto-Regular.ttf</file>
 </qresource>
-<qresource prefix="/qt/etc">
-    <file>qt.conf</file>
-</qresource>
 </RCC>
