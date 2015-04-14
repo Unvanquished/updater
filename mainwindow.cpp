@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
     worker(nullptr),
+    textBrowser(new QLabel(this)),
     totalSize(0),
     paused(false)
 {
@@ -27,6 +28,10 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     ui->horizontalWidget->hide();
     ui->horizontalWidget_2->hide();
+    connect(this, SIGNAL(close()), textBrowser, SIGNAL(deleteLater()));
+    ui->gridLayout->addWidget(textBrowser, 3, 0, 1, 1);
+
+
 }
 
 MainWindow::~MainWindow()
@@ -49,19 +54,19 @@ void MainWindow::openSettings(void)
 
 void MainWindow::startUpdate(void)
 {
-    ui->textBrowser->append("Starting update");
+    textBrowser->setText("Starting update");
     QString installDir = settings.value("settings/installPath").toString();
     QDir dir(installDir);
     if (!dir.exists()) {
-        ui->textBrowser->append("Install dir does not exist. Please select another");
+        textBrowser->setText("Install dir does not exist. Please select another");
         return;
     }
 
     if (!QFileInfo(installDir).isWritable()) {
-        ui->textBrowser->append("Install dir not writable. Please select another");
+        textBrowser->setText("Install dir not writable. Please select another");
         return;
     }
-    ui->textBrowser->append("Installing to " + dir.canonicalPath());
+    textBrowser->setText("Installing to " + dir.canonicalPath());
     ui->updateButton->setEnabled(false);
     worker = new DownloadWorker();
     worker->setDownloadDirectory(dir.canonicalPath().toStdString());
@@ -105,7 +110,7 @@ void MainWindow::setCompletedSize(int size)
     ui->completedSize->setText(sizeToString(size));
     ui->progressBar->setValue((static_cast<float>(size) / totalSize) * 100);
     ui->horizontalWidget->show();
-    ui->horizontalWidget_2->show();	
+    ui->horizontalWidget_2->show();
 }
 
 void MainWindow::onDownloadEvent(int event)
@@ -118,28 +123,28 @@ void MainWindow::onDownloadEvent(int event)
             connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(close()));
             setCompletedSize(totalSize);
             setDownloadSpeed(0);
-            ui->textBrowser->append("Update downloaded.");
+            textBrowser->setText("Update downloaded.");
             stopAria();
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_COMPLETE:
-            ui->textBrowser->append("Torrent downloaded");
+            textBrowser->setText("Torrent downloaded");
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_ERROR:
-            ui->textBrowser->append("Error received while downloading");
+            textBrowser->setText("Error received while downloading");
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_PAUSE:
-            ui->textBrowser->append("Download paused");
+            textBrowser->setText("Download paused");
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_START:
-            ui->textBrowser->append("Download started");
+            textBrowser->setText("Download started");
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_STOP:
-            ui->textBrowser->append("Download stopped");
+            textBrowser->setText("Download stopped");
             break;
     }
 }

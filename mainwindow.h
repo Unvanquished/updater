@@ -10,6 +10,7 @@ class MainWindow;
 }
 
 class DownloadWorker;
+class QLabel;
 
 class MainWindow : public QMainWindow
 {
@@ -40,6 +41,7 @@ private:
     Ui::MainWindow *ui;
     DownloadWorker *worker;
     QSettings settings;
+    QLabel *textBrowser;
     int totalSize;
     bool paused;
 };
