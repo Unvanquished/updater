@@ -25,6 +25,8 @@ MainWindow::MainWindow(QWidget *parent) :
         settings.setValue("settings/installPath", Sys::getDefaultInstallPath());
         openSettings();
     }
+    ui->horizontalWidget->hide();
+    ui->horizontalWidget_2->hide();
 }
 
 MainWindow::~MainWindow()
@@ -60,7 +62,6 @@ void MainWindow::startUpdate(void)
         return;
     }
     ui->textBrowser->append("Installing to " + dir.canonicalPath());
-    ui->toggleButton->setEnabled(true);
     ui->updateButton->setEnabled(false);
     worker = new DownloadWorker();
     worker->setDownloadDirectory(dir.canonicalPath().toStdString());
@@ -73,7 +74,6 @@ void MainWindow::startUpdate(void)
     connect(worker, SIGNAL(totalSizeChanged(int)), this, SLOT(setTotalSize(int)));
     connect(worker, SIGNAL(completedSizeChanged(int)), this, SLOT(setCompletedSize(int)));
     connect(&thread, SIGNAL(started()), worker, SLOT(download()));
-    connect(ui->toggleButton, SIGNAL(clicked()), this, SLOT(toggleDownload()));
     thread.start();
 }
 
@@ -81,11 +81,6 @@ void MainWindow::toggleDownload(void)
 {
     worker->toggle();
     paused = !paused;
-    if (paused) {
-        ui->toggleButton->setText("Resume");
-    } else {
-        ui->toggleButton->setText("Pause");
-    }
 }
 
 
@@ -109,15 +104,16 @@ void MainWindow::setCompletedSize(int size)
 {
     ui->completedSize->setText(sizeToString(size));
     ui->progressBar->setValue((static_cast<float>(size) / totalSize) * 100);
+    ui->horizontalWidget->show();
+    ui->horizontalWidget_2->show();	
 }
 
 void MainWindow::onDownloadEvent(int event)
 {
     switch (event) {
         case aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE:
-            ui->toggleButton->setEnabled(false);
             ui->updateButton->setEnabled(true);
-            ui->updateButton->setText("Quit");
+            ui->updateButton->setText("x");
             disconnect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startUpdate()));
             connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(close()));
             setCompletedSize(totalSize);
