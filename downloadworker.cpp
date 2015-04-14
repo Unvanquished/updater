@@ -73,8 +73,6 @@ void DownloadWorker::setDownloadPathAndFiles(aria2::Session* session, aria2::A2G
 
 std::string DownloadWorker::getAriaIndexOut(size_t index, std::string path)
 {
-    // TODO: Unhack this function so that it doesn't break when people set the
-    // install dir to a directory which contains unvanquished_
     QString oldPath(path.c_str());
     oldPath.replace(regex, "");
     return std::to_string(index) + "=" + oldPath.toStdString();

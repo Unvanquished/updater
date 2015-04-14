@@ -5,6 +5,8 @@
 #include <QSettings>
 #include <QThread>
 
+#include <memory>
+
 namespace Ui {
 class MainWindow;
 }
@@ -41,7 +43,7 @@ private:
     Ui::MainWindow *ui;
     DownloadWorker *worker;
     QSettings settings;
-    QLabel *textBrowser;
+    std::unique_ptr<QLabel> textBrowser;
     int totalSize;
     bool paused;
 };

@@ -28,8 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     ui->horizontalWidget->hide();
     ui->horizontalWidget_2->hide();
-    connect(this, SIGNAL(close()), textBrowser, SIGNAL(deleteLater()));
-    ui->gridLayout->addWidget(textBrowser, 3, 0, 1, 1);
+    ui->gridLayout->addWidget(textBrowser.get(), 3, 0, 1, 1);
 
 
 }
