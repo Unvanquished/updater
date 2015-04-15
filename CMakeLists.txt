@@ -6,6 +6,8 @@ set(QT_DIR "" CACHE STRING "Directory to find Qt5 for static builds")
 
 # Find the QtWidgets library
 find_package(Qt5Widgets REQUIRED)
+find_package(Qt5Network REQUIRED)
+find_package(Qt5Gui REQUIRED)
 find_package(ZLIB REQUIRED)
 
 # Find includes in corresponding build directories
@@ -27,9 +29,9 @@ add_definitions(${Qt5Widgets_DEFINITIONS})
 
 if (USE_STATIC)
   add_definitions(-DUSE_STATIC)
-  set(QT5_LIBS "-L${QT_DIR}/lib -lQt5Widgets -lQt5Gui -lqtharfbuzzng -lQt5Core")
+  set(QT5_LIBS "-L${QT_DIR}/lib -lQt5Widgets -lQt5Gui -lqtharfbuzzng -lQt5Network -lQt5Core")
   if (APPLE)
-    set(OS_LIBS "-L${QT_DIR}/lib -lQt5PrintSupport -lcups -lQt5PlatformSupport -framework DiskArbitration -framework IOKit -framework ApplicationServices -framework CoreServices -framework CoreFoundation -framework Foundation -framework Cocoa -framework OpenGL -framework AGL -lQt5Core -lz -lm -framework Carbon -framework Cocoa -lz -framework OpenGL -framework AGL")
+      set(OS_LIBS "-L${QT_DIR}/lib -lQt5PrintSupport -lcups -lQt5PlatformSupport -framework DiskArbitration -framework IOKit -framework ApplicationServices -framework CoreServices -framework CoreFoundation -framework Foundation -framework Cocoa -framework OpenGL -framework AGL -lQNetwork  -lQt5Core -lz -lm -framework Carbon -framework Cocoa -lz -framework OpenGL -framework AGL")
     set(PLATFORM_LIBS "-L${QT_DIR}/plugins/platforms -lqcocoa -framework Cocoa -framework Carbon")
   elseif (UNIX)
     # Qt5 hates CMake for static compiles
@@ -39,7 +41,7 @@ if (USE_STATIC)
     set(PLATFORM_LIBS "-L${QT_DIR}/plugins/platforms -lqwindows -lwinspool -lshlwapi -liphlpapi -L${QT_DIR}/lib -lQt5PlatformSupport -lgdi32 -lcomdlg32 -loleaut32 -limm32 -lwinmm -lqtharfbuzzng -lQt5Core -lole32 -luuid -lws2_32 -ladvapi32 -lshell32 -luser32 -lkernel32 -lmpr")
   endif()
 else() #STATIC
-  set(QT5_LIBS Qt5::Widgets)
+  set(QT5_LIBS Qt5::Widgets Qt5::Network Qt5::Gui)
 endif() #USE_STATIC
 
 if (APPLE)
@@ -51,6 +53,7 @@ elseif(WIN32)
 endif()
 
 set(updater_SOURCES
+  newsfetcher.cpp
   ariadownloader.cpp
   downloadworker.cpp
   main.cpp
@@ -60,6 +63,7 @@ set(updater_SOURCES
 )
 
 set(updater_HEADERS
+  newsfetcher.h
   ariadownloader.h
   downloadworker.h
   settingsdialog.h

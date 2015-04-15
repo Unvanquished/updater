@@ -23,8 +23,8 @@
       <height>431</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,1" columnstretch="0,1">
-     <item row="3" column="0">
+    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0" columnstretch="0,0">
+     <item row="4" column="0">
       <widget class="QProgressBar" name="progressBar">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -34,19 +34,6 @@
        </property>
        <property name="value">
         <number>24</number>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QPushButton" name="updateButton">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>1</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="text">
-        <string>&gt;</string>
        </property>
       </widget>
      </item>
@@ -61,13 +48,29 @@
           <x>0</x>
           <y>0</y>
           <width>597</width>
-          <height>339</height>
+          <height>309</height>
          </rect>
         </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <widget class="QListView" name="listView">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>601</width>
+           <height>311</height>
+          </rect>
+         </property>
+        </widget>
        </widget>
       </widget>
      </item>
-     <item row="2" column="0" colspan="2">
+     <item row="3" column="0" colspan="2">
       <widget class="QWidget" name="horizontalWidget_2" native="true">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <property name="topMargin">
@@ -102,7 +105,7 @@
        </layout>
       </widget>
      </item>
-     <item row="1" column="0" colspan="2">
+     <item row="2" column="0" colspan="2">
       <widget class="QWidget" name="horizontalWidget" native="true">
        <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,0,1,0,0,0,0">
         <property name="spacing">
@@ -212,12 +215,75 @@
        </layout>
       </widget>
      </item>
+     <item row="4" column="1">
+      <widget class="QPushButton" name="updateButton">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" colspan="2">
+      <widget class="QWidget" name="horizontalWidget" native="true">
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <property name="topMargin">
+         <number>1</number>
+        </property>
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="text">
+           <string>Installing to:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="installLocation">
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="changeInstallButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: blue; 
+text-decoration: underline;</string>
+          </property>
+          <property name="text">
+           <string>Change</string>
+          </property>
+          <property name="flat">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
     </layout>
     <zorder>progressBar</zorder>
     <zorder>scrollArea</zorder>
     <zorder>updateButton</zorder>
     <zorder>horizontalWidget</zorder>
     <zorder>horizontalWidget_2</zorder>
+    <zorder>horizontalWidget</zorder>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">

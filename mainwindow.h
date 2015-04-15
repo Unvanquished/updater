@@ -12,7 +12,9 @@ class MainWindow;
 }
 
 class DownloadWorker;
+class NewsFetcher;
 class QLabel;
+class QStandardItemModel;
 
 class MainWindow : public QMainWindow
 {
@@ -31,6 +33,7 @@ public slots:
     void onDownloadEvent(int event);
     void toggleDownload(void);
     bool close(void);
+    void onLoadNewsItems(QStandardItemModel* items);
 
 private slots:
     void startUpdate(void);
@@ -44,6 +47,7 @@ private:
     DownloadWorker *worker;
     QSettings settings;
     std::unique_ptr<QLabel> textBrowser;
+    std::unique_ptr<NewsFetcher> newsFetcher;
     int totalSize;
     bool paused;
 };

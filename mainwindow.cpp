@@ -2,10 +2,12 @@
 #include "ui_mainwindow.h"
 #include "downloadworker.h"
 #include "settingsdialog.h"
+#include "newsfetcher.h"
 #include "aria2/src/includes/aria2/aria2.h"
 #include "system.h"
 
 #include <QDir>
+#include <QStandardItemModel>
 #include <QDebug>
 
 
@@ -14,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     worker(nullptr),
     textBrowser(new QLabel(this)),
+    newsFetcher(new NewsFetcher(this)),
     totalSize(0),
     paused(false)
 {
@@ -22,15 +25,16 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startUpdate()));
     connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
     connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(openSettings()));
+    connect(ui->changeInstallButton, SIGNAL(clicked()), this, SLOT(openSettings()));
+    connect(newsFetcher.get(), SIGNAL(newsItemsLoaded(QStandardItemModel*)), this, SLOT(onLoadNewsItems(QStandardItemModel*)));
     if (!settings.contains("settings/installPath")) {
         settings.setValue("settings/installPath", Sys::getDefaultInstallPath());
-        openSettings();
     }
+    ui->installLocation->setText(settings.value("settings/installPath").toString());
     ui->horizontalWidget->hide();
     ui->horizontalWidget_2->hide();
-    ui->gridLayout->addWidget(textBrowser.get(), 3, 0, 1, 1);
-
-
+    ui->gridLayout->addWidget(textBrowser.get(), 4, 0, 1, 1);
+    newsFetcher->get("https://www.unvanquished.net/?cat=3&json=1");
 }
 
 MainWindow::~MainWindow()
@@ -53,6 +57,7 @@ void MainWindow::openSettings(void)
 
 void MainWindow::startUpdate(void)
 {
+    ui->horizontalWidget1->hide();
     textBrowser->setText("Starting update");
     QString installDir = settings.value("settings/installPath").toString();
     QDir dir(installDir);
@@ -86,6 +91,13 @@ void MainWindow::toggleDownload(void)
     worker->toggle();
     paused = !paused;
 }
+
+void MainWindow::onLoadNewsItems(QStandardItemModel* items)
+{
+    qDebug() << "Setting model";
+    ui->listView->setModel(items);
+}
+
 
 
 void MainWindow::setDownloadSpeed(int speed)
