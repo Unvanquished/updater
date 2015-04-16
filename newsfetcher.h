@@ -21,7 +21,7 @@ public slots:
     void parseJson(QNetworkReply* reply);
 
 signals:
-    void newsItemsLoaded(QStandardItemModel* models);
+    void newsItemsLoaded(QStringList news);
 
 private:
     std::unique_ptr<QNetworkAccessManager> manager;

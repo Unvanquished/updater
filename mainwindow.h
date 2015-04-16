@@ -33,11 +33,11 @@ public slots:
     void onDownloadEvent(int event);
     void toggleDownload(void);
     bool close(void);
-    void onLoadNewsItems(QStandardItemModel* items);
 
 private slots:
     void startUpdate(void);
     void openSettings(void);
+    void onNewsLoaded(QStringList news);
 
 private:
     QString sizeToString(int size);

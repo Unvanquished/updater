@@ -16,7 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     worker(nullptr),
     textBrowser(new QLabel(this)),
-    newsFetcher(new NewsFetcher(this)),
+    newsFetcher(new NewsFetcher(ui->scrollAreaWidgetContents)),
     totalSize(0),
     paused(false)
 {
@@ -26,7 +26,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
     connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(openSettings()));
     connect(ui->changeInstallButton, SIGNAL(clicked()), this, SLOT(openSettings()));
-    connect(newsFetcher.get(), SIGNAL(newsItemsLoaded(QStandardItemModel*)), this, SLOT(onLoadNewsItems(QStandardItemModel*)));
+    connect(newsFetcher.get(), SIGNAL(newsItemsLoaded(QStringList)), this, SLOT(onNewsLoaded(QStringList)));
     if (!settings.contains("settings/installPath")) {
         settings.setValue("settings/installPath", Sys::getDefaultInstallPath());
     }
@@ -86,19 +86,25 @@ void MainWindow::startUpdate(void)
     thread.start();
 }
 
+void MainWindow::onNewsLoaded(QStringList news)
+{
+    QVBoxLayout* layout = new QVBoxLayout(ui->scrollAreaWidgetContents);
+    for (int i = 0; i < news.size(); ++i) {
+        QLabel* label = new QLabel(ui->scrollAreaWidgetContents);
+        label->setText(news[i]);
+        qDebug() << news[i];
+        layout->addWidget(label);
+    }
+
+    ui->scrollAreaWidgetContents->setLayout(layout);
+}
+
+
 void MainWindow::toggleDownload(void)
 {
     worker->toggle();
     paused = !paused;
 }
-
-void MainWindow::onLoadNewsItems(QStandardItemModel* items)
-{
-    qDebug() << "Setting model";
-    ui->listView->setModel(items);
-}
-
-
 
 void MainWindow::setDownloadSpeed(int speed)
 {

@@ -3,12 +3,12 @@
 #include <QUrl>
 #include <QNetworkReply>
 #include <QNetworkRequest>
-#include <QStandardItemModel>
 #include <QJsonValue>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QVariantMap>
 #include <QJsonArray>
+#include <QLabel>
 
 #include <QDebug>
 
@@ -26,30 +26,22 @@ void NewsFetcher::get(QString url)
 
 void NewsFetcher::parseJson(QNetworkReply* reply)
 {
-    qDebug() << "Parsing json";
+    QStringList news;
     if (reply->error() == QNetworkReply::NoError) {
         QString json = reply->readAll();
         QJsonDocument document = QJsonDocument::fromJson(json.toUtf8());
         QJsonObject obj = document.object();
         QJsonArray posts = obj["posts"].toArray();
-        QStandardItemModel model;
 
         for (auto postValue : posts) {
             QJsonObject post = postValue.toObject();
             QString title = post["title"].toString();
             QString author = post["author"].toObject()["name"].toString();
             QString excerpt = post["excerpt"].toString();
-            qDebug() << title;
-
-            QStandardItem item;
-            QStandardItem header(title + " by " + author);
-            QStandardItem body(excerpt);
-            item.appendRow(&header);
-            item.appendRow(&body);
-            model.appendRow(&item);
+            news.push_back("<b>" + title + "</b> by " + author + "\n" + excerpt);
         }
 
-        emit newsItemsLoaded(&model);
+        emit newsItemsLoaded(news);
     }
 }
 
