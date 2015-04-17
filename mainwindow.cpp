@@ -92,7 +92,7 @@ void MainWindow::onNewsLoaded(QStringList news)
     for (int i = 0; i < news.size(); ++i) {
         QLabel* label = new QLabel(ui->scrollAreaWidgetContents);
         label->setText(news[i]);
-        qDebug() << news[i];
+        label->setWordWrap(true);
         layout->addWidget(label);
     }
 
