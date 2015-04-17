@@ -1,5 +1,7 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource>
     <file>fonts/Roboto-Regular.ttf</file>
+    <file>images/ic_play_arrow_black_48dp.png</file>
+    <file>images/ic_pause_black_48dp.png</file>
 </qresource>
 </RCC>

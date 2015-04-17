@@ -35,6 +35,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->horizontalWidget_2->hide();
     ui->gridLayout->addWidget(textBrowser.get(), 4, 0, 1, 1);
     newsFetcher->get("https://www.unvanquished.net/?cat=3&json=1");
+    ui->updateButton->setIcon(QIcon(":images/ic_play_arrow_black_48dp.png"));
+    ui->updateButton->setIconSize({20, 20});
 }
 
 MainWindow::~MainWindow()
@@ -71,7 +73,9 @@ void MainWindow::startUpdate(void)
         return;
     }
     textBrowser->setText("Installing to " + dir.canonicalPath());
-    ui->updateButton->setEnabled(false);
+    ui->updateButton->setIcon(QIcon(":images/ic_pause_black_48dp.png"));
+    ui->updateButton->setIconSize({20, 20});
+
     worker = new DownloadWorker();
     worker->setDownloadDirectory(dir.canonicalPath().toStdString());
     worker->addUri("http://cdn.unvanquished.net/current.torrent");
@@ -82,6 +86,8 @@ void MainWindow::startUpdate(void)
     connect(worker, SIGNAL(uploadSpeedChanged(int)), this, SLOT(setUploadSpeed(int)));
     connect(worker, SIGNAL(totalSizeChanged(int)), this, SLOT(setTotalSize(int)));
     connect(worker, SIGNAL(completedSizeChanged(int)), this, SLOT(setCompletedSize(int)));
+    disconnect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startUpdate()));
+    connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(toggleDownload()));
     connect(&thread, SIGNAL(started()), worker, SLOT(download()));
     thread.start();
 }
@@ -104,6 +110,13 @@ void MainWindow::toggleDownload(void)
 {
     worker->toggle();
     paused = !paused;
+    if (paused) {
+        ui->updateButton->setIcon(QIcon(":images/ic_play_arrow_black_48dp.png"));
+        ui->updateButton->setIconSize({20, 20});
+    } else {
+        ui->updateButton->setIcon(QIcon(":images/ic_pause_black_48dp.png"));
+        ui->updateButton->setIconSize({20, 20});
+    }
 }
 
 void MainWindow::setDownloadSpeed(int speed)
