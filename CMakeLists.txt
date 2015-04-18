@@ -22,6 +22,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
 # The Qt5Widgets_INCLUDES also includes the include directories for
 # dependencies QtCore and QtGui
 include_directories(${Qt5Widgets_INCLUDES})
+include_directories(${Qt5Network_INCLUDE_DIRS})
 include_directories(${ZLIB_INCLUDE_DIR})
 
 # We need add -DQT_WIDGETS_LIB when using QtWidgets in Qt 5.
