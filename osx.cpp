@@ -11,4 +11,9 @@ QString getDefaultInstallPath(void)
 {
     return QDir::homePath() +  "/Application Support/Library/Unvanquished";
 }
+
+QString getExecutableName(void)
+{
+    return "Unvanquished.app";
+}
 }

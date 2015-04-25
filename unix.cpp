@@ -11,4 +11,9 @@ QString getDefaultInstallPath(void)
 {
     return QDir::homePath() + "/.local/share/unvanquished";
 }
+
+QString getExecutableName(void)
+{
+    return "daemon";
+}
 }

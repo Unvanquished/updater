@@ -15,6 +15,7 @@ SettingsDialog::SettingsDialog(QWidget* parent) :
     connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(openDirectorySelector()));
     connect(&fileDialog, SIGNAL(accepted()), this, SLOT(setInstallPath()));
     ui->installPath->setText(settings.value("settings/installPath").toString());
+    ui->commandLine->setText(settings.value("settings/commandLineParameters").toString());
 }
 
 SettingsDialog::~SettingsDialog()
@@ -33,6 +34,14 @@ void SettingsDialog::saveSettings(void)
             return;
         }
     }
+    QString commandLineStr = ui->commandLine->text();
+    if (!commandLineStr.contains("%%command%%")) {
+        QErrorMessage errorMessage;
+        errorMessage.showMessage("The command line args MUST contain the %%command%% string");
+        errorMessage.exec();
+        return;
+    }
+    settings.setValue("settings/commandLineParameters", commandLineStr);
     settings.setValue("settings/installPath", dir.canonicalPath());
 }
 

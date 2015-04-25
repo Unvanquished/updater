@@ -38,4 +38,9 @@ QString getDefaultInstallPath(void)
 {
     return "%%APPDATA%%\Unvanquished";
 }
+
+QString getExecutableName(void)
+{
+    return "daemon.exe";
+}
 }

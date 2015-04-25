@@ -38,6 +38,7 @@ private slots:
     void startUpdate(void);
     void openSettings(void);
     void onNewsLoaded(QStringList news);
+    void startGame(void);
 
 private:
     QString sizeToString(int size);

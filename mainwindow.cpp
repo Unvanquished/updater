@@ -9,6 +9,7 @@
 #include <QDir>
 #include <QStandardItemModel>
 #include <QDebug>
+#include <QProcess>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -29,6 +30,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(newsFetcher.get(), SIGNAL(newsItemsLoaded(QStringList)), this, SLOT(onNewsLoaded(QStringList)));
     if (!settings.contains("settings/installPath")) {
         settings.setValue("settings/installPath", Sys::getDefaultInstallPath());
+    }
+    if (!settings.contains("settings/commandLineParameters")) {
+        settings.setValue("settings/commandLineParameters", "%%command%%");
     }
     ui->installLocation->setText(settings.value("settings/installPath").toString());
     ui->horizontalWidget->hide();
@@ -92,6 +96,14 @@ void MainWindow::startUpdate(void)
     thread.start();
 }
 
+void MainWindow::startGame(void)
+{
+    QString cmd = settings.value("settings/installPath").toString() + "/" + Sys::getExecutableName();
+    qDebug() << cmd;
+    QProcess::startDetached(cmd);
+    close();
+}
+
 void MainWindow::onNewsLoaded(QStringList news)
 {
     QVBoxLayout* layout = new QVBoxLayout(ui->scrollAreaWidgetContents);
@@ -147,13 +159,13 @@ void MainWindow::onDownloadEvent(int event)
 {
     switch (event) {
         case aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE:
-            ui->updateButton->setEnabled(true);
-            ui->updateButton->setText("x");
-            disconnect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startUpdate()));
-            connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(close()));
+            ui->updateButton->setIcon(QIcon(":images/ic_play_arrow_black_48dp.png"));
+            ui->updateButton->setIconSize({20, 20});
+            disconnect(ui->updateButton, SIGNAL(clicked()), this, SLOT(toggleDownload()));
+            connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startGame()));
             setCompletedSize(totalSize);
             setDownloadSpeed(0);
-            textBrowser->setText("Update downloaded.");
+            textBrowser->setText("Up to date. Press > to play the game.");
             stopAria();
             break;
 
