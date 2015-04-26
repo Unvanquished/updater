@@ -37,7 +37,6 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     ui->installLocation->setText(settings.value("settings/installPath").toString());
     ui->horizontalWidget->hide();
-    ui->horizontalWidget_2->hide();
     ui->gridLayout->addWidget(textBrowser.get(), 4, 0, 1, 1);
     newsFetcher->get("https://www.unvanquished.net/?cat=3&json=1");
     ui->updateButton->setIcon(QIcon(":images/ic_play_arrow_black_48dp.png"));
@@ -102,7 +101,7 @@ void MainWindow::startGame(void)
     QString cmd = settings.value("settings/installPath").toString() + "/" + Sys::getExecutableName();
     QString commandLine = settings.value("settings/commandLineParameters").toString();
     commandLine.replace(commandRegex, cmd);
-    QProcess::startDetached(cmd);
+    QProcess::startDetached(commandLine);
     close();
 }
 
@@ -154,7 +153,6 @@ void MainWindow::setCompletedSize(int size)
     ui->completedSize->setText(sizeToString(size));
     ui->progressBar->setValue((static_cast<float>(size) / totalSize) * 100);
     ui->horizontalWidget->show();
-    ui->horizontalWidget_2->show();
 }
 
 void MainWindow::onDownloadEvent(int event)
