@@ -51,10 +51,8 @@ MainWindow::MainWindow(QWidget *parent) :
         if (settings.contains(Settings::CURRENT_VERSION)) {
             connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startGame()));
             textBrowser->setText("No internet connection. Press > to play the game anyways.");
-            stopAria();
         } else {
             textBrowser->setText("No internet connection and game not installed. Please fix.");
-            stopAria();
         }
     }
 }
@@ -79,18 +77,21 @@ void MainWindow::openSettings(void)
 
 void MainWindow::onCurrentVersion(QString version)
 {
-    if (settings.value(Settings::CURRENT_VERSION).toString() != version) {
+    if (version.isEmpty()) {
+        connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startGame()));
+        textBrowser->setText("Invalid version received. Press > to play the game anyways.");
+    } else if (settings.value(Settings::CURRENT_VERSION).toString() != version) {
         currentVersion = version;
         startUpdate();
     } else {
         connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startGame()));
         textBrowser->setText("Up to date. Press > to play the game.");
-        stopAria();
     }
 }
 
 void MainWindow::startUpdate(void)
 {
+    ui->actionVerify->setEnabled(false);
     ui->horizontalWidget1->hide();
     textBrowser->setText("Starting update");
     QString installDir = settings.value(Settings::INSTALL_PATH).toString();
