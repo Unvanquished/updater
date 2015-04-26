@@ -14,8 +14,8 @@ SettingsDialog::SettingsDialog(QWidget* parent) :
     connect(this, SIGNAL(accepted()), this, SLOT(saveSettings()));
     connect(ui->pushButton, SIGNAL(clicked()), this, SLOT(openDirectorySelector()));
     connect(&fileDialog, SIGNAL(accepted()), this, SLOT(setInstallPath()));
-    ui->installPath->setText(settings.value("settings/installPath").toString());
-    ui->commandLine->setText(settings.value("settings/commandLineParameters").toString());
+    ui->installPath->setText(settings.value(Settings::INSTALL_PATH).toString());
+    ui->commandLine->setText(settings.value(Settings::COMMAND_LINE).toString());
 }
 
 SettingsDialog::~SettingsDialog()
@@ -41,8 +41,8 @@ void SettingsDialog::saveSettings(void)
         errorMessage.exec();
         return;
     }
-    settings.setValue("settings/commandLineParameters", commandLineStr);
-    settings.setValue("settings/installPath", dir.canonicalPath());
+    settings.setValue(Settings::COMMAND_LINE, commandLineStr);
+    settings.setValue(Settings::INSTALL_PATH, dir.canonicalPath());
 }
 
 void SettingsDialog::openDirectorySelector(void)

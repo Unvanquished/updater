@@ -25,17 +25,18 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->progressBar->setValue(0);
     connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startUpdate()));
+    connect(ui->actionVerify, SIGNAL(clicked()), this, SLOT(startUpdate()));
     connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
     connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(openSettings()));
     connect(ui->changeInstallButton, SIGNAL(clicked()), this, SLOT(openSettings()));
     connect(newsFetcher.get(), SIGNAL(newsItemsLoaded(QStringList)), this, SLOT(onNewsLoaded(QStringList)));
-    if (!settings.contains("settings/installPath")) {
-        settings.setValue("settings/installPath", Sys::getDefaultInstallPath());
+    if (!settings.contains(Settings::INSTALL_PATH)) {
+        settings.setValue(Settings::INSTALL_PATH, Sys::getDefaultInstallPath());
     }
-    if (!settings.contains("settings/commandLineParameters")) {
-        settings.setValue("settings/commandLineParameters", "%command%");
+    if (!settings.contains(Settings::COMMAND_LINE)) {
+        settings.setValue(Settings::COMMAND_LINE, "%command%");
     }
-    ui->installLocation->setText(settings.value("settings/installPath").toString());
+    ui->installLocation->setText(settings.value(Settings::INSTALL_PATH).toString());
     ui->horizontalWidget->hide();
     ui->gridLayout->addWidget(textBrowser.get(), 4, 0, 1, 1);
     newsFetcher->get("https://www.unvanquished.net/?cat=3&json=1");
@@ -65,7 +66,7 @@ void MainWindow::startUpdate(void)
 {
     ui->horizontalWidget1->hide();
     textBrowser->setText("Starting update");
-    QString installDir = settings.value("settings/installPath").toString();
+    QString installDir = settings.value(Settings::INSTALL_PATH).toString();
     QDir dir(installDir);
     if (!dir.exists()) {
         textBrowser->setText("Install dir does not exist. Please select another");
@@ -98,8 +99,8 @@ void MainWindow::startUpdate(void)
 
 void MainWindow::startGame(void)
 {
-    QString cmd = settings.value("settings/installPath").toString() + "/" + Sys::getExecutableName();
-    QString commandLine = settings.value("settings/commandLineParameters").toString();
+    QString cmd = settings.value(Settings::INSTALL_PATH).toString() + "/" + Sys::getExecutableName();
+    QString commandLine = settings.value(Settings::COMMAND_LINE).toString();
     commandLine.replace(commandRegex, cmd);
     QProcess::startDetached(commandLine);
     close();

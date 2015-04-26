@@ -9,6 +9,11 @@ namespace Ui {
     class Dialog;
 }
 
+namespace Settings {
+    const static QString INSTALL_PATH("settings/installPath");
+    const static QString COMMAND_LINE("settings/commandLineParameters");
+}
+
 class SettingsDialog : public QDialog {
     Q_OBJECT
 public:

@@ -71,17 +71,17 @@
         </widget>
        </item>
        <item>
-           <widget class="QLabel" name="totalSize">
-               <property name="sizePolicy">
-                   <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                       <horstretch>0</horstretch>
-                       <verstretch>0</verstretch>
-                   </sizepolicy>
-               </property>
-               <property name="text">
-                   <string/>
-               </property>
-           </widget>
+        <widget class="QLabel" name="totalSize">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QLabel" name="downloadSpeed">
@@ -227,6 +227,7 @@ text-decoration: underline;</string>
     <property name="title">
      <string>Me&amp;nu</string>
     </property>
+    <addaction name="actionVerify"/>
     <addaction name="actionSettings"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -244,6 +245,11 @@ text-decoration: underline;</string>
   <action name="actionSettings">
    <property name="text">
     <string>&amp;Settings</string>
+   </property>
+  </action>
+  <action name="actionVerify">
+   <property name="text">
+    <string>Verify</string>
    </property>
   </action>
  </widget>
