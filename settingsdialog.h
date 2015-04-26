@@ -12,6 +12,7 @@ namespace Ui {
 namespace Settings {
     const static QString INSTALL_PATH("settings/installPath");
     const static QString COMMAND_LINE("settings/commandLineParameters");
+    const static QString CURRENT_VERSION("settings/currentVersion");
 }
 
 class SettingsDialog : public QDialog {

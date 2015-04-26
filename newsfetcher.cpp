@@ -8,7 +8,6 @@
 #include <QJsonObject>
 #include <QVariantMap>
 #include <QJsonArray>
-#include <QLabel>
 
 #include <QDebug>
 

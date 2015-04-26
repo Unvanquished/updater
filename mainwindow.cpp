@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "currentversionfetcher.h"
 #include "downloadworker.h"
 #include "settingsdialog.h"
 #include "newsfetcher.h"
@@ -18,18 +19,18 @@ MainWindow::MainWindow(QWidget *parent) :
     worker(nullptr),
     textBrowser(new QLabel(this)),
     newsFetcher(new NewsFetcher(ui->scrollAreaWidgetContents)),
+    currentVersionFetcher(new CurrentVersionFetcher(this)),
     totalSize(0),
     paused(false),
-    commandRegex("%command%")
+    commandRegex("%command%"),
+    networkManager(this)
 {
     ui->setupUi(this);
     ui->progressBar->setValue(0);
-    connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startUpdate()));
-    connect(ui->actionVerify, SIGNAL(clicked()), this, SLOT(startUpdate()));
+    connect(ui->actionVerify, SIGNAL(triggered()), this, SLOT(startUpdate()));
     connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
     connect(ui->actionSettings, SIGNAL(triggered()), this, SLOT(openSettings()));
     connect(ui->changeInstallButton, SIGNAL(clicked()), this, SLOT(openSettings()));
-    connect(newsFetcher.get(), SIGNAL(newsItemsLoaded(QStringList)), this, SLOT(onNewsLoaded(QStringList)));
     if (!settings.contains(Settings::INSTALL_PATH)) {
         settings.setValue(Settings::INSTALL_PATH, Sys::defaultInstallPath());
     }
@@ -39,9 +40,23 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->installLocation->setText(settings.value(Settings::INSTALL_PATH).toString());
     ui->horizontalWidget->hide();
     ui->gridLayout->addWidget(textBrowser.get(), 4, 0, 1, 1);
-    newsFetcher->get("https://www.unvanquished.net/?cat=3&json=1");
     ui->updateButton->setIcon(QIcon(":images/ic_play_arrow_black_48dp.png"));
     ui->updateButton->setIconSize({20, 20});
+    if (networkManager.isOnline()) {
+        connect(newsFetcher.get(), SIGNAL(newsItemsLoaded(QStringList)), this, SLOT(onNewsLoaded(QStringList)));
+        connect(currentVersionFetcher.get(), SIGNAL(onCurrentVersion(QString)), this, SLOT(onCurrentVersion(QString)));
+        newsFetcher->get("https://www.unvanquished.net/?cat=3&json=1");
+        currentVersionFetcher->fetchCurrentVersion("https://dl.unvanquished.net/current.txt");
+    } else {
+        if (settings.contains(Settings::CURRENT_VERSION)) {
+            connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startGame()));
+            textBrowser->setText("No internet connection. Press > to play the game anyways.");
+            stopAria();
+        } else {
+            textBrowser->setText("No internet connection and game not installed. Please fix.");
+            stopAria();
+        }
+    }
 }
 
 MainWindow::~MainWindow()
@@ -60,6 +75,18 @@ void MainWindow::openSettings(void)
 {
     SettingsDialog dialog(this);
     dialog.exec();
+}
+
+void MainWindow::onCurrentVersion(QString version)
+{
+    if (settings.value(Settings::CURRENT_VERSION).toString() != version) {
+        currentVersion = version;
+        startUpdate();
+    } else {
+        connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startGame()));
+        textBrowser->setText("Up to date. Press > to play the game.");
+        stopAria();
+    }
 }
 
 void MainWindow::startUpdate(void)
@@ -168,6 +195,7 @@ void MainWindow::onDownloadEvent(int event)
             setDownloadSpeed(0);
             textBrowser->setText("Up to date. Press > to play the game.");
             stopAria();
+            settings.setValue(Settings::CURRENT_VERSION, currentVersion);
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_COMPLETE:

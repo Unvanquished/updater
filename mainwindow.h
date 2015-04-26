@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QRegularExpression>
 #include <QSettings>
+#include <QNetworkConfigurationManager>
 #include <QThread>
 
 #include <memory>
@@ -14,6 +15,7 @@ class MainWindow;
 
 class DownloadWorker;
 class NewsFetcher;
+class CurrentVersionFetcher;
 class QLabel;
 class QStandardItemModel;
 
@@ -33,6 +35,7 @@ public slots:
     void setCompletedSize(int size);
     void onDownloadEvent(int event);
     void toggleDownload(void);
+    void onCurrentVersion(QString version);
     bool close(void);
 
 private slots:
@@ -50,9 +53,12 @@ private:
     QSettings settings;
     std::unique_ptr<QLabel> textBrowser;
     std::unique_ptr<NewsFetcher> newsFetcher;
+    std::unique_ptr<CurrentVersionFetcher> currentVersionFetcher;
     int totalSize;
     bool paused;
     QRegularExpression commandRegex;
+    QNetworkConfigurationManager networkManager;
+    QString currentVersion;
 };
 
 #endif // MAINWINDOW_H

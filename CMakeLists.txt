@@ -55,6 +55,7 @@ endif()
 
 set(updater_SOURCES
   newsfetcher.cpp
+  currentversionfetcher.cpp
   ariadownloader.cpp
   downloadworker.cpp
   main.cpp
