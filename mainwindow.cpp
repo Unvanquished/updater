@@ -19,7 +19,8 @@ MainWindow::MainWindow(QWidget *parent) :
     textBrowser(new QLabel(this)),
     newsFetcher(new NewsFetcher(ui->scrollAreaWidgetContents)),
     totalSize(0),
-    paused(false)
+    paused(false),
+    commandRegex("%command%")
 {
     ui->setupUi(this);
     ui->progressBar->setValue(0);
@@ -32,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
         settings.setValue("settings/installPath", Sys::getDefaultInstallPath());
     }
     if (!settings.contains("settings/commandLineParameters")) {
-        settings.setValue("settings/commandLineParameters", "%%command%%");
+        settings.setValue("settings/commandLineParameters", "%command%");
     }
     ui->installLocation->setText(settings.value("settings/installPath").toString());
     ui->horizontalWidget->hide();
@@ -99,7 +100,8 @@ void MainWindow::startUpdate(void)
 void MainWindow::startGame(void)
 {
     QString cmd = settings.value("settings/installPath").toString() + "/" + Sys::getExecutableName();
-    qDebug() << cmd;
+    QString commandLine = settings.value("settings/commandLineParameters").toString();
+    commandLine.replace(commandRegex, cmd);
     QProcess::startDetached(cmd);
     close();
 }

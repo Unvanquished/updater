@@ -5,7 +5,7 @@
 #include "system.h"
 
 DownloadWorker::DownloadWorker(QObject *parent) : QObject(parent), downloadSpeed(0), uploadSpeed(0),
-totalSize(0), completedSize(0), paused(true), state(IDLE), running(false), regex(".*unvanquished_([0-9\\.]+/)")
+totalSize(0), completedSize(0), paused(true), state(IDLE), running(false), renameRegex(".*unvanquished_([0-9\\.]+/)")
 {
     downloader.registerCallback(this);
 }
@@ -74,7 +74,7 @@ void DownloadWorker::setDownloadPathAndFiles(aria2::Session* session, aria2::A2G
 std::string DownloadWorker::getAriaIndexOut(size_t index, std::string path)
 {
     QString oldPath(path.c_str());
-    oldPath.replace(regex, "");
+    oldPath.replace(renameRegex, "");
     return std::to_string(index) + "=" + oldPath.toStdString();
 }
 

@@ -35,9 +35,9 @@ void SettingsDialog::saveSettings(void)
         }
     }
     QString commandLineStr = ui->commandLine->text();
-    if (!commandLineStr.contains("%%command%%")) {
+    if (!commandLineStr.contains("%command%")) {
         QErrorMessage errorMessage;
-        errorMessage.showMessage("The command line args MUST contain the %%command%% string");
+        errorMessage.showMessage("The command line args MUST contain the %command% string");
         errorMessage.exec();
         return;
     }

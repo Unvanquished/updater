@@ -40,7 +40,7 @@ private:
         DOWNLOADING_TORRENT,
         DOWNLOADING_UNVANQUISHED
     };
-    QRegularExpression regex;
+    QRegularExpression renameRegex;
     AriaDownloader downloader;
     QString downloadDir;
     State state;

@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QRegularExpression>
 #include <QSettings>
 #include <QThread>
 
@@ -51,6 +52,7 @@ private:
     std::unique_ptr<NewsFetcher> newsFetcher;
     int totalSize;
     bool paused;
+    QRegularExpression commandRegex;
 };
 
 #endif // MAINWINDOW_H
