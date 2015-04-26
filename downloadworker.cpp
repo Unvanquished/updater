@@ -133,6 +133,6 @@ void DownloadWorker::stop(void)
 
 void DownloadWorker::extractUpdate(void)
 {
-    QString filename = Sys::getArchiveName();
+    QString filename = Sys::archiveName();
     JlCompress::extractDir(downloadDir + "/Unvanquished/" + filename, downloadDir + "/Unvanquished/");
 }

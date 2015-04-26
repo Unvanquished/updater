@@ -2,17 +2,17 @@
 #include <QDir>
 
 namespace Sys {
-QString getArchiveName(void)
+QString archiveName(void)
 {
     return "mac.zip";
 }
 
-QString getDefaultInstallPath(void)
+QString defaultInstallPath(void)
 {
     return QDir::homePath() +  "/Application Support/Library/Unvanquished";
 }
 
-QString getExecutableName(void)
+QString executableName(void)
 {
     return "Unvanquished.app";
 }

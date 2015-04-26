@@ -31,7 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->changeInstallButton, SIGNAL(clicked()), this, SLOT(openSettings()));
     connect(newsFetcher.get(), SIGNAL(newsItemsLoaded(QStringList)), this, SLOT(onNewsLoaded(QStringList)));
     if (!settings.contains(Settings::INSTALL_PATH)) {
-        settings.setValue(Settings::INSTALL_PATH, Sys::getDefaultInstallPath());
+        settings.setValue(Settings::INSTALL_PATH, Sys::defaultInstallPath());
     }
     if (!settings.contains(Settings::COMMAND_LINE)) {
         settings.setValue(Settings::COMMAND_LINE, "%command%");
@@ -99,7 +99,7 @@ void MainWindow::startUpdate(void)
 
 void MainWindow::startGame(void)
 {
-    QString cmd = settings.value(Settings::INSTALL_PATH).toString() + "/" + Sys::getExecutableName();
+    QString cmd = settings.value(Settings::INSTALL_PATH).toString() + "/" + Sys::executableName();
     QString commandLine = settings.value(Settings::COMMAND_LINE).toString();
     commandLine.replace(commandRegex, cmd);
     QProcess::startDetached(commandLine);

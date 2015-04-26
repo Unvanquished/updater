@@ -2,17 +2,17 @@
 #include <QDir>
 
 namespace Sys {
-QString getArchiveName(void)
+QString archiveName(void)
 {
     return "linux64.zip";
 }
 
-QString getDefaultInstallPath(void)
+QString defaultInstallPath(void)
 {
     return QDir::homePath() + "/.local/share/unvanquished";
 }
 
-QString getExecutableName(void)
+QString executableName(void)
 {
     return "daemon";
 }

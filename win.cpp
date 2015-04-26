@@ -25,7 +25,7 @@ bool IsWow64()
     return bIsWow64 != FALSE;
 }
 
-QString getArchiveName(void)
+QString archiveName(void)
 {
     if (IsWow64()) {
         return "win64.zip";
@@ -34,12 +34,12 @@ QString getArchiveName(void)
     }
 }
 
-QString getDefaultInstallPath(void)
+QString defaultInstallPath(void)
 {
     return "%%APPDATA%%\Unvanquished";
 }
 
-QString getExecutableName(void)
+QString executableName(void)
 {
     return "daemon.exe";
 }

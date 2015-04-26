@@ -1,7 +1,7 @@
 #include <QString>
 
 namespace Sys {
-QString getArchiveName(void);
-QString getDefaultInstallPath(void);
-QString getExecutableName(void);
+QString archiveName(void);
+QString defaultInstallPath(void);
+QString executableName(void);
 }
