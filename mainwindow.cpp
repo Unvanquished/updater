@@ -91,20 +91,21 @@ void MainWindow::onCurrentVersion(QString version)
 
 void MainWindow::startUpdate(void)
 {
-    ui->actionVerify->setEnabled(false);
-    ui->horizontalWidget1->hide();
-    textBrowser->setText("Starting update");
     QString installDir = settings.value(Settings::INSTALL_PATH).toString();
     QDir dir(installDir);
     if (!dir.exists()) {
-        textBrowser->setText("Install dir does not exist. Please select another");
-        return;
+        if (!dir.mkpath(dir.path())) {
+            textBrowser->setText(dir.canonicalPath() + " does not exist and could not be created");
+            openSettings();
+            return;
+        }
     }
-
     if (!QFileInfo(installDir).isWritable()) {
         textBrowser->setText("Install dir not writable. Please select another");
         return;
     }
+    ui->actionVerify->setEnabled(false);
+    ui->horizontalWidget1->hide();
     textBrowser->setText("Installing to " + dir.canonicalPath());
     ui->updateButton->setIcon(QIcon(":images/ic_pause_black_48dp.png"));
     ui->updateButton->setIconSize({20, 20});

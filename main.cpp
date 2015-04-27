@@ -11,6 +11,7 @@ Q_IMPORT_PLUGIN(QXcbIntegrationPlugin)
 #else
 Q_IMPORT_PLUGIN(QCocoaIntegrationPlugin)
 #endif
+Q_IMPORT_PLUGIN(QGenericEnginePlugin)
 #endif
 
 
