@@ -39,7 +39,8 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     ui->installLocation->setText(settings.value(Settings::INSTALL_PATH).toString());
     ui->horizontalWidget->hide();
-    ui->gridLayout->addWidget(textBrowser.get(), 4, 0, 1, 1);
+    textBrowser->setStyleSheet("margin-left: 10px");
+    ui->gridLayout->addWidget(textBrowser.get(), 3, 0, 1, 1);
     ui->updateButton->setIcon(QIcon(":images/ic_play_arrow_black_48dp.png"));
     ui->updateButton->setIconSize({20, 20});
     if (networkManager.isOnline()) {

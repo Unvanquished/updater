@@ -17,10 +17,8 @@ void CurrentVersionFetcher::fetchCurrentVersion(QString url)
 
 void CurrentVersionFetcher::reply(QNetworkReply* reply)
 {
-    qDebug() << "Got reply";
     if (reply->error() == QNetworkReply::NoError) {
         QString version = reply->readAll();
-        qDebug() << version;
         emit onCurrentVersion(version);
         return;
     }

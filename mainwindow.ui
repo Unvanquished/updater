@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Unvanquished Updater</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0" columnstretch="0,0">
@@ -142,6 +142,12 @@
     </item>
     <item row="1" column="0" colspan="2">
      <widget class="QWidget" name="horizontalWidget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <property name="topMargin">
         <number>1</number>
@@ -161,6 +167,12 @@
        </item>
        <item>
         <widget class="QLabel" name="installLocation">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -169,14 +181,14 @@
        <item>
         <widget class="QPushButton" name="changeInstallButton">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
          <property name="styleSheet">
           <string notr="true">color: blue;
-text-decoration: underline;</string>
+text-decoration: underline;padding-left:-2px;margin-right:-</string>
          </property>
          <property name="text">
           <string>Change</string>
@@ -200,7 +212,7 @@ text-decoration: underline;</string>
          <x>0</x>
          <y>0</y>
          <width>680</width>
-         <height>413</height>
+         <height>419</height>
         </rect>
        </property>
        <property name="sizePolicy">
@@ -249,7 +261,7 @@ text-decoration: underline;</string>
   </action>
   <action name="actionVerify">
    <property name="text">
-    <string>Verify</string>
+    <string>&amp;Verify</string>
    </property>
   </action>
  </widget>
