@@ -143,6 +143,7 @@ void MainWindow::onNewsLoaded(QStringList news)
         QLabel* label = new QLabel(ui->scrollAreaWidgetContents);
         label->setText(news[i]);
         label->setWordWrap(true);
+        label->setStyleSheet("margin-top: -25px");
         layout->addWidget(label);
     }
 
