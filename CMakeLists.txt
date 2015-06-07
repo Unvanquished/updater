@@ -21,8 +21,16 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
 
 # The Qt5Widgets_INCLUDES also includes the include directories for
 # dependencies QtCore and QtGui
-include_directories(${Qt5Widgets_INCLUDES})
-include_directories(${Qt5Network_INCLUDE_DIRS})
+if (USE_STATIC)
+  include_directories(${QT_DIR}/include)
+  include_directories(${QT_DIR}/include/QtCore)
+  include_directories(${QT_DIR}/include/QtGui)
+  include_directories(${QT_DIR}/include/QtWidgets)
+  include_directories(${QT_DIR}/include/QtNetwork)
+else()
+  include_directories(${Qt5Widgets_INCLUDES})
+  include_directories(${Qt5Network_INCLUDE_DIRS})
+endif()
 include_directories(${ZLIB_INCLUDE_DIR})
 
 # We need add -DQT_WIDGETS_LIB when using QtWidgets in Qt 5.
@@ -78,5 +86,4 @@ QT5_WRAP_UI(updater_FORMS_HEADERS ${updater_FORMS})
 QT5_ADD_RESOURCES(updater_RESOURCES_RCC resources.qrc)
 add_executable(updater ${updater_SOURCES} ${updater_HEADERS} ${updater_FORMS_HEADERS} ${updater_RESOURCES_RCC} updater.rc)
 set_property(TARGET updater PROPERTY CXX_STANDARD 11)
-QT5_USE_MODULES(updater Widgets)
 target_link_libraries(updater ${CMAKE_SOURCE_DIR}/aria2/src/.libs/libaria2.a quazip ${ZLIB_LIBRARIES} ${PLATFORM_LIBS} ${QT5_LIBS} ${OS_LIBS})
