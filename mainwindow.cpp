@@ -224,6 +224,10 @@ void MainWindow::onDownloadEvent(int event)
         case aria2::EVENT_ON_DOWNLOAD_STOP:
             textBrowser->setText("Download stopped");
             break;
+
+        case DownloadWorker::ERROR_EXTRACTING:
+            textBrowser->setText("Error extracting update");
+            break;
     }
 }
 

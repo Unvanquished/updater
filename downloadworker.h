@@ -11,6 +11,10 @@ class DownloadWorker : public QObject, public AriaDownloader::DownloadCallback
 {
     Q_OBJECT
 public:
+    enum Events {
+        ERROR_EXTRACTING = 100
+    };
+
     explicit DownloadWorker(QObject *parent = 0);
     ~DownloadWorker();
     void onDownloadCallback(aria2::Session* session, aria2::DownloadEvent event,
@@ -32,7 +36,7 @@ signals:
 
 private:
     void setDownloadPathAndFiles(aria2::Session* session, aria2::A2Gid gid);
-    void extractUpdate(void);
+    bool extractUpdate(void);
     std::string getAriaIndexOut(size_t index, std::string path);
 
     enum State {
@@ -40,6 +44,7 @@ private:
         DOWNLOADING_TORRENT,
         DOWNLOADING_UNVANQUISHED
     };
+
     QRegularExpression renameRegex;
     AriaDownloader downloader;
     QString downloadDir;

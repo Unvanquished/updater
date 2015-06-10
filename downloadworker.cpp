@@ -25,7 +25,7 @@ void DownloadWorker::onDownloadCallback(aria2::Session* session, aria2::Download
 {
     switch (event) {
         case aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE:
-            extractUpdate();
+            if (!extractUpdate()) return;
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_COMPLETE:
@@ -37,7 +37,7 @@ void DownloadWorker::onDownloadCallback(aria2::Session* session, aria2::Download
                 aria2::deleteDownloadHandle(handle);
             } else {
                 event = aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE;
-                extractUpdate();
+                if (!extractUpdate()) return;
             }
             break;
 
@@ -131,8 +131,13 @@ void DownloadWorker::stop(void)
     running = false;
 }
 
-void DownloadWorker::extractUpdate(void)
+bool DownloadWorker::extractUpdate(void)
 {
     QString filename = Sys::archiveName();
-    JlCompress::extractDir(downloadDir + "/" + filename, downloadDir);
+    auto out = JlCompress::extractDir(downloadDir + "/" + filename, downloadDir);
+    if (out.size() < 1) {
+        emit onDownloadEvent(ERROR_EXTRACTING);
+        return false;
+    }
+    return true;
 }
