@@ -169,6 +169,7 @@ void MainWindow::toggleDownload(void)
 void MainWindow::setDownloadSpeed(int speed)
 {
     ui->downloadSpeed->setText(sizeToString(speed) + "/s");
+    downloadTime.addSpeed(speed);
 }
 
 void MainWindow::setUploadSpeed(int speed)
@@ -187,6 +188,7 @@ void MainWindow::setCompletedSize(int size)
     ui->completedSize->setText(sizeToString(size));
     ui->progressBar->setValue((static_cast<float>(size) / totalSize) * 100);
     ui->horizontalWidget->show();
+    ui->eta->setText(timeToString(downloadTime.getTime(totalSize - size)));
 }
 
 void MainWindow::onDownloadEvent(int event)
@@ -233,7 +235,7 @@ void MainWindow::onDownloadEvent(int event)
 
 QString MainWindow::sizeToString(int size)
 {
-    static QString sizes[] = { "Bytes", "KiB", "MiB", "GiB" };
+    static const QString sizes[] = { "Bytes", "KiB", "MiB", "GiB" };
     const int num_sizes = 4;
     int i = 0;
     while (size > 1024 && i++ < 4) {
@@ -241,6 +243,14 @@ QString MainWindow::sizeToString(int size)
     }
 
     return QString::number(size) + " " + sizes[std::min(i, num_sizes - 1)];
+}
+
+QString MainWindow::timeToString(int time)
+{
+    return QString("%1:%2:%3 left")
+        .arg(static_cast<int>(trunc(time / 3600.0f)), 2, 10, static_cast<QChar>('0'))
+        .arg(static_cast<int>(trunc((time % 3600) / 60.0f)), 2, 10, static_cast<QChar>('0'))
+        .arg(static_cast<int>(time % 60), 2, 10, static_cast<QChar>('0'));
 }
 
 void MainWindow::stopAria(void)

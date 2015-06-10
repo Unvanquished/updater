@@ -95,6 +95,10 @@ void DownloadWorker::download(void)
             start = now;
             downloader.updateStats();
 
+            if (totalSize != downloader.totalSize()) {
+                totalSize = downloader.totalSize();
+                emit totalSizeChanged(totalSize);
+            }
             if (downloadSpeed != downloader.downloadSpeed()) {
                 downloadSpeed = downloader.downloadSpeed();
                 emit downloadSpeedChanged(downloadSpeed);
@@ -106,10 +110,6 @@ void DownloadWorker::download(void)
             if (completedSize != downloader.completedSize()) {
                 completedSize = downloader.completedSize();
                 emit completedSizeChanged(completedSize);
-            }
-            if (totalSize != downloader.totalSize()) {
-                totalSize = downloader.totalSize();
-                emit totalSizeChanged(totalSize);
             }
         }
     }

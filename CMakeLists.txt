@@ -68,6 +68,7 @@ set(updater_SOURCES
   downloadworker.cpp
   main.cpp
   settingsdialog.cpp
+  downloadtimecalculator.cpp
   mainwindow.cpp
   ${os_SOURCES}
 )
@@ -77,6 +78,7 @@ set(updater_HEADERS
   ariadownloader.h
   downloadworker.h
   settingsdialog.h
+  downloadtimecalculator.h
   mainwindow.h)
 
 add_subdirectory(quazip)

@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "downloadtimecalculator.h"
+
 #include <QMainWindow>
 #include <QRegularExpression>
 #include <QSettings>
@@ -46,10 +48,12 @@ private slots:
 
 private:
     QString sizeToString(int size);
+    QString timeToString(int time);
     void stopAria(void);
 
     Ui::MainWindow *ui;
     DownloadWorker *worker;
+    DownloadTimeCalculator downloadTime;
     QSettings settings;
     std::unique_ptr<QLabel> textBrowser;
     std::unique_ptr<NewsFetcher> newsFetcher;
