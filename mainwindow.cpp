@@ -81,7 +81,8 @@ void MainWindow::onCurrentVersion(QString version)
     if (version.isEmpty()) {
         connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startGame()));
         textBrowser->setText("Invalid version received. Press > to play the game anyways.");
-    } else if (settings.value(Settings::CURRENT_VERSION).toString() != version) {
+    } else if (settings.value(Settings::CURRENT_VERSION).toString() != version
+            || !settings.value(Settings::INSTALL_FINISHED, false).toBool()) {
         currentVersion = version;
         startUpdate();
     } else {
@@ -92,6 +93,7 @@ void MainWindow::onCurrentVersion(QString version)
 
 void MainWindow::startUpdate(void)
 {
+    settings.setValue(Settings::INSTALL_FINISHED, false);
     QString installDir = settings.value(Settings::INSTALL_PATH).toString();
     QDir dir(installDir);
     if (!dir.exists()) {
@@ -197,6 +199,7 @@ void MainWindow::onDownloadEvent(int event)
             connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startGame()));
             setCompletedSize(totalSize);
             setDownloadSpeed(0);
+            settings.setValue(Settings::INSTALL_FINISHED, true);
             textBrowser->setText("Up to date. Press > to play the game.");
             stopAria();
             settings.setValue(Settings::CURRENT_VERSION, currentVersion);
