@@ -11,7 +11,7 @@ bool IsWow64()
 
     LPFN_ISWOW64PROCESS fnIsWow64Process;
 
-    HMODULE module = GetModuleHandle(_T("kernel32"));
+    HMODULE module = GetModuleHandle("kernel32");
     const char funcName[] = "IsWow64Process";
     fnIsWow64Process = (LPFN_ISWOW64PROCESS)
     GetProcAddress(module, funcName);
@@ -20,7 +20,7 @@ bool IsWow64()
     {
         if (!fnIsWow64Process(GetCurrentProcess(),
             &bIsWow64))
-            throw std::exception("Unknown error");
+            return false;
     }
     return bIsWow64 != FALSE;
 }
@@ -36,7 +36,7 @@ QString archiveName(void)
 
 QString defaultInstallPath(void)
 {
-    return "%%APPDATA%%\Unvanquished";
+    return "%APPDATA%\\Unvanquished";
 }
 
 QString executableName(void)
