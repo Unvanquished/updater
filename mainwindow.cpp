@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
         settings.setValue(Settings::COMMAND_LINE, "%command%");
     }
     ui->installLocation->setText(settings.value(Settings::INSTALL_PATH).toString());
-    ui->horizontalWidget->hide();
+    ui->downloadInfoContainer->hide();
     textBrowser->setStyleSheet("margin-left: 10px");
     ui->gridLayout->addWidget(textBrowser.get(), 3, 0, 1, 1);
     ui->updateButton->setIcon(QIcon(":images/ic_play_arrow_black_48dp.png"));
@@ -49,8 +49,9 @@ MainWindow::MainWindow(QWidget *parent) :
         newsFetcher->get("https://www.unvanquished.net/?cat=3&json=1");
         currentVersionFetcher->fetchCurrentVersion("https://dl.unvanquished.net/current.txt");
     } else {
-        if (settings.contains(Settings::CURRENT_VERSION)) {
+        if (settings.value(Settings::INSTALL_FINISHED).toBool()) {
             connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startGame()));
+            ui->installLocationContainer->hide();
             textBrowser->setText("No internet connection. Press > to play the game anyways.");
         } else {
             textBrowser->setText("No internet connection and game not installed. Please fix.");
@@ -87,6 +88,7 @@ void MainWindow::onCurrentVersion(QString version)
         startUpdate();
     } else {
         connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startGame()));
+        ui->installLocationContainer->hide();
         textBrowser->setText("Up to date. Press > to play the game.");
     }
 }
@@ -108,7 +110,7 @@ void MainWindow::startUpdate(void)
         return;
     }
     ui->actionVerify->setEnabled(false);
-    ui->horizontalWidget1->hide();
+    ui->installLocationContainer->hide();
     textBrowser->setText("Installing to " + dir.canonicalPath());
     ui->updateButton->setIcon(QIcon(":images/ic_pause_black_48dp.png"));
     ui->updateButton->setIconSize({20, 20});
@@ -187,7 +189,7 @@ void MainWindow::setCompletedSize(int size)
 {
     ui->completedSize->setText(sizeToString(size));
     ui->progressBar->setValue((static_cast<float>(size) / totalSize) * 100);
-    ui->horizontalWidget->show();
+    ui->downloadInfoContainer->show();
     ui->eta->setText(timeToString(downloadTime.getTime(totalSize - size)));
 }
 
@@ -202,6 +204,7 @@ void MainWindow::onDownloadEvent(int event)
             setCompletedSize(totalSize);
             setDownloadSpeed(0);
             settings.setValue(Settings::INSTALL_FINISHED, true);
+            ui->downloadInfoContainer->hide();
             textBrowser->setText("Up to date. Press > to play the game.");
             stopAria();
             settings.setValue(Settings::CURRENT_VERSION, currentVersion);
