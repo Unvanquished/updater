@@ -2,7 +2,8 @@ cmake_minimum_required( VERSION 3.0 )
 project(updater)
 
 option(USE_STATIC "Build the updater using static Qt5" 0)
-set(QT_DIR "" CACHE STRING "Directory to find Qt5 for static builds")
+set(QT_DIR "" CACHE FILEPATH "Directory to find Qt5 for static builds")
+set(ARIA_LIBRARY "${CMAKE_SOURCE_DIR}/aria2/src/.libs/libaria2.a" CACHE FILEPATH "Path to libaria")
 
 # Find the QtWidgets library
 find_package(Qt5Widgets REQUIRED)
@@ -88,4 +89,4 @@ QT5_WRAP_UI(updater_FORMS_HEADERS ${updater_FORMS})
 QT5_ADD_RESOURCES(updater_RESOURCES_RCC resources.qrc)
 add_executable(updater ${updater_SOURCES} ${updater_HEADERS} ${updater_FORMS_HEADERS} ${updater_RESOURCES_RCC} updater.rc)
 set_property(TARGET updater PROPERTY CXX_STANDARD 11)
-target_link_libraries(updater ${CMAKE_SOURCE_DIR}/aria2/src/.libs/libaria2.a quazip ${ZLIB_LIBRARIES} ${PLATFORM_LIBS} ${QT5_LIBS} ${OS_LIBS})
+target_link_libraries(updater ${ARIA_LIBRARY} quazip ${ZLIB_LIBRARIES} ${PLATFORM_LIBS} ${QT5_LIBS} ${OS_LIBS})
