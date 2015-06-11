@@ -74,6 +74,7 @@ bool MainWindow::close(void)
 void MainWindow::openSettings(void)
 {
     SettingsDialog dialog(this);
+    dialog.setModal(true);
     dialog.exec();
 }
 
