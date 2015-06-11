@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     ui->installLocation->setText(settings.value(Settings::INSTALL_PATH).toString());
     ui->downloadInfoContainer->hide();
+    ui->installLocationContainer->hide();
     textBrowser->setStyleSheet("margin-left: 10px");
     ui->gridLayout->addWidget(textBrowser.get(), 3, 0, 1, 1);
     ui->updateButton->setIcon(QIcon(":images/ic_play_arrow_black_48dp.png"));
@@ -51,7 +52,6 @@ MainWindow::MainWindow(QWidget *parent) :
     } else {
         if (settings.value(Settings::INSTALL_FINISHED).toBool()) {
             connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startGame()));
-            ui->installLocationContainer->hide();
             textBrowser->setText("No internet connection. Press > to play the game anyways.");
         } else {
             textBrowser->setText("No internet connection and game not installed. Please fix.");
@@ -84,12 +84,17 @@ void MainWindow::onCurrentVersion(QString version)
         connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startGame()));
         textBrowser->setText("Invalid version received. Press > to play the game anyways.");
     } else if (settings.value(Settings::CURRENT_VERSION).toString() != version
-            || !settings.value(Settings::INSTALL_FINISHED, false).toBool()) {
+            && settings.value(Settings::INSTALL_FINISHED, false).toBool()) {
         currentVersion = version;
         startUpdate();
+    } else if (settings.value(Settings::CURRENT_VERSION).toString() != version
+            && !settings.value(Settings::INSTALL_FINISHED, false).toBool()) {
+        currentVersion = version;
+        ui->installLocationContainer->show();
+        connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startUpdate()));
     } else {
         connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startGame()));
-        ui->installLocationContainer->hide();
+        ui->progressBar->setValue(100);
         textBrowser->setText("Up to date. Press > to play the game.");
     }
 }
