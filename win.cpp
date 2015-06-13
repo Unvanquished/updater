@@ -36,7 +36,8 @@ QString archiveName(void)
 
 QString defaultInstallPath(void)
 {
-    return "%APPDATA%\\Unvanquished";
+    QString appDataPath = qgetenv("APPDATA");
+    return appDataPath + "\\Unvanquished";
 }
 
 QString executableName(void)

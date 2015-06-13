@@ -47,8 +47,8 @@ MainWindow::MainWindow(QWidget *parent) :
     if (networkManager.isOnline()) {
         connect(newsFetcher.get(), SIGNAL(newsItemsLoaded(QStringList)), this, SLOT(onNewsLoaded(QStringList)));
         connect(currentVersionFetcher.get(), SIGNAL(onCurrentVersion(QString)), this, SLOT(onCurrentVersion(QString)));
-        newsFetcher->get("https://www.unvanquished.net/?cat=3&json=1");
-        currentVersionFetcher->fetchCurrentVersion("https://dl.unvanquished.net/current.txt");
+        newsFetcher->get("http://www.unvanquished.net/?cat=3&json=1");
+        currentVersionFetcher->fetchCurrentVersion("http://dl.unvanquished.net/current.txt");
     } else {
         if (settings.value(Settings::INSTALL_FINISHED).toBool()) {
             connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startGame()));
