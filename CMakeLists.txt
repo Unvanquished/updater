@@ -37,6 +37,7 @@ include_directories(${ZLIB_INCLUDE_DIR})
 # We need add -DQT_WIDGETS_LIB when using QtWidgets in Qt 5.
 add_definitions(${Qt5Widgets_DEFINITIONS})
 
+# Qt5 hates CMake for static compiles
 if (USE_STATIC)
   add_definitions(-DUSE_STATIC)
   set(QT5_LIBS "-L${QT_DIR}/lib -lQt5Widgets -lQt5Gui -lqtharfbuzzng -lQt5Network -lQt5Core")
@@ -44,7 +45,6 @@ if (USE_STATIC)
       set(OS_LIBS "-L${QT_DIR}/lib -lQt5PrintSupport -lcups -lQt5PlatformSupport -framework DiskArbitration -framework IOKit -framework ApplicationServices -framework CoreServices -framework CoreFoundation -framework Foundation -framework Cocoa -framework OpenGL -framework AGL -lQNetwork  -lQt5Core -lz -lm -framework Carbon -framework Cocoa -lz -framework OpenGL -framework AGL")
       set(PLATFORM_LIBS "-L${QT_DIR}/plugins/bearer -lqgenericbearer -L${QT_DIR}/plugins/platforms -lqcocoa -framework Cocoa -framework Carbon")
   elseif (UNIX)
-    # Qt5 hates CMake for static compiles
     set(OS_LIBS "-lpthread -lm -ldl -lrt")
     set(PLATFORM_LIBS "-L${QT_DIR}/plugins/bearer -lqgenericbearer -L${QT_DIR}/plugins/platforms -lqxcb -lX11 -lX11-xcb -lXi -lSM -lICE -ldbus-1 -lxcb -L${QT_DIR}/lib -lxcb-static -lQt5PlatformSupport -lQt5DBus -lfontconfig -lfreetype -ludev")
   elseif (WIN32)
