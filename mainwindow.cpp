@@ -91,6 +91,7 @@ void MainWindow::onCurrentVersion(QString version)
             && !settings.value(Settings::INSTALL_FINISHED, false).toBool()) {
         currentVersion = version;
         ui->installLocationContainer->show();
+        ui->progressBar->hide();
         connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startUpdate()));
     } else {
         connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startGame()));
@@ -117,6 +118,7 @@ void MainWindow::startUpdate(void)
     }
     ui->actionVerify->setEnabled(false);
     ui->installLocationContainer->hide();
+    ui->progressBar->show();
     textBrowser->setText("Installing to " + dir.canonicalPath());
     ui->updateButton->setIcon(QIcon(":images/ic_pause_black_48dp.png"));
     ui->updateButton->setIconSize({20, 20});

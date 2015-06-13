@@ -43,7 +43,7 @@ see quazip/(un)zip.h files for details. Basically it's the zlib license.
 #if defined(QUAZIP_BUILD)
 	#define QUAZIP_EXPORT Q_DECL_EXPORT
 #else
-	#define QUAZIP_EXPORT Q_DECL_IMPORT
+	#define QUAZIP_EXPORT Q_DECL_EXPORT
 #endif
 #endif // QUAZIP_STATIC
 
