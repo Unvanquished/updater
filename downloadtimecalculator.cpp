@@ -12,7 +12,7 @@ void DownloadTimeCalculator::addSpeed(int speed)
     if (numSpeeds < kMaxNumSpeeds) numSpeeds++;
     speeds[currentIndex++ % kMaxNumSpeeds] = speed;
     totalSum += speed;
-    average = static_cast<float>(totalSum) / numSpeeds;
+    average = totalSum / numSpeeds;
 }
 
 int DownloadTimeCalculator::getTime(int remainingSize)
