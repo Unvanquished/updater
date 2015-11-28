@@ -11,7 +11,7 @@
 #include <QStandardItemModel>
 #include <QDebug>
 #include <QProcess>
-
+#include <cmath>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -259,8 +259,8 @@ QString MainWindow::sizeToString(int size)
 QString MainWindow::timeToString(int time)
 {
     return QString("%1:%2:%3 left")
-        .arg(static_cast<int>(trunc(time / 3600.0f)), 2, 10, static_cast<QChar>('0'))
-        .arg(static_cast<int>(trunc((time % 3600) / 60.0f)), 2, 10, static_cast<QChar>('0'))
+        .arg(static_cast<int>(std::trunc(time / 3600.0f)), 2, 10, static_cast<QChar>('0'))
+        .arg(static_cast<int>(std::trunc((time % 3600) / 60.0f)), 2, 10, static_cast<QChar>('0'))
         .arg(static_cast<int>(time % 60), 2, 10, static_cast<QChar>('0'));
 }
 
