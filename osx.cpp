@@ -1,5 +1,8 @@
 #include "system.h"
+#include "settingsdialog.h"
 #include <QDir>
+#include <QFile>
+#include <QSettings>
 
 namespace Sys {
 QString archiveName(void)
@@ -9,7 +12,7 @@ QString archiveName(void)
 
 QString defaultInstallPath(void)
 {
-    return QDir::homePath() +  "/Application Support/Library/Unvanquished";
+    return QDir::homePath() +  "/Games/Unvanquished";
 }
 
 QString executableName(void)
@@ -19,6 +22,9 @@ QString executableName(void)
 
 bool install(void)
 {
+	QSettings settings;
+	QFile::link(settings.value(Settings::INSTALL_PATH).toString() + "/Unvanquished.app",
+	            QDir::homePath() + "/Applications/Unvanquished.app");
     return true;
 }
 }
