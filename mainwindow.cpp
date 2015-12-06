@@ -211,7 +211,7 @@ void MainWindow::onDownloadEvent(int event)
             connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(startGame()));
             setCompletedSize(totalSize);
             setDownloadSpeed(0);
-            settings.setValue(Settings::INSTALL_FINISHED, true);
+            Sys::install();
             ui->downloadInfoContainer->hide();
             textBrowser->setText("Up to date. Press > to play the game.");
             stopAria();

@@ -16,4 +16,9 @@ QString executableName(void)
 {
     return "Unvanquished.app";
 }
+
+bool install(void)
+{
+    return true;
+}
 }
