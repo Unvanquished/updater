@@ -10,7 +10,6 @@
 #include <QDir>
 #include <QStandardItemModel>
 #include <QDebug>
-#include <QProcess>
 #include <cmath>
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -141,10 +140,11 @@ void MainWindow::startUpdate(void)
 
 void MainWindow::startGame(void)
 {
-    QString cmd = settings.value(Settings::INSTALL_PATH).toString() + "/" + Sys::executableName();
+    QString cmd = settings.value(Settings::INSTALL_PATH).toString() + QDir::separator() + Sys::executableName();
     QString commandLine = settings.value(Settings::COMMAND_LINE).toString();
     commandLine.replace(commandRegex, cmd);
-    QProcess::startDetached(commandLine);
+    // HACK: Use system until I figure out why QProcess::startDetached doesn't work well.
+    system(commandLine.toStdString().c_str());
     close();
 }
 
