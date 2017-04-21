@@ -146,7 +146,6 @@ void MainWindow::startGame(void)
     commandLine.replace(commandRegex, cmd);
 
     QProcess *process = new QProcess;
-    //connect(process, SIGNAL(started()), this, SLOT(close())); //close updater automatically when game starts
     connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), process, SLOT(deleteLater()));
     process->start(commandLine);
 }
