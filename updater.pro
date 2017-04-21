@@ -38,3 +38,5 @@ win32:LIBS += -lz aria2/src/.libs/libaria2.a
 unix:LIBS += -lz "-Laria2/src/.libs" -laria2
 RESOURCES += resources.qrc
 FORMS += mainwindow.ui settingsdialog.ui
+
+win32:RC_FILE = updater.rc
