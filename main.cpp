@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
         a.setFont(font);
     }
     w.setWindowTitle("Unvanquished Updater");
+    w.setWindowIcon(QIcon(":images/updater.png"));
     w.show();
 
     return a.exec();
