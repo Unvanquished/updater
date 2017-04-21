@@ -159,6 +159,7 @@ void MainWindow::onNewsLoaded(QStringList news)
         label->setText(news[i]);
         label->setWordWrap(true);
         label->setStyleSheet("margin-top: -25px");
+        label->setOpenExternalLinks(true);
         layout->addWidget(label);
     }
 
