@@ -21,7 +21,7 @@ void DownloadWorker::addUri(const std::string& uri)
 }
 
 void DownloadWorker::onDownloadCallback(aria2::Session* session, aria2::DownloadEvent event,
-                                        aria2::A2Gid gid, void* userData)
+                                        aria2::A2Gid gid, void* /* userData */)
 {
     switch (event) {
         case aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE:

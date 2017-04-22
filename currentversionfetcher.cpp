@@ -4,7 +4,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-CurrentVersionFetcher::CurrentVersionFetcher(QObject* parent) : manager(new QNetworkAccessManager(this))
+CurrentVersionFetcher::CurrentVersionFetcher(QObject* parent) : QObject(parent), manager(new QNetworkAccessManager(this))
 {
     connect(manager.get(), SIGNAL(finished(QNetworkReply*)), this, SLOT(reply(QNetworkReply*)));
 }

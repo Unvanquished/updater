@@ -10,7 +10,7 @@ class CurrentVersionFetcher : public QObject
 {
     Q_OBJECT
 public:
-    explicit CurrentVersionFetcher(QObject *parent = 0);
+    explicit CurrentVersionFetcher(QObject *parent = nullptr);
     void fetchCurrentVersion(QString url);
 
 signals:

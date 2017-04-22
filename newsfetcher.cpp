@@ -11,7 +11,7 @@
 
 #include <QDebug>
 
-NewsFetcher::NewsFetcher(QObject *parent) : manager(new QNetworkAccessManager(this))
+NewsFetcher::NewsFetcher(QObject *parent) : QObject(parent), manager(new QNetworkAccessManager(this))
 {
     connect(manager.get(), SIGNAL(finished(QNetworkReply*)), this, SLOT(parseJson(QNetworkReply*)));
 }

@@ -45,16 +45,16 @@ private:
         DOWNLOADING_UNVANQUISHED
     };
 
-    QRegularExpression renameRegex;
-    AriaDownloader downloader;
-    QString downloadDir;
-    State state;
-    bool paused;
-    std::atomic_bool running;
     int downloadSpeed;
     int uploadSpeed;
     int totalSize;
     int completedSize;
+    bool paused;
+    State state;
+    std::atomic_bool running;
+    QRegularExpression renameRegex;
+    AriaDownloader downloader;
+    QString downloadDir;
 };
 
 #endif // DOWNLOADWORKER_H

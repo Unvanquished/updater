@@ -80,7 +80,6 @@ AriaDownloader::DownloadCallback* AriaDownloader::callback(void)
 
 void AriaDownloader::updateStats(void)
 {
-    aria2::GlobalStat gstat = aria2::getGlobalStat(session);
     std::vector<aria2::A2Gid> gids = aria2::getActiveDownload(session);
     for(const auto& gid : gids) {
         aria2::DownloadHandle* dh = aria2::getDownloadHandle(session, gid);
