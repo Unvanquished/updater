@@ -18,7 +18,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow),
     worker(nullptr),
     textBrowser(new QLabel(this)),
-    newsFetcher(new NewsFetcher(ui->scrollAreaWidgetContents)),
+    newsFetcher(new NewsFetcher(this)),
     currentVersionFetcher(new CurrentVersionFetcher(this)),
     totalSize(0),
     paused(false),
