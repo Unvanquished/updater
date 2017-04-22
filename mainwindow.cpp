@@ -7,6 +7,7 @@
 #include "aria2/src/includes/aria2/aria2.h"
 #include "system.h"
 
+#include <QProcess>
 #include <QDir>
 #include <QStandardItemModel>
 #include <QDebug>
@@ -143,9 +144,10 @@ void MainWindow::startGame(void)
     QString cmd = settings.value(Settings::INSTALL_PATH).toString() + QDir::separator() + Sys::executableName();
     QString commandLine = settings.value(Settings::COMMAND_LINE).toString();
     commandLine.replace(commandRegex, cmd);
-    // HACK: Use system until I figure out why QProcess::startDetached doesn't work well.
-    system(commandLine.toStdString().c_str());
-    close();
+
+    QProcess *process = new QProcess;
+    connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), process, SLOT(deleteLater()));
+    process->start(commandLine);
 }
 
 void MainWindow::onNewsLoaded(QStringList news)
@@ -156,6 +158,7 @@ void MainWindow::onNewsLoaded(QStringList news)
         label->setText(news[i]);
         label->setWordWrap(true);
         label->setStyleSheet("margin-top: -25px");
+        label->setOpenExternalLinks(true);
         layout->addWidget(label);
     }
 

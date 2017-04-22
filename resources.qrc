@@ -4,6 +4,7 @@
     <file>images/ic_play_arrow_black_48dp.png</file>
     <file>images/ic_pause_black_48dp.png</file>
     <file>images/unvanquished.png</file>
+    <file>images/updater.png</file>
     <file>misc/unvanquished.desktop</file>
 </qresource>
 </RCC>
