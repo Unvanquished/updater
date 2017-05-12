@@ -4,6 +4,7 @@
         <file>qtquickcontrols2.conf</file>
         <file>resources/menu.png</file>
         <file>resources/menu720p.png</file>
+        <file>resources/Roboto-Regular.ttf</file>
         <file>News.qml</file>
         <file>NewsCard.qml</file>
     </qresource>

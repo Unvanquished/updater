@@ -8,11 +8,13 @@ ApplicationWindow {
     width: 1280
     height: 720
     title: qsTr("Unvanquished Updater")
-    Material.primary: Material.LightBlue
-    Material.accent: Material.Blue
-
+    Material.theme: Material.Light
+    Material.primary: Material.DarkBlue
+    Material.accent: Material.Violet
     Image {
-        source: "qrc:/resources/menu720p.png"
+      width: parent.width
+      height: parent.height
+      source: "qrc:/resources/menu720p.png"
     }
     News {}
 }

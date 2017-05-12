@@ -1,12 +1,19 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
+import QtQuick.Controls.Material 2.0
 import Fluid.Controls 1.0
-Item {
+
+Flickable {
+    id: item
+    property url source : ""
+    property string cardTitle : "Test"
+    property string summary : "Test"
     Card {
         id: card
         anchors.centerIn: parent
         width: 400
         height: 400
+//         Material.theme = Material.Dark
 
         Image {
             id: picture
@@ -16,7 +23,7 @@ Item {
                 right: parent.right
             }
             height: 200
-
+            source: item.source
             BusyIndicator {
                 anchors.centerIn: parent
                 visible: picture.status !== Image.Ready
@@ -35,12 +42,14 @@ Item {
 
             TitleLabel {
                 id: title
+                text: item.cardTitle
             }
 
             BodyLabel {
                 id: summary
                 wrapMode: Text.WordWrap
                 width: parent.width
+                text: item.summary
             }
         }
     }

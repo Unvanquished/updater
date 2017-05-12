@@ -1,8 +1,11 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.1
 
-
-Pane {
+Item {
+    width: parent.width
+    height: parent.height
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.verticalCenter: parent.verticalCenter
     function fetchNews() {
         console.log('fetching...');
         var news = new XMLHttpRequest();
@@ -13,24 +16,26 @@ Pane {
                 for (var i = 0; i < newsObj['posts'].length; ++i) {
                     var object = component.createObject(swipe);
                     var post = newsObj['posts'][i];
-                    console.log(post['attachments'][0]['images']['medium']['url']);
-                    for (var key in object) console.log(key);
-                    console.log(object.picture);
-                    //object.children[0].children[0].source = Qt.resolvedUrl(post['attachments'][0]['images']['medium']['url']);
-                    object.children[0].children[1].children[0].text = post['title_plain'];
-                    object.children[0].children[1].children[1].text = post['excerpt'];
+                    if (post['attachments'] && post['attachments'].length > 0) {
+                        object.source = Qt.resolvedUrl(post['attachments'][0]['images']['medium']['url']);
+                    }
+                    object.cardTitle = post['title_plain'];
+                    object.summary = post['excerpt'];
                 }
             }
         }
         news.open('GET', 'http://www.unvanquished.net/?json=get_recent_posts');
         news.send();
     }
-
     SwipeView {
         id: swipe
         currentIndex: 1
         anchors.fill: parent
         Component.onCompleted: fetchNews()
+//         Repeater {
+//           model: 6
+//           NewsCard {}
+//         }
     }
     PageIndicator {
         id: indicator
@@ -38,7 +43,7 @@ Pane {
         count: swipe.count
         currentIndex: swipe.currentIndex
 
-        anchors.bottom: swipe.bottom
+        anchors.top: swipe.bottom
         anchors.horizontalCenter: parent.horizontalCenter
     }
 }
