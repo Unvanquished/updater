@@ -4,9 +4,10 @@ import QtQuick.Controls.Material 2.0
 import QtQuick.Layouts 1.0
 
 ApplicationWindow {
+    id: root
     visible: true
-    width: 1280
-    height: 720
+    width: 700
+    height: 600
     title: qsTr("Unvanquished Updater")
     Material.theme: Material.Light
     Material.primary: Material.DarkBlue
@@ -14,7 +15,8 @@ ApplicationWindow {
     Image {
       width: parent.width
       height: parent.height
-      source: "qrc:/resources/menu720p.png"
+      source: "qrc:/resources/menu.png"
     }
     News {}
+    DownloadInfo {}
 }

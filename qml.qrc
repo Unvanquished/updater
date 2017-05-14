@@ -7,5 +7,8 @@
         <file>resources/Roboto-Regular.ttf</file>
         <file>News.qml</file>
         <file>NewsCard.qml</file>
+        <file>DownloadInfo.qml</file>
+        <file>resources/splash.png</file>
+        <file>splash.qml</file>
     </qresource>
 </RCC>

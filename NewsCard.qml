@@ -2,6 +2,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtQuick.Controls.Material 2.0
 import Fluid.Controls 1.0
+import Fluid.Effects 1.0
 
 Flickable {
     id: item
@@ -10,9 +11,9 @@ Flickable {
     property string summary : "Test"
     Card {
         id: card
-        anchors.centerIn: parent
-        width: 400
-        height: 400
+        width: parent.width
+        height: parent.height
+
 //         Material.theme = Material.Dark
 
         Image {
@@ -21,8 +22,10 @@ Flickable {
                 left: parent.left
                 top: parent.top
                 right: parent.right
+                margins: 20
             }
-            height: 200
+
+            height: parent.height * 0.5
             source: item.source
             BusyIndicator {
                 anchors.centerIn: parent
