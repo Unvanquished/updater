@@ -1,12 +1,38 @@
-QT += qml quick
+QT += qml quick network
 
 include(fluid/fluid.pri)
 
 CONFIG += c++11
 
-SOURCES += main.cpp
+HEADERS += ariadownloader.h \
+    downloadtimecalculator.h \
+    downloadworker.h \
+    system.h \
+    settings.h
+
+
+SOURCES += ariadownloader.cpp \
+    downloadtimecalculator.cpp \
+    downloadworker.cpp \
+    main.cpp
+
+mac {
+  SOURCES += osx.cpp
+} unix {
+  SOURCES += unix.cpp
+} win32 {
+  SOURCES += win.cpp
+}
+
+DEFINES += QUAZIP_BUILD
+DEFINES += QUAZIP_STATIC
+include(quazip/quazip/quazip.pri)
+
 
 RESOURCES += qml.qrc
+
+win32:LIBS += -lz $$PWD/aria2/src/.libs/libaria2.a
+unix:LIBS += -lz "-L$$PWD/aria2/src/.libs" -laria2
 
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH += fluid/src/imports/controls/qmldir
