@@ -6,6 +6,7 @@ ApplicationWindow {
     id: splash
     width: 725
     height: 228
+    flags: Qt.SplashScreen | Qt.WindowStaysOnTopHint
 
     Image {
         width: parent.width
