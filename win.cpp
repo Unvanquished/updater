@@ -62,8 +62,8 @@ QString executableName(void)
 
 bool install(void)
 {
-    QSettings settings;
-    QString installPath = settings.value(Settings::INSTALL_PATH).toString();
+    Settings settings;
+    QString installPath = settings.installPath();
     setRegistryKey("HKEY_CLASSES_ROOT\\unv", "Default", "URL: Unvanquished Protocol");
     setRegistryKey("HKEY_CLASSES_ROOT\\unv\\DefaultIcon", "Default",
                    installPath + "\\daemon.exe,1");

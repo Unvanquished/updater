@@ -8,13 +8,16 @@ HEADERS += ariadownloader.h \
     downloadtimecalculator.h \
     downloadworker.h \
     system.h \
-    settings.h
+    settings.h \
+    qmldownloader.h
 
 
 SOURCES += ariadownloader.cpp \
     downloadtimecalculator.cpp \
     downloadworker.cpp \
-    main.cpp
+    main.cpp \
+    qmldownloader.cpp \
+    settings.cpp
 
 mac {
   SOURCES += osx.cpp

@@ -2,7 +2,6 @@
 #include "settings.h"
 #include <QDir>
 #include <QFile>
-#include <QSettings>
 
 namespace Sys {
 QString archiveName(void)
@@ -22,8 +21,8 @@ QString executableName(void)
 
 bool install(void)
 {
-	QSettings settings;
-	QFile::link(settings.value(Settings::INSTALL_PATH).toString() + "/Unvanquished.app",
+    Settings settings;
+    QFile::link(settings.installPath + "/Unvanquished.app",
 	            QDir::homePath() + "/Applications/Unvanquished.app");
     return true;
 }

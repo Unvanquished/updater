@@ -1,7 +1,6 @@
 #include "system.h"
 #include "settings.h"
 #include <QDir>
-#include <QSettings>
 
 namespace Sys {
 QString archiveName(void)
@@ -22,13 +21,13 @@ QString executableName(void)
 bool install(void)
 {
     // Set up menu and protocol handler
-    QSettings settings;
+    Settings settings;
     QFile desktopFile(":misc/unvanquished.desktop");
     if (!desktopFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         return false;
     }
     QString desktopStr = QString(desktopFile.readAll().data())
-        .arg(settings.value(Settings::INSTALL_PATH).toString());
+        .arg(settings.installPath());
     QFile outputFile(QDir::homePath() + "/.local/share/applications/unvanquished.desktop");
     if (!outputFile.open(QIODevice::ReadWrite | QIODevice::Text)) {
         desktopFile.close();
