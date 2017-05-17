@@ -20,8 +20,8 @@ Card {
                 for (var i = 0; i < newsObj['posts'].length; ++i) {
                     var object = component.createObject(swipe);
                     var post = newsObj['posts'][i];
-                    if (post['attachments'] && post['attachments'].length > 0) {
-                        object.source = Qt.resolvedUrl(post['attachments'][0]['images']['medium']['url']);
+                    if (post['thumbnail_images']) {
+                        object.source = Qt.resolvedUrl(post['thumbnail_images']['medium']['url']);
                     }
                     object.cardTitle = post['title_plain'];
                     object.summary = post['excerpt'];
