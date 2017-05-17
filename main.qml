@@ -17,7 +17,7 @@ ApplicationWindow {
     Connections {
         target: downloader
         ignoreUnknownSignals: true
-        onOnStatusMessage: infoBar.open(message)
+        onStatusMessage: infoBar.open(message)
     }
 
     Image {

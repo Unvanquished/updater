@@ -36,7 +36,7 @@ signals:
     void etaChanged(int eta);
     void totalSizeChanged(int totalSize);
     void completedSizeChanged(int completedSize);
-    void onStatusMessage(QString message);
+    void statusMessage(QString message);
 
 public slots:
     void setDownloadSpeed(int speed);

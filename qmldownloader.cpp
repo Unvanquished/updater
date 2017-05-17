@@ -56,32 +56,32 @@ void QmlDownloader::onDownloadEvent(int event)
     switch (event) {
         case aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE:
             Sys::install();
-            emit onStatusMessage("Up to date. Press > to play the game.");
+            emit statusMessage("Up to date. Press > to play the game.");
             stopAria();
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_COMPLETE:
-            emit onStatusMessage("Torrent downloaded");
+            emit statusMessage("Torrent downloaded");
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_ERROR:
-            emit onStatusMessage("Error received while downloading");
+            emit statusMessage("Error received while downloading");
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_PAUSE:
-            emit onStatusMessage("Download paused");
+            emit statusMessage("Download paused");
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_START:
-            emit onStatusMessage("Download started");
+            emit statusMessage("Download started");
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_STOP:
-            emit onStatusMessage("Download stopped");
+            emit statusMessage("Download stopped");
             break;
 
         case DownloadWorker::ERROR_EXTRACTING:
-            emit onStatusMessage("Error extracting update");
+            emit statusMessage("Error extracting update");
             break;
     }
 }
@@ -93,15 +93,15 @@ void QmlDownloader::startUpdate(void)
     QDir dir(installDir);
     if (!dir.exists()) {
         if (!dir.mkpath(dir.path())) {
-            emit onStatusMessage(dir.canonicalPath() + " does not exist and could not be created");
+            emit statusMessage(dir.canonicalPath() + " does not exist and could not be created");
             return;
         }
     }
     if (!QFileInfo(installDir).isWritable()) {
-        emit onStatusMessage("Install dir not writable. Please select another");
+        emit statusMessage("Install dir not writable. Please select another");
         return;
     }
-    emit onStatusMessage("Installing to " + dir.canonicalPath());
+    emit statusMessage("Installing to " + dir.canonicalPath());
 
     worker_ = new DownloadWorker();
     worker_->setDownloadDirectory(dir.canonicalPath().toStdString());
