@@ -46,6 +46,7 @@ ApplicationWindow {
     }
     FluidControls.InfoBar {
         id: infoBar
+        duration: 5
         buttonText: "OK"
     }
 }
