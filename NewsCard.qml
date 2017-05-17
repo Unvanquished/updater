@@ -9,12 +9,17 @@ Flickable {
     property url source : ""
     property string cardTitle : "Test"
     property string summary : "Test"
+    property string url: ""
     Card {
         id: card
         width: parent.width
         height: parent.height
 
-//         Material.theme = Material.Dark
+        MouseArea {
+            width: parent.width
+            height: parent.height
+            onClicked: Qt.openUrlExternally(item.url)
+        }
 
         Image {
             id: picture

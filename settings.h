@@ -32,6 +32,7 @@ signals:
     void commandLineChanged(QString commandLine);
     void currentVersionChanged(QString currentVersion);
     void installFinishedChanged(bool installFinished);
+    void onMessage(QString message);
 
 private:
     QSettings settings_;

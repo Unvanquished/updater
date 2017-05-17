@@ -130,6 +130,10 @@ void QmlDownloader::startGame(void)
 
 void QmlDownloader::toggleDownload(void)
 {
+    if (!worker_) {
+        startUpdate();
+        return;
+    }
     worker_->toggle();
     paused_ = !paused_;
 }
@@ -140,5 +144,6 @@ void QmlDownloader::stopAria(void)
         worker_->stop();
         thread_.quit();
         thread_.wait();
+        worker_ = nullptr;
     }
 }

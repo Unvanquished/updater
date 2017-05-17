@@ -25,6 +25,7 @@ Card {
                     }
                     object.cardTitle = post['title_plain'];
                     object.summary = post['excerpt'];
+                    object.url = post['url'];
                 }
             }
         }

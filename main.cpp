@@ -1,9 +1,13 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QFontDatabase>
+#include <QQmlContext>
 
 #include "iconsimageprovider.h"
 #include "iconthemeimageprovider.h"
+
+#include "qmldownloader.h"
+#include "settings.h"
 
 #ifdef USE_STATIC
 #include <QtPlugin>
@@ -32,6 +36,11 @@ int main(int argc, char *argv[])
     engine.addImageProvider(QLatin1String("fluidicons"), new IconsImageProvider());
     engine.addImageProvider(QLatin1String("fluidicontheme"), new IconThemeImageProvider());
     engine.load(QUrl(QLatin1String("qrc:/splash.qml")));
+    auto* context = engine.rootContext();
+    Settings settings;
+    QmlDownloader downloader;
+    context->setContextProperty("updaterSettings", &settings);
+    context->setContextProperty("downloader", &downloader);
 
     return app.exec();
 }

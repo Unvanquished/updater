@@ -17,6 +17,9 @@ ApplicationWindow {
             anchors.fill: parent
             onClicked: {
                 var component = Qt.createComponent("main.qml")
+                if (component.status === Component.Error) {
+                    console.log(component.errorString())
+                }
                 var window = component.createObject(splash)
                 window.show()
                 splash.hide()
