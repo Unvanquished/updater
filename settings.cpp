@@ -13,7 +13,7 @@ QString Settings::currentVersion() const {
 }
 
 bool Settings::installFinished() const {
-    return settings_.value(Settings::INSTALL_FINISHED).toBool();
+    return settings_.value(Settings::INSTALL_FINISHED, false).toBool();
 }
 
 void Settings::setInstallPath(const QString& installPath) {

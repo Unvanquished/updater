@@ -10,6 +10,7 @@
 #include <memory>
 #include <chrono>
 
+#include "currentversionfetcher.h"
 #include "downloadworker.h"
 #include "downloadtimecalculator.h"
 #include "settings.h"
@@ -37,6 +38,7 @@ signals:
     void totalSizeChanged(int totalSize);
     void completedSizeChanged(int completedSize);
     void statusMessage(QString message);
+    void updateNeeded(bool updateNeeded);
 
 public slots:
     void setDownloadSpeed(int speed);
@@ -44,10 +46,12 @@ public slots:
     void setTotalSize(int size);
     void setCompletedSize(int size);
     void onDownloadEvent(int event);
+    void onCurrentVersion(QString version);
 
     Q_INVOKABLE void startUpdate();
     Q_INVOKABLE void toggleDownload();
     Q_INVOKABLE void startGame();
+    Q_INVOKABLE void checkForUpdate();
 
 private:
     void stopAria();
@@ -60,9 +64,12 @@ private:
     int completedSize_;
     bool paused_;
 
+    CurrentVersionFetcher fetcher_;
     DownloadWorker* worker_;
     DownloadTimeCalculator downloadTime_;
     Settings settings_;
+    QNetworkConfigurationManager networkManager_;
+    QString currentVersion_;
 
 };
 

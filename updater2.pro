@@ -9,7 +9,8 @@ HEADERS += ariadownloader.h \
     downloadworker.h \
     system.h \
     settings.h \
-    qmldownloader.h
+    qmldownloader.h \
+    currentversionfetcher.h
 
 
 SOURCES += ariadownloader.cpp \
@@ -17,7 +18,8 @@ SOURCES += ariadownloader.cpp \
     downloadworker.cpp \
     main.cpp \
     qmldownloader.cpp \
-    settings.cpp
+    settings.cpp \
+    currentversionfetcher.cpp
 
 mac {
   SOURCES += osx.cpp

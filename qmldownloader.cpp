@@ -1,5 +1,7 @@
 #include <QDir>
 #include <QProcess>
+#include <QApplication>
+#include <QDebug>
 
 #include "qmldownloader.h"
 #include "system.h"
@@ -56,6 +58,8 @@ void QmlDownloader::onDownloadEvent(int event)
     switch (event) {
         case aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE:
             Sys::install();
+            settings_.setCurrentVersion(currentVersion_);
+            settings_.setInstallFinished(true);
             emit statusMessage("Up to date. Press > to play the game.");
             stopAria();
             break;
@@ -125,6 +129,7 @@ void QmlDownloader::startGame(void)
 
     QProcess *process = new QProcess;
     connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), process, SLOT(deleteLater()));
+    connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), QApplication::instance(), SLOT(quit()));
     process->start(commandLine);
 }
 
@@ -145,5 +150,28 @@ void QmlDownloader::stopAria(void)
         thread_.quit();
         thread_.wait();
         worker_ = nullptr;
+    }
+}
+
+void QmlDownloader::checkForUpdate() {
+    if (!settings_.installFinished()) {
+        emit updateNeeded(true);
+        return;
+    } else {
+        if (networkManager_.isOnline()) {
+            connect(&fetcher_, SIGNAL(onCurrentVersion(QString)), this, SLOT(onCurrentVersion(QString)));
+            fetcher_.fetchCurrentVersion("http://dl.unvanquished.net/current.txt");
+            return;
+        }
+    }
+    emit updateNeeded(false);
+}
+
+void QmlDownloader::onCurrentVersion(QString version) {
+    if (version.isEmpty() || settings_.currentVersion() != version) {
+        currentVersion_ = version;
+        emit updateNeeded(true);
+    } else {
+        emit updateNeeded(false);
     }
 }

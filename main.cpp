@@ -35,12 +35,12 @@ int main(int argc, char *argv[])
     engine.addImportPath(QLatin1String("qrc:/"));
     engine.addImageProvider(QLatin1String("fluidicons"), new IconsImageProvider());
     engine.addImageProvider(QLatin1String("fluidicontheme"), new IconThemeImageProvider());
-    engine.load(QUrl(QLatin1String("qrc:/splash.qml")));
     auto* context = engine.rootContext();
     Settings settings;
     QmlDownloader downloader;
     context->setContextProperty("updaterSettings", &settings);
     context->setContextProperty("downloader", &downloader);
 
+    engine.load(QUrl(QLatin1String("qrc:/splash.qml")));
     return app.exec();
 }
