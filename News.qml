@@ -18,7 +18,7 @@ Card {
                 var newsObj = JSON.parse(news.responseText);
                 var component = Qt.createComponent("qrc:/NewsCard.qml");
                 for (var i = 0; i < newsObj['posts'].length; ++i) {
-                    var object = component.createObject(swipe);
+                    var object = component.createObject();
                     var post = newsObj['posts'][i];
                     if (post['thumbnail_images']) {
                         object.source = Qt.resolvedUrl(post['thumbnail_images']['medium']['url']);
@@ -26,6 +26,7 @@ Card {
                     object.cardTitle = post['title_plain'];
                     object.summary = post['excerpt'];
                     object.url = post['url'];
+                    swipe.addItem(object)
                 }
             }
         }
@@ -35,7 +36,7 @@ Card {
     SwipeView {
         id: swipe
         height: parent.height * 0.9
-        width: parent.width * 0.9
+        width: parent.width
         clip: true
         anchors.horizontalCenter: parent.horizontalCenter
         Component.onCompleted: fetchNews()

@@ -7,19 +7,13 @@ import Fluid.Effects 1.0
 Flickable {
     id: item
     property url source : ""
-    property string cardTitle : "Test"
-    property string summary : "Test"
+    property string cardTitle : ""
+    property string summary : ""
     property string url: ""
     Card {
         id: card
         width: parent.width
         height: parent.height
-
-        MouseArea {
-            width: parent.width
-            height: parent.height
-            onClicked: Qt.openUrlExternally(item.url)
-        }
 
         Image {
             id: picture
@@ -59,6 +53,10 @@ Flickable {
                 width: parent.width
                 text: item.summary
             }
+        }
+        Button {
+            text: "Read More"
+            onClicked: Qt.openUrlExternally(item.url)
         }
     }
 }
