@@ -10,6 +10,8 @@ namespace {
 static const QRegularExpression COMMAND_REGEX("%command%");
 }  // namespace
 
+QmlDownloader::QmlDownloader() : worker_(nullptr) {}
+
 int QmlDownloader::downloadSpeed() const {
     return downloadSpeed_;
 }

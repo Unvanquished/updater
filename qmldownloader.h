@@ -25,6 +25,7 @@ class QmlDownloader : public QObject
     Q_PROPERTY(int completedSize READ completedSize NOTIFY completedSizeChanged)
 
 public:
+    QmlDownloader();
     int downloadSpeed() const;
     int uploadSpeed() const;
     int eta() const;
