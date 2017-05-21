@@ -9,7 +9,6 @@ ApplicationWindow {
     flags: Qt.SplashScreen | Qt.WindowStaysOnTopHint
 
     Component.onCompleted: {
-        console.log('onCompleted....')
         downloader.checkForUpdate()
     }
 
