@@ -17,7 +17,10 @@ ApplicationWindow {
     Connections {
         target: downloader
         ignoreUnknownSignals: true
-        onStatusMessage: infoBar.open(message)
+        onStatusMessage: {
+            console.log(message);
+            infoBar.open(message);
+        }
     }
 
     Image {
@@ -46,7 +49,6 @@ ApplicationWindow {
     }
     FluidControls.InfoBar {
         id: infoBar
-        duration: 5
-        buttonText: "OK"
+        duration: 3000
     }
 }
