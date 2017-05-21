@@ -9,18 +9,6 @@
 #include "qmldownloader.h"
 #include "settings.h"
 
-#ifdef USE_STATIC
-#include <QtPlugin>
-#ifdef _WIN32
-Q_IMPORT_PLUGIN(QWindowsIntegrationPlugin)
-#elif defined(__linux__)
-Q_IMPORT_PLUGIN(QXcbIntegrationPlugin)
-#else
-Q_IMPORT_PLUGIN(QCocoaIntegrationPlugin)
-#endif
-Q_IMPORT_PLUGIN(QGenericEnginePlugin)
-#endif
-
 int main(int argc, char *argv[])
 {
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
