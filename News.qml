@@ -37,7 +37,6 @@ Card {
         height: parent.height * 0.9
         width: parent.width * 0.9
         clip: true
-        anchors.centerIn: parent
         anchors.horizontalCenter: newsContainer.horizontalCenter
         Component.onCompleted: fetchNews()
     }

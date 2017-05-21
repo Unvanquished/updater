@@ -49,7 +49,7 @@ Item {
         title: "Please choose a file"
         folder: shortcuts.home
         onAccepted: {
-            updaterSettings.installPath = Qt.resolvedUrl(fileDialog.fileUrl)
+            updaterSettings.installPath = Qt.resolvedUrl(fileDialog.fileUrl).substring('file://'.length)
         }
         selectFolder: true
     }

@@ -84,7 +84,7 @@ Item {
     }
     ActionButton {
         id: downloadAction
-        property bool started: false
+        property bool complete: false
         iconName: "av/play_arrow"
         scale: 0.83
         anchors.verticalCenter: parent.verticalCenter
@@ -92,14 +92,27 @@ Item {
         Material.background: Material.Red
         Material.elevation: 1
         onClicked: {
+            if (complete) {
+                root.hide();
+                downloader.startGame();
+                return;
+            }
+
             downloadInfo.visible = true;
             if (this.iconName === "av/pause") {
                 this.iconName = "av/play_arrow";
             } else {
                 this.iconName = "av/pause";
             }
-            this.started = !this.started;
             downloader.toggleDownload();
+        }
+    }
+    Connections {
+        target: downloader
+        ignoreUnknownSignals: true
+        onUpdateComplete: {
+            downloadAction.iconName = "av/play_arrow"
+            downloadAction.complete = true
         }
     }
 }

@@ -17,7 +17,6 @@ ApplicationWindow {
         target: downloader
         ignoreUnknownSignals: true
         onUpdateNeeded: {
-            console.log('onUpdateNeeded ' + updateNeeded)
             if (updateNeeded) {
                 var component = Qt.createComponent("main.qml");
                 if (component.status === Component.Error) {

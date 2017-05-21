@@ -60,7 +60,11 @@ void QmlDownloader::onDownloadEvent(int event)
             Sys::install();
             settings_.setCurrentVersion(currentVersion_);
             settings_.setInstallFinished(true);
+            setDownloadSpeed(0);
+            setUploadSpeed(0);
+            setCompletedSize(totalSize_);
             emit statusMessage("Up to date. Press > to play the game.");
+            emit updateComplete();
             stopAria();
             break;
 

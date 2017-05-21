@@ -39,6 +39,7 @@ signals:
     void completedSizeChanged(int completedSize);
     void statusMessage(QString message);
     void updateNeeded(bool updateNeeded);
+    void updateComplete();
 
 public slots:
     void setDownloadSpeed(int speed);
