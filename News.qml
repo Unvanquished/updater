@@ -37,14 +37,13 @@ Card {
         height: parent.height * 0.9
         width: parent.width * 0.9
         clip: true
-        anchors.horizontalCenter: newsContainer.horizontalCenter
+        anchors.horizontalCenter: parent.horizontalCenter
         Component.onCompleted: fetchNews()
     }
     PageIndicator {
         id: indicator
         count: swipe.count
         currentIndex: swipe.currentIndex
-
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
     }
