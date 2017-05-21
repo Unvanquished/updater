@@ -18,8 +18,6 @@ void DownloadTimeCalculator::addSpeed(int speed)
 int DownloadTimeCalculator::getTime(int remainingSize)
 {
     if (numSpeeds == 0) return 0;
+    if (remainingSize <= 0) return 0;
     return remainingSize / average;
 }
-
-
-
