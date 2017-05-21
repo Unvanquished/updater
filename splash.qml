@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
+import QtGraphicalEffects 1.0
 
 ApplicationWindow {
     visible: true
@@ -8,8 +9,23 @@ ApplicationWindow {
     height: 228
     flags: Qt.SplashScreen | Qt.WindowStaysOnTopHint
 
-    Component.onCompleted: {
-        downloader.checkForUpdate()
+    Timer {
+        id: timer
+        interval: 3000
+        repeat: false
+        running: true
+        onTriggered: downloader.checkForUpdate()
+    }
+
+    function showUpdater() {
+        var component = Qt.createComponent("main.qml");
+        if (component.status === Component.Error) {
+            console.log(component.errorString());
+            return;
+        }
+        var window = component.createObject(splash);
+        splash.hide();
+        window.show();
     }
 
     Connections {
@@ -17,13 +33,7 @@ ApplicationWindow {
         ignoreUnknownSignals: true
         onUpdateNeeded: {
             if (updateNeeded) {
-                var component = Qt.createComponent("main.qml");
-                if (component.status === Component.Error) {
-                    console.log(component.errorString());
-                }
-                var window = component.createObject(splash);
-                splash.hide();
-                window.show();
+                showUpdater()
             } else {
                 splash.hide();
                 downloader.startGame();
@@ -37,4 +47,26 @@ ApplicationWindow {
         source: "qrc:/resources/splash.png"
     }
 
+    Image {
+        id: settingsLauncher
+        source: "qrc:/Fluid/Controls/action/settings.svg"
+        width: 20
+        height: 20
+        anchors.bottom: parent.bottom
+
+        MouseArea {
+            anchors.fill: settingsLauncher
+            onClicked: {
+                showUpdater();
+                timer.stop();
+            }
+        }
+
+    }
+
+    ColorOverlay {
+        anchors.fill: settingsLauncher
+        source: settingsLauncher
+        color: "#ffffffff"
+    }
 }
