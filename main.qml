@@ -7,8 +7,8 @@ import Fluid.Material 1.0 as FluidMaterial
 ApplicationWindow {
     id: root
     visible: true
-    width: 700
-    height: 600
+    width: 1280
+    height: 720
     title: qsTr("Unvanquished Updater")
     Material.theme: Material.Light
     Material.primary: Material.DarkBlue
@@ -43,7 +43,7 @@ ApplicationWindow {
     FluidMaterial.BottomSheet {
         id: settingsBottomSheet
         width: parent.width
-        maxHeight: parent.height * 0.25
+        maxHeight: parent.height * 0.30
         height: maxHeight
         Settings {}
     }
