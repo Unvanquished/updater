@@ -9,6 +9,8 @@ ApplicationWindow {
     visible: true
     width: 1280
     height: 720
+    minimumWidth: 1280
+    minimumHeight: 720
     title: qsTr("Unvanquished Updater")
     Material.theme: Material.Light
     Material.primary: Material.DarkBlue
