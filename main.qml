@@ -30,6 +30,7 @@ ApplicationWindow {
     }
     FluidMaterial.ActionButton {
         id: settingsAction
+        scale: 0.55
         anchors.top: parent.top
         anchors.right: parent.right
         iconName: "action/settings"
