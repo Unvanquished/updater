@@ -26,6 +26,7 @@ Item {
             rows: 2
             FluidControls.TitleLabel {
                 text: "Installation Directory:"
+                padding: 16
             }
             FluidControls.Subheader {
                 text: updaterSettings.installPath
@@ -37,6 +38,7 @@ Item {
             }
             FluidControls.TitleLabel {
                 text: "Command Line:"
+                padding: 16
             }
             TextField {
                 text: updaterSettings.commandLine
