@@ -1,4 +1,4 @@
-QT += qml quick network
+QT += qml quick network widgets
 
 include(fluid/fluid.pri)
 

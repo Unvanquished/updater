@@ -1,4 +1,4 @@
-import QtQuick 2.0
+import QtQuick 2.2
 import QtQuick.Controls 2.1
 import QtQuick.Controls.Material 2.0
 import QtQuick.Dialogs 1.2
@@ -48,9 +48,10 @@ Item {
     }
     FileDialog {
         id: fileDialog
-        title: "Please choose a file"
-        folder: shortcuts.home
+        title: "Please choose a folder"
+        modality: Qt.NonModal
         onAccepted: {
+            console.log(fileDialog.fileUrl)
             updaterSettings.installPath = Qt.resolvedUrl(fileDialog.fileUrl).substring('file://'.length)
         }
         selectFolder: true

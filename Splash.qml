@@ -18,14 +18,8 @@ ApplicationWindow {
     }
 
     function showUpdater() {
-        var component = Qt.createComponent("main.qml");
-        if (component.status === Component.Error) {
-            console.log(component.errorString());
-            return;
-        }
-        var window = component.createObject(splash);
-        splash.hide();
-        window.show();
+        splash.hide()
+        root.show();
     }
 
     Connections {

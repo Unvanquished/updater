@@ -9,7 +9,7 @@
         <file>NewsCard.qml</file>
         <file>DownloadInfo.qml</file>
         <file>resources/splash.png</file>
-        <file>splash.qml</file>
+        <file>Splash.qml</file>
         <file>Settings.qml</file>
         <file>utils.js</file>
     </qresource>
