@@ -17,6 +17,10 @@ bool Settings::installFinished() const {
 }
 
 void Settings::setInstallPath(const QString& installPath) {
+    // If we changed the download path, make sure we don't start the game.
+    if (installPath != this->installPath()) {
+        setInstallFinished(false);
+    }
     settings_.setValue(Settings::INSTALL_PATH, installPath);
     emit installPathChanged(installPath);
 }

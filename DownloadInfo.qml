@@ -3,6 +3,7 @@ import QtQuick.Controls 2.1
 import QtQuick.Controls.Material 2.0
 import Fluid.Controls 1.0
 import Fluid.Material 1.0
+import QmlDownloader 1.0
 import "utils.js" as Utils
 
 Item {
@@ -91,19 +92,26 @@ Item {
         Material.background: Material.Red
         Material.elevation: 1
         onClicked: {
-            if (updaterSettings.installFinished) {
+            console.log('test ' + QmlDownloader.COMPLETED);
+            if (downloader.state === QmlDownloader.COMPLETED) {
                 root.hide();
                 downloader.startGame();
                 return;
             }
-
-            downloadInfo.visible = true;
-            if (this.iconName === "av/pause") {
-                this.iconName = "av/play_arrow";
-            } else {
-                this.iconName = "av/pause";
-            }
             downloader.toggleDownload();
+        }
+    }
+    Connections {
+        target: downloader
+        ignoreUnknownSignals: true
+        onStateChanged: {
+            console.log(state);
+            downloadInfo.visible = state !== QmlDownloader.COMPLETED;
+            if (state === QmlDownloader.DOWNLOADING) {
+                this.iconName = "av/pause";
+            } else if (state === QmlDownloader.PAUSED || QmlDownloader.COMPLETED) {
+                this.iconName = "av/play_arrow";
+            }
         }
     }
 }

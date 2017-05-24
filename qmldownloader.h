@@ -23,14 +23,24 @@ class QmlDownloader : public QObject
     Q_PROPERTY(int eta READ eta NOTIFY etaChanged)
     Q_PROPERTY(int totalSize READ totalSize NOTIFY totalSizeChanged)
     Q_PROPERTY(int completedSize READ completedSize NOTIFY completedSizeChanged)
+    Q_PROPERTY(DownloadState state READ state NOTIFY stateChanged)
 
 public:
+    enum DownloadState {
+        IDLE,
+        DOWNLOADING,
+        PAUSED,
+        COMPLETED
+    };
+    Q_ENUM(DownloadState)
+
     QmlDownloader();
     int downloadSpeed() const;
     int uploadSpeed() const;
     int eta() const;
     int totalSize() const;
     int completedSize() const;
+    DownloadState state() const;
 
 signals:
     void downloadSpeedChanged(int downloadSpeed);
@@ -40,6 +50,7 @@ signals:
     void completedSizeChanged(int completedSize);
     void statusMessage(QString message);
     void updateNeeded(bool updateNeeded);
+    void stateChanged(DownloadState state);
 
 public slots:
     void setDownloadSpeed(int speed);
@@ -56,6 +67,7 @@ public slots:
 
 private:
     void stopAria();
+    void setState(DownloadState state);
 
     QThread thread_;
     int downloadSpeed_;
@@ -71,6 +83,7 @@ private:
     Settings settings_;
     QNetworkConfigurationManager networkManager_;
     QString currentVersion_;
+    DownloadState state_;
 
 };
 

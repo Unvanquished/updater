@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
     QmlDownloader downloader;
     context->setContextProperty("updaterSettings", &settings);
     context->setContextProperty("downloader", &downloader);
+    qmlRegisterType<QmlDownloader>("QmlDownloader", 1, 0, "QmlDownloader");
 
     engine.load(QUrl(QLatin1String("qrc:/splash.qml")));
     return app.exec();

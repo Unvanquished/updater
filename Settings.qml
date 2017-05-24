@@ -5,6 +5,7 @@ import QtQuick.Dialogs 1.2
 import QtQuick.Layouts 1.3
 import Fluid.Controls 1.0 as FluidControls
 import Fluid.Material 1.0 as FluidMaterial
+import QmlDownloader 1.0
 
 Item {
     id: settingsItem
@@ -35,6 +36,7 @@ Item {
                 Material.elevation: 1
                 iconName: "file/folder"
                 onClicked: fileDialog.open()
+                enabled: downloader.state === QmlDownloader.COMPLETED || downloader.state === QmlDownloader.IDLE
             }
             FluidControls.TitleLabel {
                 text: "Command Line:"
@@ -46,6 +48,7 @@ Item {
             }
         }
     }
+
     FileDialog {
         id: fileDialog
         title: "Please choose a folder"

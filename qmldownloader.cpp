@@ -10,7 +10,7 @@ namespace {
 static const QRegularExpression COMMAND_REGEX("%command%");
 }  // namespace
 
-QmlDownloader::QmlDownloader() : worker_(nullptr) {}
+QmlDownloader::QmlDownloader() : worker_(nullptr), state_(IDLE) {}
 
 int QmlDownloader::downloadSpeed() const {
     return downloadSpeed_;
@@ -59,14 +59,17 @@ void QmlDownloader::onDownloadEvent(int event)
 {
     switch (event) {
         case aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE:
-            Sys::install();
-            settings_.setCurrentVersion(currentVersion_);
-            settings_.setInstallFinished(true);
-            setDownloadSpeed(0);
-            setUploadSpeed(0);
-            setCompletedSize(totalSize_);
-            emit statusMessage("Up to date. Press > to play the game.");
-            stopAria();
+            if (state() != COMPLETED) {
+                Sys::install();
+                settings_.setCurrentVersion(currentVersion_);
+                settings_.setInstallFinished(true);
+                setState(COMPLETED);
+                setDownloadSpeed(0);
+                setUploadSpeed(0);
+                setCompletedSize(totalSize_);
+                emit statusMessage("Up to date. Press > to play the game.");
+                stopAria();
+            }
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_COMPLETE:
@@ -98,6 +101,7 @@ void QmlDownloader::onDownloadEvent(int event)
 void QmlDownloader::startUpdate(void)
 {
     settings_.setInstallFinished(false);
+    setState(DOWNLOADING);
     QString installDir = settings_.installPath();
     QDir dir(installDir);
     if (!dir.exists()) {
@@ -140,12 +144,13 @@ void QmlDownloader::startGame(void)
 
 void QmlDownloader::toggleDownload(void)
 {
+    if (state() == COMPLETED) return;
     if (!worker_) {
         startUpdate();
         return;
     }
     worker_->toggle();
-    paused_ = !paused_;
+    setState(state() == DOWNLOADING ? PAUSED : DOWNLOADING);
 }
 
 void QmlDownloader::stopAria(void)
@@ -180,3 +185,15 @@ void QmlDownloader::onCurrentVersion(QString version) {
         emit updateNeeded(false);
     }
 }
+
+QmlDownloader::DownloadState QmlDownloader::state() const {
+    return state_;
+}
+
+void QmlDownloader::setState(DownloadState state) {
+    state_ = state;
+    emit stateChanged(state);
+}
+
+
+
