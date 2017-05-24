@@ -48,8 +48,7 @@ Item {
     }
     FileDialog {
         id: fileDialog
-        title: "Please choose a file"
-        folder: shortcuts.home
+        title: "Please choose a folder"
         onAccepted: {
             updaterSettings.installPath = Qt.resolvedUrl(fileDialog.fileUrl).substring('file://'.length)
         }

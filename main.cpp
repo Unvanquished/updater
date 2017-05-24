@@ -1,4 +1,4 @@
-#include <QGuiApplication>
+#include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QFontDatabase>
 #include <QQmlContext>
@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationDomain("unvanquished.net");
     QCoreApplication::setApplicationName("Unvanquished Updater");
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
     int fontId = QFontDatabase::addApplicationFont(":resources/Roboto-Regular.ttf");
     if (fontId != -1) {
         QFont font("Roboto-Regular");

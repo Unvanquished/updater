@@ -18,14 +18,8 @@ ApplicationWindow {
     }
 
     function showUpdater() {
-        var component = Qt.createComponent("main.qml");
-        if (component.status === Component.Error) {
-            console.log(component.errorString());
-            return;
-        }
-        var window = component.createObject(splash);
+        updaterWindowLoader.active = true
         splash.hide();
-        window.show();
     }
 
     Connections {
@@ -68,5 +62,11 @@ ApplicationWindow {
         anchors.fill: settingsLauncher
         source: settingsLauncher
         color: "#ffffffff"
+    }
+
+    Loader {
+        id: updaterWindowLoader
+        active: false
+        source: "qrc:/main.qml"
     }
 }
