@@ -66,7 +66,6 @@ void QmlDownloader::onDownloadEvent(int event)
             setUploadSpeed(0);
             setCompletedSize(totalSize_);
             emit statusMessage("Up to date. Press > to play the game.");
-            emit updateComplete();
             stopAria();
             break;
 

@@ -84,7 +84,6 @@ Item {
     }
     ActionButton {
         id: downloadAction
-        property bool complete: false
         iconName: "av/play_arrow"
         scale: 0.83
         anchors.verticalCenter: parent.verticalCenter
@@ -92,7 +91,7 @@ Item {
         Material.background: Material.Red
         Material.elevation: 1
         onClicked: {
-            if (complete) {
+            if (updaterSettings.installFinished) {
                 root.hide();
                 downloader.startGame();
                 return;
@@ -105,14 +104,6 @@ Item {
                 this.iconName = "av/pause";
             }
             downloader.toggleDownload();
-        }
-    }
-    Connections {
-        target: downloader
-        ignoreUnknownSignals: true
-        onUpdateComplete: {
-            downloadAction.iconName = "av/play_arrow"
-            downloadAction.complete = true
         }
     }
 }

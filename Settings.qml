@@ -50,7 +50,9 @@ Item {
         id: fileDialog
         title: "Please choose a folder"
         onAccepted: {
-            updaterSettings.installPath = Qt.resolvedUrl(fileDialog.fileUrl).substring('file://'.length)
+            updaterSettings.installPath = Qt.resolvedUrl(fileDialog.fileUrl).substring('file://'.length);
+            updaterSettings.currentVersion = "";
+            updaterSettings.installFinished = false
         }
         selectFolder: true
     }
