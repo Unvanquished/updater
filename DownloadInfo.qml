@@ -108,9 +108,9 @@ Item {
             console.log(state);
             downloadInfo.visible = state !== QmlDownloader.COMPLETED;
             if (state === QmlDownloader.DOWNLOADING) {
-                this.iconName = "av/pause";
+                downloadAction.iconName = "av/pause";
             } else if (state === QmlDownloader.PAUSED || QmlDownloader.COMPLETED) {
-                this.iconName = "av/play_arrow";
+                downloadAction.iconName = "av/play_arrow";
             }
         }
     }
