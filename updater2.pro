@@ -39,6 +39,8 @@ RESOURCES += qml.qrc
 win32:LIBS += -lz $$PWD/aria2/src/.libs/libaria2.a
 unix:LIBS += -lz "-L$$PWD/aria2/src/.libs" -laria2
 
+win32:RC_FILE = updater.rc
+
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH += fluid/src/imports/controls/qmldir
 
