@@ -92,7 +92,6 @@ Item {
         Material.background: Material.Red
         Material.elevation: 1
         onClicked: {
-            console.log('test ' + QmlDownloader.COMPLETED);
             if (downloader.state === QmlDownloader.COMPLETED) {
                 root.hide();
                 downloader.startGame();
@@ -105,7 +104,6 @@ Item {
         target: downloader
         ignoreUnknownSignals: true
         onStateChanged: {
-            console.log(state);
             downloadInfo.visible = state !== QmlDownloader.COMPLETED;
             if (state === QmlDownloader.DOWNLOADING) {
                 downloadAction.iconName = "av/pause";

@@ -11,7 +11,6 @@ Card {
     anchors.margins: parent.width * 0.1
 
     function fetchNews() {
-        console.log('fetching...');
         var news = new XMLHttpRequest();
         news.onreadystatechange = function() {
             if (news.readyState === XMLHttpRequest.DONE) {
