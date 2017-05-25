@@ -22,7 +22,7 @@ bool install(void)
 {
     // Set up menu and protocol handler
     Settings settings;
-    QFile desktopFile(":misc/unvanquished.desktop");
+    QFile desktopFile(":resources/unvanquished.desktop");
     if (!desktopFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         return false;
     }
@@ -44,7 +44,7 @@ bool install(void)
             return false;
         }
     }
-    QFile::copy(":images/unvanquished.png",
+    QFile::copy(":resources/unvanquished.png",
                 iconDir + "unvanquished.png");
     return true;
 }
