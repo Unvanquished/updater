@@ -52,11 +52,25 @@ Flickable {
                 wrapMode: Text.WordWrap
                 width: parent.width
                 text: item.summary
+                textFormat: Text.RichText
+                onLinkActivated:  {
+                    Qt.openUrlExternally(link)
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    acceptedButtons: Qt.NoButton
+                    cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.ArrowCursor
+                }
             }
         }
         Button {
             text: "Read More"
             onClicked: Qt.openUrlExternally(item.url)
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.NoButton
+                cursorShape: Qt.PointingHandCursor
+            }
         }
     }
 }
