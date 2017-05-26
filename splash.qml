@@ -46,7 +46,8 @@ ApplicationWindow {
         source: "qrc:/Fluid/Controls/action/settings.svg"
         width: 20
         height: 20
-        anchors.bottom: parent.bottom
+        anchors.top: parent.top
+        anchors.right: parent.right
 
         MouseArea {
             anchors.fill: settingsLauncher
