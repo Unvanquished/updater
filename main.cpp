@@ -16,6 +16,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("Unvanquished Updater");
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
+    app.setWindowIcon(QIcon(":resources/updater.png"));
     int fontId = QFontDatabase::addApplicationFont(":resources/Roboto-Regular.ttf");
     if (fontId != -1) {
         QFont font("Roboto-Regular");
