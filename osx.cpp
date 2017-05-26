@@ -22,7 +22,7 @@ QString executableName(void)
 bool install(void)
 {
     Settings settings;
-    QFile::link(settings.installPath + "/Unvanquished.app",
+    QFile::link(settings.installPath() + "/Unvanquished.app",
 	            QDir::homePath() + "/Applications/Unvanquished.app");
     return true;
 }
