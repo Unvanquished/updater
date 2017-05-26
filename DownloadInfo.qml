@@ -85,11 +85,11 @@ Item {
     }
     ActionButton {
         id: downloadAction
-        iconName: "av/play_arrow"
+        iconName: "file/file_download"
         scale: 0.83
         anchors.verticalCenter: parent.verticalCenter
         anchors.right: parent.right
-        Material.background: Material.Red
+        Material.background: Material.Green
         Material.elevation: 1
         onClicked: {
             if (downloader.state === QmlDownloader.COMPLETED) {
@@ -107,7 +107,9 @@ Item {
             downloadInfo.visible = state !== QmlDownloader.COMPLETED;
             if (state === QmlDownloader.DOWNLOADING) {
                 downloadAction.iconName = "av/pause";
-            } else if (state === QmlDownloader.PAUSED || QmlDownloader.COMPLETED) {
+            } else if (state === QmlDownloader.PAUSED) {
+                downloadAction.iconName = "file/file_download";
+            } else if (state === QmlDownloader.COMPLETED) {
                 downloadAction.iconName = "av/play_arrow";
             }
         }
