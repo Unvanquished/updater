@@ -36,7 +36,7 @@ include(quazip/quazip/quazip.pri)
 
 RESOURCES += qml.qrc
 
-win32:LIBS += -lz $$PWD/aria2/src/.libs/libaria2.a
+win32:LIBS += $$PWD/aria2/src/.libs/libaria2.a
 unix:LIBS += -lz "-L$$PWD/aria2/src/.libs" -laria2
 
 win32:RC_FILE = updater.rc
