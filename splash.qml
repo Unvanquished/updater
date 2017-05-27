@@ -1,6 +1,8 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtGraphicalEffects 1.0
+import QtQuick.Controls.Material 2.0
+import Fluid.Material 1.0
 
 ApplicationWindow {
     visible: true
@@ -41,22 +43,23 @@ ApplicationWindow {
         source: "qrc:/resources/splash.png"
     }
 
-    Image {
-        id: settingsLauncher
-        source: "qrc:/Fluid/Controls/action/settings.svg"
-        width: 20
-        height: 20
+    ActionButton {
+        id: settingsAction
+        scale: 0.35
         anchors.top: parent.top
         anchors.right: parent.right
-
-        MouseArea {
-            anchors.fill: settingsLauncher
-            onClicked: {
-                showUpdater();
-                timer.stop();
-            }
+        anchors.margins: {
+            left: -20
+            top: -20
         }
 
+        iconName: "action/settings"
+        Material.elevation: 0
+        Material.background: Material.Blue
+        onClicked: {
+            showUpdater();
+            timer.stop();
+        }
     }
 
     ColorOverlay {
