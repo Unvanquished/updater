@@ -1,6 +1,8 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.1
+import QtQuick.Controls.Material 2.0
 import Fluid.Controls 1.0
+import Fluid.Material 1.0
 
 Card {
     id: newsContainer
@@ -45,5 +47,23 @@ Card {
         currentIndex: swipe.currentIndex
         anchors.bottom: parent.bottom
         anchors.horizontalCenter: parent.horizontalCenter
+    }
+    ActionButton {
+        anchors.left: swipe.left
+        anchors.verticalCenter: swipe.verticalCenter
+        anchors.leftMargin: -width / 2
+        Material.background: Material.Blue
+        scale: 0.5
+        iconName: "navigation/chevron_left"
+        onClicked: swipe.decrementCurrentIndex()
+    }
+    ActionButton {
+        anchors.right: swipe.right
+        anchors.verticalCenter: swipe.verticalCenter
+        anchors.rightMargin: -width / 2
+        Material.background: Material.Blue
+        scale: 0.5
+        iconName: "navigation/chevron_right"
+        onClicked: swipe.incrementCurrentIndex()
     }
 }
