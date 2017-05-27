@@ -49,6 +49,15 @@ ApplicationWindow {
         maxHeight: parent.height * 0.30
         height: maxHeight
         Settings {}
+        FluidMaterial.ActionButton {
+            scale: 0.55
+            anchors.top: parent.top
+            anchors.right: parent.right
+            iconName: "navigation/cancel"
+            Material.elevation: 1
+            Material.background: Material.Red
+            onClicked: settingsBottomSheet.close()
+        }
     }
     FluidControls.InfoBar {
         id: infoBar
