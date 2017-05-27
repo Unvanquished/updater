@@ -30,3 +30,11 @@ docker run -v `pwd`/build-docker:/build-docker -u `id -u $USER` updater2
 strip build-docker/updater2 # Optionally strip binary to reduce its size
 ```
 Search for **updater2** in build-docker directory.
+
+## Build Windows version in docker
+```
+docker build -t updater2-win -f Dockerfile.win .
+docker run -v `pwd`/build-docker:/build-docker -u `id -u $USER` updater2-win
+strip build-docker/updater2.exe # Optionally strip binary to reduce its size
+```
+Search for **updater2.exe** in build-docker directory.
