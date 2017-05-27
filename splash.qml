@@ -1,6 +1,5 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
-import QtGraphicalEffects 1.0
 import QtQuick.Controls.Material 2.0
 import Fluid.Material 1.0
 
@@ -60,12 +59,6 @@ ApplicationWindow {
             showUpdater();
             timer.stop();
         }
-    }
-
-    ColorOverlay {
-        anchors.fill: settingsLauncher
-        source: settingsLauncher
-        color: "#ffffffff"
     }
 
     Loader {
