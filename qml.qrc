@@ -13,5 +13,6 @@
         <file>splash.qml</file>
         <file>Settings.qml</file>
         <file>utils.js</file>
+        <file>resources/unvanquished.png</file>
     </qresource>
 </RCC>
