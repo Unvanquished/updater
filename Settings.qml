@@ -53,9 +53,13 @@ Item {
         id: fileDialog
         title: "Please choose a folder"
         onAccepted: {
-            updaterSettings.installPath = Qt.resolvedUrl(fileDialog.fileUrl).substring('file://'.length);
-            updaterSettings.currentVersion = "";
-            updaterSettings.installFinished = false
+            var clipLength = 'file://'.length;
+            // On Windows, apparently, there are three slashes. Increment
+            // the substring clip length as a result.
+            if (Qt.platform.os === "windows") {
+                clipLength += 1;
+            }
+            updaterSettings.installPath = Qt.resolvedUrl(fileDialog.fileUrl).substring(clipLength);
         }
         selectFolder: true
     }
