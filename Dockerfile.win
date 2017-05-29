@@ -4,5 +4,5 @@ WORKDIR /updater2/aria2
 RUN autoreconf -i && ./configure --without-libxml2 --without-libexpat --without-sqlite3 --disable-ssl --enable-libaria2 --without-libz --without-libcares --enable-static=yes ARIA2_STATIC=yes --without-libssh2 --disable-websocket --host i686-w64-mingw32 && make clean && make -j`nproc`
 WORKDIR /updater2
 ENV PATH=/build/qt-static/bin:$PATH
-RUN qmake -config release CONFIG+=static INCLUDEPATH+=/build/qt-static/include/QtZlib QMAKE_CXXFLAGS+="-static" && make clean && make -j`nproc`
-CMD cp updater2.exe /build-docker
+RUN qmake -config release CONFIG+=static INCLUDEPATH+=/build/qt-static/include/QtZlib QMAKE_LFLAGS+="-static -static-libgcc -static-libstdc++" && make clean && make -j`nproc`
+CMD cp release/updater2.exe /build-docker
