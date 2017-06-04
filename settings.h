@@ -17,6 +17,8 @@ public:
     const QString CURRENT_VERSION = "settings/currentVersion";
     const QString INSTALL_FINISHED = "settings/installFinished";
 
+    Settings();
+
     QString installPath() const;
     QString commandLine() const;
     QString currentVersion() const;

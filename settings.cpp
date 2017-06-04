@@ -1,4 +1,16 @@
 #include "settings.h"
+#include "system.h"
+
+const char kDefaultCommand[] = "%command%";
+
+Settings::Settings() : QObject(nullptr) {
+    if (!settings_.contains(Settings::INSTALL_PATH)) {
+        setInstallPath(Sys::defaultInstallPath());
+    }
+    if (!settings_.contains(Settings::COMMAND_LINE)) {
+        setCommandLine(kDefaultCommand);
+    }
+}
 
 QString Settings::installPath() const {
     return settings_.value(Settings::INSTALL_PATH).toString();
