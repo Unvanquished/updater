@@ -54,7 +54,7 @@ ApplicationWindow {
 
         iconName: "action/settings"
         Material.elevation: 0
-        Material.background: Material.Blue
+        Material.background: Material.Teal
         onClicked: {
             showUpdater();
             timer.stop();

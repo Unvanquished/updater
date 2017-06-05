@@ -4,13 +4,15 @@ import QtQuick.Controls.Material 2.0
 import Fluid.Controls 1.0
 import Fluid.Material 1.0
 
-Card {
-    id: newsContainer
-    width: Math.min(parent.width * 0.5, 400)
-    height: width * 1.1
-    anchors.right: parent.right
-    anchors.verticalCenter: parent.verticalCenter
-    anchors.margins: parent.width * 0.1
+Item {
+    width: parent.width
+    anchors {
+        horizontalCenter: parent.horizontalCenter
+        top: header.bottom
+        bottom: downloadInfo.top
+        topMargin: 10
+        bottomMargin: 10
+    }
 
     function stripHttpsIfWin(url) {
 
@@ -44,10 +46,13 @@ Card {
     }
     SwipeView {
         id: swipe
-        height: parent.height * 0.9
-        width: parent.width
         clip: true
-        anchors.horizontalCenter: parent.horizontalCenter
+        anchors {
+            top: parent.top
+            bottom: parent.bottom
+            left: leftButton.right
+            right: rightButton.left
+        }
         Component.onCompleted: fetchNews()
     }
     PageIndicator {
@@ -58,20 +63,20 @@ Card {
         anchors.horizontalCenter: parent.horizontalCenter
     }
     ActionButton {
-        anchors.left: swipe.left
+        id: leftButton
+        anchors.left: parent.left
         anchors.verticalCenter: swipe.verticalCenter
-        anchors.leftMargin: -width / 2
-        Material.background: Material.Blue
-        scale: 0.5
+        Material.background: Material.Teal
+        scale: 0.75
         iconName: "navigation/chevron_left"
         onClicked: swipe.decrementCurrentIndex()
     }
     ActionButton {
-        anchors.right: swipe.right
+        id: rightButton
+        anchors.right: parent.right
         anchors.verticalCenter: swipe.verticalCenter
-        anchors.rightMargin: -width / 2
-        Material.background: Material.Blue
-        scale: 0.5
+        Material.background: Material.Teal
+        scale: 0.75
         iconName: "navigation/chevron_right"
         onClicked: swipe.incrementCurrentIndex()
     }

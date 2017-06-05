@@ -7,10 +7,8 @@ import Fluid.Material 1.0 as FluidMaterial
 ApplicationWindow {
     id: root
     visible: true
-    width: 1280
-    height: 720
-    minimumWidth: 1280
-    minimumHeight: 720
+    width: 1024
+    height: 768
     title: qsTr("Unvanquished Updater")
     Material.theme: Material.Light
     Material.primary: Material.DarkBlue
@@ -28,8 +26,57 @@ ApplicationWindow {
     Image {
       width: parent.width
       height: parent.height
-      source: "qrc:/resources/menu.png"
+      source: "qrc:/resources/background.png"
     }
+
+    Rectangle {
+        anchors.bottom: header.top
+        width: header.width
+        height: 3
+        color: "#2F1E1E"
+    }
+
+    Image {
+        id: header
+        width: parent.width
+        height: logo.height * 2
+        anchors {
+            top: parent.top
+            topMargin: parent.height * 0.1
+        }
+        source: "qrc:/resources/header.png"
+    }
+    Rectangle {
+        anchors.top: header.bottom
+        width: header.width
+        height: 3
+        color: "#2F1E1E"
+    }
+
+    Image {
+        id: tyrant
+        anchors {
+            right: parent.right
+            verticalCenter: header.verticalCenter
+            verticalCenterOffset: height * 0.20
+        }
+        width: parent.width * 0.25
+        fillMode: Image.PreserveAspectFit
+        source: "qrc:/resources/tyrant.png"
+    }
+    Image {
+        id: logo
+        anchors {
+            left: parent.left
+            verticalCenter: header.verticalCenter
+            leftMargin: 25
+        }
+        width: parent.width * 0.65
+
+        fillMode: Image.PreserveAspectFit
+        source: "qrc:/resources/logo.png"
+    }
+
     FluidMaterial.ActionButton {
         id: settingsAction
         scale: 0.55
@@ -37,12 +84,15 @@ ApplicationWindow {
         anchors.right: parent.right
         iconName: "action/settings"
         Material.elevation: 1
-        Material.background: Material.Blue
+        Material.background: Material.Teal
         onClicked: settingsBottomSheet.open()
     }
-
-    News {}
-    DownloadInfo {}
+    News {
+        id: newsContainer
+    }
+    DownloadInfo {
+        id: downloadInfo
+    }
     FluidMaterial.BottomSheet {
         id: settingsBottomSheet
         width: parent.width
@@ -62,5 +112,8 @@ ApplicationWindow {
     FluidControls.InfoBar {
         id: infoBar
         duration: 3000
+        onClicked: {
+            this.hide();
+        }
     }
 }

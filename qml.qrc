@@ -2,8 +2,6 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>qtquickcontrols2.conf</file>
-        <file>resources/menu.png</file>
-        <file>resources/menu720p.png</file>
         <file>resources/Roboto-Regular.ttf</file>
         <file>resources/updater.png</file>
         <file>News.qml</file>
@@ -14,5 +12,9 @@
         <file>Settings.qml</file>
         <file>utils.js</file>
         <file>resources/unvanquished.png</file>
+        <file>resources/background.png</file>
+        <file>resources/header.png</file>
+        <file>resources/logo.png</file>
+        <file>resources/tyrant.png</file>
     </qresource>
 </RCC>

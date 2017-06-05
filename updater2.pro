@@ -65,4 +65,8 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 DISTFILES += \
     resources/unvanquished.desktop \
-    resources/unvanquished.png
+    resources/unvanquished.png \
+    resources/background.png \
+    resources/header.png \
+    resources/logo.png \
+    resources/tyrant.png

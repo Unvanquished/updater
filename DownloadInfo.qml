@@ -11,11 +11,13 @@ Item {
     height: Math.min(parent.height * 0.1, 40)
     anchors.bottom: parent.bottom
     anchors.horizontalCenter: parent.horizontalCenter
-    anchors.bottomMargin: 75
+    anchors.bottomMargin: 20
     Card {
-        width: parent.width - (downloadAction.width / 2)
+        width: parent.width - downloadAction.width
         height: parent.height
         Material.elevation: 2
+        Material.theme: Material.Dark
+        Material.background: "black"
         Item {
             width: parent.width
             height: parent.height
@@ -27,6 +29,7 @@ Item {
                 to: 1.0
                 indeterminate: false
                 value: downloader.completedSize / downloader.totalSize
+                Material.accent: Material.Teal
             }
             Row {
                 id: downloadInfo
@@ -86,11 +89,11 @@ Item {
     ActionButton {
         id: downloadAction
         iconName: "file/file_download"
-        scale: 0.83
+        scale: 0.7
         anchors.verticalCenter: parent.verticalCenter
         anchors.right: parent.right
-        Material.background: Material.Green
         Material.elevation: 1
+        Material.background: Material.Teal
         onClicked: {
             if (downloader.state === QmlDownloader.COMPLETED) {
                 root.hide();
