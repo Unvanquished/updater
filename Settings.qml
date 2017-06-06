@@ -59,7 +59,7 @@ Item {
             if (Qt.platform.os === "windows") {
                 clipLength += 1;
             }
-            updaterSettings.installPath = Qt.resolvedUrl(fileDialog.fileUrl).substring(clipLength);
+            updaterSettings.installPath = Qt.resolvedUrl(fileDialog.fileUrl + '/Unvanquished').substring(clipLength);
         }
         selectFolder: true
     }

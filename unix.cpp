@@ -10,7 +10,7 @@ QString archiveName(void)
 
 QString defaultInstallPath(void)
 {
-    return QDir::homePath() + "/.local/share/unvanquished";
+    return QDir::homePath() + "/.local/share/Unvanquished";
 }
 
 QString executableName(void)
