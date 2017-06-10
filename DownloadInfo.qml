@@ -11,7 +11,7 @@ Item {
     height: Math.min(parent.height * 0.1, 40)
     anchors.bottom: parent.bottom
     anchors.horizontalCenter: parent.horizontalCenter
-    anchors.bottomMargin: 20
+    anchors.bottomMargin: 60
     Card {
         width: parent.width - downloadAction.width
         height: parent.height
