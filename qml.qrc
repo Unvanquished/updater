@@ -16,5 +16,6 @@
         <file>resources/header.png</file>
         <file>resources/logo.png</file>
         <file>resources/tyrant.png</file>
+        <file>resources/unvanquished.desktop</file>
     </qresource>
 </RCC>
