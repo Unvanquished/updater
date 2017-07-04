@@ -5,6 +5,7 @@
 #include <QDebug>
 #include <QCoreApplication>
 #include <QProcess>
+#include <QStandardPaths>
 
 namespace Sys {
 QString archiveName(void)
@@ -14,7 +15,11 @@ QString archiveName(void)
 
 QString defaultInstallPath(void)
 {
-    return QDir::homePath() + "/.local/share/Unvanquished";
+    // Does not use QStandardPaths::AppDataLocation because
+    // it returns "~/.local/share/unvanquished/updater"
+    // and we want "~/.local/share/unvanquished/base"
+    // game itself puts stuff in "~/.local/share/unvanquished"
+    return QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/unvanquished/base";
 }
 
 QString executableName(void)
@@ -32,7 +37,7 @@ bool install(void)
     }
     QString desktopStr = QString(desktopFile.readAll().data())
         .arg(settings.installPath());
-    QFile outputFile(QDir::homePath() + "/.local/share/applications/unvanquished.desktop");
+    QFile outputFile(QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation) + "/unvanquished.desktop");
     if (!outputFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
         desktopFile.close();
         return false;
@@ -41,7 +46,7 @@ bool install(void)
     outputFile.close();
 
     // install icon
-    QString iconDir = QDir::homePath() + "/.local/share/icons/hicolor/128x128/apps/";
+    QString iconDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/icons/hicolor/128x128/apps/";
     QDir dir(iconDir);
     if (!dir.exists()) {
         if (!dir.mkpath(dir.path())) {

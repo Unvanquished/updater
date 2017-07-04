@@ -11,9 +11,11 @@
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setOrganizationName("Unvanquished Development");
+    // The two following variables set the config file path
+    // to: ~/.config/unvanquished/updater.conf
+    QCoreApplication::setApplicationName("updater");
+    QCoreApplication::setOrganizationName("unvanquished");
     QCoreApplication::setOrganizationDomain("unvanquished.net");
-    QCoreApplication::setApplicationName("Unvanquished Updater");
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
     app.setWindowIcon(QIcon(":resources/updater.png"));
