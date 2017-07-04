@@ -23,13 +23,13 @@ bool install(void)
     // Set up menu and protocol handler
     Settings settings;
     QFile desktopFile(":resources/unvanquished.desktop");
-    if (!desktopFile.open(QIODevice::ReadOnly | QIODevice::Text | QIODevice::Truncate)) {
+    if (!desktopFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         return false;
     }
     QString desktopStr = QString(desktopFile.readAll().data())
         .arg(settings.installPath());
     QFile outputFile(QDir::homePath() + "/.local/share/applications/unvanquished.desktop");
-    if (!outputFile.open(QIODevice::ReadWrite | QIODevice::Text)) {
+    if (!outputFile.open(QIODevice::WriteOnly | QIODevice::Text  QIODevice::Truncate)) {
         desktopFile.close();
         return false;
     }
