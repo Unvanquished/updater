@@ -24,9 +24,18 @@ ApplicationWindow {
     }
 
     Connections {
+        id: conn
         target: downloader
+        property bool updaterUpdate: false
         ignoreUnknownSignals: true
+        onUpdaterUpdateNeded: {
+            console.log(updateNeeded);
+            conn.updaterUpdate = updateNeeded;
+        }
+
         onUpdateNeeded: {
+            console.log("conn.updaterUpdate=" + conn.updaterUpdate);
+            if (conn.updaterUpdate) return
             if (updateNeeded) {
                 showUpdater()
             } else {
@@ -60,6 +69,17 @@ ApplicationWindow {
             timer.stop();
         }
     }
+
+    ProgressBar {
+        anchors.bottom: parent.bottom
+        width: parent.width
+        from: 0.0
+        to: 1.0
+        indeterminate: false
+        value: downloader.completedSize / downloader.totalSize
+        Material.accent: Material.Teal
+    }
+
 
     Loader {
         id: updaterWindowLoader

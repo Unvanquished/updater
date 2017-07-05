@@ -14,7 +14,7 @@ public:
     void fetchCurrentVersion(QString url);
 
 signals:
-    void onCurrentVersion(QString version);
+    void onCurrentVersions(QString updater, QString game);
 
 private slots:
     void reply(QNetworkReply* reply);

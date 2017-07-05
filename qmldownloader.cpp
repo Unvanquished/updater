@@ -8,9 +8,15 @@
 
 namespace {
 static const QRegularExpression COMMAND_REGEX("%command%");
+static QString UPDATER_BASE_URL("http://unvanquished.net/~modi/updater");
 }  // namespace
 
 QmlDownloader::QmlDownloader() : worker_(nullptr), state_(IDLE) {}
+
+QmlDownloader::~QmlDownloader()
+{
+    stopAria();
+}
 
 int QmlDownloader::downloadSpeed() const {
     return downloadSpeed_;
@@ -118,7 +124,7 @@ void QmlDownloader::startUpdate(void)
 
     worker_ = new DownloadWorker();
     worker_->setDownloadDirectory(dir.canonicalPath().toStdString());
-    worker_->addUri("http://cdn.unvanquished.net/current.torrent");
+    worker_->addTorrent("http://cdn.unvanquished.net/current.torrent");
     worker_->moveToThread(&thread_);
     connect(&thread_, SIGNAL(finished()), worker_, SLOT(deleteLater()));
     connect(worker_, SIGNAL(onDownloadEvent(int)), this, SLOT(onDownloadEvent(int)));
@@ -163,37 +169,53 @@ void QmlDownloader::stopAria(void)
     }
 }
 
-void QmlDownloader::checkForUpdate() {
+void QmlDownloader::checkForUpdate()
+{
     if (!settings_.installFinished()) {
         emit updateNeeded(true);
         return;
     } else {
         if (networkManager_.isOnline()) {
-            connect(&fetcher_, SIGNAL(onCurrentVersion(QString)), this, SLOT(onCurrentVersion(QString)));
-            fetcher_.fetchCurrentVersion("http://dl.unvanquished.net/current.txt");
+            connect(&fetcher_, SIGNAL(onCurrentVersions(QString, QString)), this, SLOT(onCurrentVersions(QString, QString)));
+            fetcher_.fetchCurrentVersion("http://dl.unvanquished.net/versions.json");
             return;
         }
     }
     emit updateNeeded(false);
 }
 
-void QmlDownloader::onCurrentVersion(QString version) {
-    if (version.isEmpty() || settings_.currentVersion() != version) {
-        currentVersion_ = version;
+void QmlDownloader::onCurrentVersions(QString updater, QString game)
+{
+    if (!updater.isEmpty() && updater != QString(GIT_VERSION)) {
+        QString url = UPDATER_BASE_URL + "/" + updater + "/" + Sys::updaterArchiveName();
+        temp_dir_.reset(new QTemporaryDir());
+        worker_ = new DownloadWorker();
+        worker_->setDownloadDirectory(QDir(temp_dir_->path()).canonicalPath().toStdString());
+        worker_->addUpdaterUri(url.toStdString());
+        worker_->moveToThread(&thread_);
+        connect(&thread_, SIGNAL(finished()), worker_, SLOT(deleteLater()));
+        connect(worker_, SIGNAL(onDownloadEvent(int)), this, SLOT(onDownloadEvent(int)));
+        connect(worker_, SIGNAL(downloadSpeedChanged(int)), this, SLOT(setDownloadSpeed(int)));
+        connect(worker_, SIGNAL(uploadSpeedChanged(int)), this, SLOT(setUploadSpeed(int)));
+        connect(worker_, SIGNAL(totalSizeChanged(int)), this, SLOT(setTotalSize(int)));
+        connect(worker_, SIGNAL(completedSizeChanged(int)), this, SLOT(setCompletedSize(int)));
+        connect(&thread_, SIGNAL(started()), worker_, SLOT(download()));
+        thread_.start();
+    } else if (game.isEmpty() || settings_.currentVersion() != game) {
+        currentVersion_ = game;
         emit updateNeeded(true);
     } else {
         emit updateNeeded(false);
     }
 }
 
-QmlDownloader::DownloadState QmlDownloader::state() const {
+QmlDownloader::DownloadState QmlDownloader::state() const
+{
     return state_;
 }
 
-void QmlDownloader::setState(DownloadState state) {
+void QmlDownloader::setState(DownloadState state)
+{
     state_ = state;
     emit stateChanged(state);
 }
-
-
-

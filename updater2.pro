@@ -30,7 +30,7 @@ mac {
 }
 
 GIT_VERSION = $$system(git --git-dir $$PWD/.git --work-tree $$PWD describe --always --tags --abbrev=0)
-DEFINES += GIT_VERSION=$$GIT_VERSION
+DEFINES += GIT_VERSION=\\\"$$GIT_VERSION\\\"
 DEFINES += QUAZIP_BUILD
 DEFINES += QUAZIP_STATIC
 include(quazip/quazip/quazip.pri)
