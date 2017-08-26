@@ -10,7 +10,8 @@ HEADERS += ariadownloader.h \
     system.h \
     settings.h \
     qmldownloader.h \
-    currentversionfetcher.h
+    currentversionfetcher.h \
+    ret.h
 
 
 SOURCES += ariadownloader.cpp \
