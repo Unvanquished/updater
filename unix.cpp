@@ -29,7 +29,7 @@ bool install(void)
     QString desktopStr = QString(desktopFile.readAll().data())
         .arg(settings.installPath());
     QFile outputFile(QDir::homePath() + "/.local/share/applications/unvanquished.desktop");
-    if (!outputFile.open(QIODevice::WriteOnly | QIODevice::Text  QIODevice::Truncate)) {
+    if (!outputFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
         desktopFile.close();
         return false;
     }
