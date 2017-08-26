@@ -1,5 +1,7 @@
 #include "ariadownloader.h"
 
+#include <QDebug>
+
 int downloadEventCallback(aria2::Session* session, aria2::DownloadEvent event,
                           aria2::A2Gid gid, void* userData)
 {
@@ -32,45 +34,62 @@ AriaDownloader::~AriaDownloader()
     aria2::libraryDeinit();
 }
 
-bool AriaDownloader::addUri(const std::string& uri)
+Ret AriaDownloader::addUri(const std::string& uri)
 {
     int ret = aria2::addUri(session, nullptr, { uri }, aria2::KeyVals());
-    return ret == 1;
+    if (ret < 0) {
+        return Ret(QString("Error adding uri: %1").arg(QString(uri.c_str())));
+    }
+    return true;
 }
 
-bool AriaDownloader::run(void)
+Ret AriaDownloader::run(void)
 {
     int ret = aria2::run(session, aria2::RUN_ONCE);
-    return ret == 1;
+    if (ret < 0) {
+        return Ret("Error running aria loop.");
+    }
+    return true;
 }
 
-void AriaDownloader::toggleDownloads(void)
+Ret AriaDownloader::toggleDownloads(void)
 {
     if (pausedGids_.empty()) {
         auto gids = aria2::getActiveDownload(session);
         for (aria2::A2Gid gid : gids) {
-            aria2::pauseDownload(session, gid, true);
-            pausedGids_.push_back(gid);
+            int ret = aria2::pauseDownload(session, gid, true);
+            if (ret < 0) {
+                qDebug() << "WARNING: Error pausing gid: " << gid;
+            } else {
+                pausedGids_.push_back(gid);
+            }
         }
     } else {
         while (!pausedGids_.empty()) {
-            aria2::unpauseDownload(session, pausedGids_.front());
-            pausedGids_.pop_front();
+            int ret = aria2::unpauseDownload(session, pausedGids_.front());
+            if (ret < 0) {
+                qDebug() << "WARNING: Error pausing gid: " << pausedGids_.front();
+            } else {
+                pausedGids_.pop_front();
+            }
         }
     }
+    return true;
 }
 
-void AriaDownloader::registerCallback(DownloadCallback* callback)
+Ret AriaDownloader::registerCallback(DownloadCallback* callback)
 {
     callback_ = callback;
+    return true;
 }
 
-void AriaDownloader::unregisterCallback(DownloadCallback* callback)
+Ret AriaDownloader::unregisterCallback(DownloadCallback* callback)
 {
-    // TODO: Add logging if this fails
     if (callback_ == callback) {
         callback_ = nullptr;
+        return true;
     }
+    return Ret("Tried to unregister invalid callback.");
 }
 
 AriaDownloader::DownloadCallback* AriaDownloader::callback(void)
@@ -78,19 +97,21 @@ AriaDownloader::DownloadCallback* AriaDownloader::callback(void)
     return callback_;
 }
 
-void AriaDownloader::updateStats(void)
+Ret AriaDownloader::updateStats(void)
 {
     std::vector<aria2::A2Gid> gids = aria2::getActiveDownload(session);
     for(const auto& gid : gids) {
         aria2::DownloadHandle* dh = aria2::getDownloadHandle(session, gid);
-        if(dh) {
-            downloadSpeed_ = dh->getDownloadSpeed();
-            uploadSpeed_ = dh->getUploadSpeed();
-            completedSize_ = dh->getCompletedLength();
-            totalSize_ = dh->getTotalLength();
-            aria2::deleteDownloadHandle(dh);
+        if(!dh) {
+            return Ret(QString("Invalid download handle for gid: %1").arg(gid));
         }
+        downloadSpeed_ = dh->getDownloadSpeed();
+        uploadSpeed_ = dh->getUploadSpeed();
+        completedSize_ = dh->getCompletedLength();
+        totalSize_ = dh->getTotalLength();
+        aria2::deleteDownloadHandle(dh);
     }
+    return true;
 }
 
 int AriaDownloader::downloadSpeed(void)
@@ -113,7 +134,11 @@ int AriaDownloader::totalSize(void)
     return totalSize_;
 }
 
-void AriaDownloader::setDownloadDirectory(const std::string& dir)
+Ret AriaDownloader::setDownloadDirectory(const std::string& dir)
 {
-    aria2::changeGlobalOption(session, {{ "dir", dir }});
+    int ret = aria2::changeGlobalOption(session, {{ "dir", dir }});
+    if (ret < 0) {
+        return Ret(QString("Error setting download directory to %1").arg(dir.c_str()));
+    }
+    return true;
 }

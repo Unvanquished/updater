@@ -1,8 +1,10 @@
 #ifndef ARIADOWNLOADER_H
 #define ARIADOWNLOADER_H
 
-#include "aria2/src/includes/aria2/aria2.h"
 #include <list>
+
+#include "ret.h"
+#include "aria2/src/includes/aria2/aria2.h"
 
 class AriaDownloader
 {
@@ -16,14 +18,14 @@ public:
                                         aria2::A2Gid gid, void* userData) = 0;
     };
 
-    bool addUri(const std::string& uri);
-    bool run(void);
-    void toggleDownloads(void);
-    void setDownloadDirectory(const std::string& dir);
-    void registerCallback(DownloadCallback* callback_);
-    void unregisterCallback(DownloadCallback* callback_);
+    Ret addUri(const std::string& uri);
+    Ret run(void);
+    Ret toggleDownloads(void);
+    Ret setDownloadDirectory(const std::string& dir);
+    Ret registerCallback(DownloadCallback* callback_);
+    Ret unregisterCallback(DownloadCallback* callback_);
     DownloadCallback* callback(void);
-    void updateStats(void);
+    Ret updateStats(void);
     int downloadSpeed(void);
     int uploadSpeed(void);
     int completedSize(void);

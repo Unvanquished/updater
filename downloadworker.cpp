@@ -1,6 +1,10 @@
+#include "downloadworker.h"
+
 #include <chrono>
 #include <sstream>
-#include "downloadworker.h"
+
+#include <QDebug>
+
 #include "quazip/quazip/JlCompress.h"
 #include "system.h"
 
@@ -83,11 +87,14 @@ std::string DownloadWorker::getAriaIndexOut(size_t index, std::string path)
 void DownloadWorker::download(void)
 {
     auto start = std::chrono::steady_clock::now();
-    bool ret = true;
     paused = false;
     running = true;
-    while (ret && running) {
-        ret = downloader.run();
+    while (running) {
+        Ret ret = downloader.run();
+        if (!ret.ok()) {
+            qDebug() << "Download loop failed: " << ret.msg();
+            break;
+        }
         auto now = std::chrono::steady_clock::now();
 
         // Print progress information once per 500ms
