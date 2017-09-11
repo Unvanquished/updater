@@ -73,12 +73,25 @@ bool updateUpdater(const QString& updaterArchive)
         qDebug() << "Unexpected destination";
         return false;
     }
+    // Only expect a single executable.
     auto out = JlCompress::extractDir(updaterArchive, destination.absolutePath());
     if (out.size() < 1) {
         qDebug() << "Error extracting update.";
         return false;
     }
-    QProcess::startDetached(current);
+    if (out.size() != 1) {
+        qDebug() << "Invalid update archive.";
+        return false;
+    }
+    if (!QFile::rename(out[0], current)) {
+        qDebug() << "Error renaming new updater to previous file name.";
+        return false;
+    }
+
+    if (!QProcess::startDetached(current)) {
+        qDebug() << "Error starting " << current;
+        return false;
+    }
     QCoreApplication::quit();
     return true;
 }
