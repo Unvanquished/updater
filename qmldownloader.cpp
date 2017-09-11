@@ -11,7 +11,15 @@ static const QRegularExpression COMMAND_REGEX("%command%");
 static QString UPDATER_BASE_URL("http://unvanquished.net/~modi/updater");
 }  // namespace
 
-QmlDownloader::QmlDownloader() : worker_(nullptr), state_(IDLE) {}
+QmlDownloader::QmlDownloader() : downloadSpeed_(0),
+        uploadSpeed_(0),
+        eta_(0),
+        totalSize_(0),
+        completedSize_(0),
+        paused_(true),
+        updater_update_(false),
+        worker_(nullptr),
+        state_(IDLE) {}
 
 QmlDownloader::~QmlDownloader()
 {
