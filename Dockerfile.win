@@ -1,4 +1,5 @@
 FROM dolcetriade/qt5-windows-static:5.8.0
+RUN pacman -Sy git
 COPY . /updater2
 WORKDIR /updater2/aria2
 RUN autoreconf -i && ./configure --without-libxml2 --without-libexpat --without-sqlite3 --disable-ssl --enable-libaria2 --without-libz --without-libcares --enable-static=yes ARIA2_STATIC=yes --without-libssh2 --disable-websocket --host i686-w64-mingw32 && make clean && make -j`nproc`

@@ -6,6 +6,8 @@
 #include <QSettings>
 #include <QNetworkConfigurationManager>
 #include <QThread>
+#include <QUrl>
+#include <QTemporaryDir>
 
 #include <memory>
 #include <chrono>
@@ -35,6 +37,7 @@ public:
     Q_ENUM(DownloadState)
 
     QmlDownloader();
+    ~QmlDownloader();
     int downloadSpeed() const;
     int uploadSpeed() const;
     int eta() const;
@@ -58,7 +61,7 @@ public slots:
     void setTotalSize(int size);
     void setCompletedSize(int size);
     void onDownloadEvent(int event);
-    void onCurrentVersion(QString version);
+    void onCurrentVersions(QString updater, QString game);
 
     Q_INVOKABLE void startUpdate();
     Q_INVOKABLE void toggleDownload();
@@ -68,6 +71,7 @@ public slots:
 private:
     void stopAria();
     void setState(DownloadState state);
+    void startDownload(const QUrl& url, const QDir& destination);
 
     QThread thread_;
     int downloadSpeed_;
@@ -76,6 +80,7 @@ private:
     int totalSize_;
     int completedSize_;
     bool paused_;
+    bool updater_update_;
 
     CurrentVersionFetcher fetcher_;
     DownloadWorker* worker_;
@@ -84,6 +89,7 @@ private:
     QNetworkConfigurationManager networkManager_;
     QString currentVersion_;
     DownloadState state_;
+    std::unique_ptr<QTemporaryDir> temp_dir_;
 
 };
 
