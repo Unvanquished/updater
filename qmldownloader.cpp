@@ -8,7 +8,7 @@
 
 namespace {
 static const QRegularExpression COMMAND_REGEX("%command%");
-static QString UPDATER_BASE_URL("http://unvanquished.net/~modi/updater");
+static QString UPDATER_BASE_URL("http://github.com/Unvanquished/updater2/releases/download");
 }  // namespace
 
 QmlDownloader::QmlDownloader() : downloadSpeed_(0),
