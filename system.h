@@ -1,3 +1,5 @@
+#include <string>
+
 #include <QString>
 
 namespace Sys {
@@ -7,4 +9,5 @@ QString executableName(void);
 bool install(void);
 bool updateUpdater(const QString& updaterArchive);
 QString updaterArchiveName(void);
+std::string getCertStore(void);
 }

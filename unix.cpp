@@ -83,9 +83,12 @@ bool updateUpdater(const QString& updaterArchive)
         qDebug() << "Invalid update archive.";
         return false;
     }
-    if (!QFile::rename(out[0], current)) {
-        qDebug() << "Error renaming new updater to previous file name.";
-        return false;
+
+    if (out[0] != current) {
+        if (!QFile::rename(out[0], current)) {
+            qDebug() << "Error renaming new updater to previous file name.";
+            return false;
+        }
     }
 
     if (!QProcess::startDetached(current)) {
@@ -99,6 +102,24 @@ bool updateUpdater(const QString& updaterArchive)
 QString updaterArchiveName(void)
 {
     return "UnvUpdaterLinux.zip";
+}
+
+std::string getCertStore()
+{
+    // From Go: https://golang.org/src/crypto/x509/root_linux.go
+    static constexpr QStringList CERT_LOCATIONS = {
+        "/etc/ssl/certs/ca-certificates.crt",                // Debian/Ubuntu/Gentoo etc.
+        "/etc/pki/tls/certs/ca-bundle.crt",                  // Fedora/RHEL 6
+        "/etc/ssl/ca-bundle.pem",                            // OpenSUSE
+        "/etc/pki/tls/cacert.pem",                           // OpenELEC
+        "/etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem", // CentOS/RHEL 7
+    };
+
+    for (const QString& path : CERT_LOCATIONS) {
+        QFile file(path);
+        if (file.exists()) return path.toStdString();
+    }
+    return "";
 }
 
 }  // namespace Sys

@@ -176,9 +176,11 @@ bool updateUpdater(const QString& updaterArchive)
         return false;
     }
 
-    if (!QFile::rename(out[0], current)) {
-        qDebug() << "Error renaming new updater to previous file name.";
-        return false;
+    if (out[0] != current) {
+        if (!QFile::rename(out[0], current)) {
+            qDebug() << "Error renaming new updater to previous file name.";
+            return false;
+        }
     }
 
     if (!QProcess::startDetached(current)) {
@@ -193,5 +195,11 @@ QString updaterArchiveName(void)
 {
     return "UnvUpdaterWin.zip";
 }
+
+std::string getCertStore()
+{
+    return "";  // Not used on windows.
+}
+
 
 }  // namespace Sys

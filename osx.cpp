@@ -95,9 +95,11 @@ bool updateUpdater(const QString& updaterArchive)
     }
     if (extractedAppPath.isEmpty()) return false;
     QDir extractedApp(extractedAppPath);
-    if (!extractDir.rename(extractedApp.dirName(), currentApp.dirName())) {
-        qDebug() << "Could not rename update. pls manually update.";
-        return false;
+    if (extractedApp.dirName() != currentApp.dirName()) {
+        if (!extractDir.rename(extractedApp.dirName(), currentApp.dirName())) {
+            qDebug() << "Could not rename update. pls manually update.";
+            return false;
+        }
     }
     // TODO: Maybe don't use system? startDetached didn't work for me...
     int i = system((QString("/usr/bin/open -F -n \"%1\"").arg(currentAppPath)).toStdString().c_str());
@@ -113,5 +115,11 @@ QString updaterArchiveName(void)
 {
     return "UnvUpdaterOSX.zip";
 }
+
+std::string getCertStore()
+{
+    return "";  // Not used on OSX.
+}
+
 
 }  // namespace Sys

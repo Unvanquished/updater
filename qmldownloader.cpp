@@ -179,15 +179,14 @@ void QmlDownloader::stopAria(void)
 
 void QmlDownloader::checkForUpdate()
 {
-    if (!settings_.installFinished()) {
+    if (networkManager_.isOnline()) {
+        connect(&fetcher_, SIGNAL(onCurrentVersions(QString, QString)), this, SLOT(onCurrentVersions(QString, QString)));
+        fetcher_.fetchCurrentVersion("http://dl.unvanquished.net/versions.json");
+        return;
+    }
+    else if (!settings_.installFinished()) {
         emit updateNeeded(true);
         return;
-    } else {
-        if (networkManager_.isOnline()) {
-            connect(&fetcher_, SIGNAL(onCurrentVersions(QString, QString)), this, SLOT(onCurrentVersions(QString, QString)));
-            fetcher_.fetchCurrentVersion("http://dl.unvanquished.net/versions.json");
-            return;
-        }
     }
     emit updateNeeded(false);
 }
