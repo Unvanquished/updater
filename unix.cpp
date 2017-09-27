@@ -107,7 +107,7 @@ QString updaterArchiveName(void)
 std::string getCertStore()
 {
     // From Go: https://golang.org/src/crypto/x509/root_linux.go
-    static constexpr QStringList CERT_LOCATIONS = {
+    static QStringList CERT_LOCATIONS = {
         "/etc/ssl/certs/ca-certificates.crt",                // Debian/Ubuntu/Gentoo etc.
         "/etc/pki/tls/certs/ca-bundle.crt",                  // Fedora/RHEL 6
         "/etc/ssl/ca-bundle.pem",                            // OpenSUSE
