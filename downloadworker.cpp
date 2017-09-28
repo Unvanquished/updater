@@ -7,6 +7,7 @@
 
 #include "quazip/quazip/JlCompress.h"
 #include "system.h"
+#include <QDebug>
 
 DownloadWorker::DownloadWorker(QObject *parent) : QObject(parent), downloadSpeed(0), uploadSpeed(0),
 totalSize(0), completedSize(0), paused(true), state(IDLE), running(false), renameRegex(".*unvanquished_([0-9\\.]+/)")
@@ -19,9 +20,16 @@ DownloadWorker::~DownloadWorker()
     downloader.unregisterCallback(this);
 }
 
-void DownloadWorker::addUri(const std::string& uri)
+void DownloadWorker::addUpdaterUri(const std::string& uri)
 {
     downloader.addUri(uri);
+    state = DOWNLOADING_UPDATER;
+}
+
+void DownloadWorker::addTorrent(const std::string& uri)
+{
+    downloader.addUri(uri);
+    state = DOWNLOADING_TORRENT;
 }
 
 void DownloadWorker::onDownloadCallback(aria2::Session* session, aria2::DownloadEvent event,
@@ -39,6 +47,16 @@ void DownloadWorker::onDownloadCallback(aria2::Session* session, aria2::Download
                 aria2::A2Gid torrentGid = handle->getFollowedBy()[0];
                 setDownloadPathAndFiles(session, torrentGid);
                 aria2::deleteDownloadHandle(handle);
+            } else if (state == DOWNLOADING_UPDATER) {
+                aria2::DownloadHandle* handle = aria2::getDownloadHandle(session, gid);
+                qDebug() << handle->getNumFiles();
+                if (handle->getNumFiles() > 1) {
+                    return;
+                }
+                auto files = handle->getFiles();
+                qDebug() << files[0].path.c_str();
+                Sys::updateUpdater(QString(files[0].path.c_str()));
+                return;
             } else {
                 event = aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE;
                 if (!extractUpdate()) return;
@@ -52,9 +70,6 @@ void DownloadWorker::onDownloadCallback(aria2::Session* session, aria2::Download
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_START:
-            if (state == IDLE) {
-                state = DOWNLOADING_TORRENT;
-            }
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_STOP:

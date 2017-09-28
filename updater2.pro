@@ -31,7 +31,7 @@ mac {
 }
 
 GIT_VERSION = $$system(git --git-dir $$PWD/.git --work-tree $$PWD describe --always --tags --abbrev=0)
-DEFINES += GIT_VERSION=$$GIT_VERSION
+DEFINES += GIT_VERSION=\\\"$$GIT_VERSION\\\"
 DEFINES += QUAZIP_BUILD
 DEFINES += QUAZIP_STATIC
 include(quazip/quazip/quazip.pri)
@@ -39,7 +39,7 @@ include(quazip/quazip/quazip.pri)
 
 RESOURCES += qml.qrc
 
-win32:LIBS += $$PWD/aria2/src/.libs/libaria2.a
+win32:LIBS += $$PWD/aria2/src/.libs/libaria2.a -lcrypt32 -lsecur32
 unix:LIBS += -lz "-L$$PWD/aria2/src/.libs" -laria2
 
 win32:RC_FILE = updater.rc

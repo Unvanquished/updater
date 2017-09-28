@@ -1,4 +1,5 @@
 #include "ariadownloader.h"
+#include "system.h"
 
 #include <QDebug>
 
@@ -25,6 +26,12 @@ AriaDownloader::AriaDownloader() : callback_(nullptr)
     options.push_back({ "seed-time", "0" });
     options.push_back({ "file-allocation", "none" });
     options.push_back({ "follow-torrent", "mem" });
+    options.push_back({ "quiet", "false" });
+
+    std::string certsPath = Sys::getCertStore();
+    if (!certsPath.empty()) {
+        options.push_back({ "ca-certificates", certsPath });
+    }
     session = aria2::sessionNew(options, config);
 }
 

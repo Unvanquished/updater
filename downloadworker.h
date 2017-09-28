@@ -19,7 +19,8 @@ public:
     ~DownloadWorker();
     void onDownloadCallback(aria2::Session* session, aria2::DownloadEvent event,
                             aria2::A2Gid gid, void* userDataevent);
-    void addUri(const std::string& uri);
+    void addUpdaterUri(const std::string& uri);
+    void addTorrent(const std::string& uri);
     void setDownloadDirectory(const std::string& dir);
     void toggle(void);
     void stop(void);
@@ -42,6 +43,7 @@ private:
     enum State {
         IDLE,
         DOWNLOADING_TORRENT,
+        DOWNLOADING_UPDATER,
         DOWNLOADING_UNVANQUISHED
     };
 
