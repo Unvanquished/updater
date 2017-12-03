@@ -6,6 +6,7 @@
 #include <QCoreApplication>
 #include <QProcess>
 #include <QStandardPaths>
+#include <QString>
 
 namespace Sys {
 QString archiveName(void)
@@ -13,8 +14,46 @@ QString archiveName(void)
     return "linux64.zip";
 }
 
+void migrateHomePath(void)
+{
+    QString legacyHomePath = QDir::homePath() + "/.unvanquished";
+    QString xdgDataHome = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
+    QString xdgHomePath = xdgDataHome + "/unvanquished";
+
+    if (QDir(legacyHomePath).exists()) {
+        if (QDir(xdgHomePath).exists()) {
+            qWarning("Legacy home path %s exists but XDG home path %s already exists, doing nothing", qPrintable(legacyHomePath), qPrintable(xdgHomePath));
+            return;
+        }
+
+        if (!QDir(xdgDataHome).exists() && !QDir().mkdir(xdgDataHome)) {
+            qFatal("Could not create XDG data directory %s", qPrintable(xdgDataHome));
+        }
+
+        QFileInfo fileinfo(legacyHomePath);
+        if (fileinfo.isSymLink()) {
+            qInfo("Creating legacy home path symlink %s to XDG home path %s", qPrintable(legacyHomePath), qPrintable(xdgHomePath));
+            QFile symlink(legacyHomePath);
+            if (!symlink.link(xdgHomePath)) {
+                qFatal("Could not create symlink %s", qPrintable(xdgHomePath));
+            }
+        } else {
+            qInfo("Renaming legacy home path %s to XDG home path %s", qPrintable(legacyHomePath), qPrintable(xdgHomePath));
+            QDir directory;
+            if (!directory.rename(legacyHomePath, xdgHomePath)) {
+                qFatal("Could not rename legacy home path to %s", qPrintable(xdgHomePath));
+            }
+        }
+    }
+}
+
 QString defaultInstallPath(void)
 {
+    // if needed, migrate legacy homepath to prevent the updater
+    // to create the directory before the engine tries to migrate
+    // it itself
+    migrateHomePath();
+
     // Does not use QStandardPaths::AppDataLocation because
     // it returns "~/.local/share/unvanquished/updater"
     // and we want "~/.local/share/unvanquished/base"
