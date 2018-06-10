@@ -6,15 +6,15 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 
-CurrentVersionFetcher::CurrentVersionFetcher(QObject* parent) : QObject(parent), manager(new QNetworkAccessManager(this))
+CurrentVersionFetcher::CurrentVersionFetcher(QObject* parent) : QObject(parent), manager_(new QNetworkAccessManager(this))
 {
-    connect(manager.get(), SIGNAL(finished(QNetworkReply*)), this, SLOT(reply(QNetworkReply*)));
+    connect(manager_.get(), SIGNAL(finished(QNetworkReply*)), this, SLOT(reply(QNetworkReply*)));
 }
 
 void CurrentVersionFetcher::fetchCurrentVersion(QString url)
 {
     QNetworkRequest request = QNetworkRequest(QUrl(url));
-    manager->get(request);
+    manager_->get(request);
 }
 
 void CurrentVersionFetcher::reply(QNetworkReply* reply)
