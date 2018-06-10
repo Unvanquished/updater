@@ -30,38 +30,38 @@ AriaDownloader::AriaDownloader() : callback_(nullptr)
     if (!certsPath.empty()) {
         options.push_back({ "ca-certificates", certsPath });
     }
-    session = aria2::sessionNew(options, config);
+    session_ = aria2::sessionNew(options, config);
 }
 
 AriaDownloader::~AriaDownloader()
 {
-    aria2::sessionFinal(session);
+    aria2::sessionFinal(session_);
     aria2::libraryDeinit();
 }
 
 bool AriaDownloader::addUri(const std::string& uri)
 {
-    int ret = aria2::addUri(session, nullptr, { uri }, aria2::KeyVals());
+    int ret = aria2::addUri(session_, nullptr, { uri }, aria2::KeyVals());
     return ret == 1;
 }
 
 bool AriaDownloader::run(void)
 {
-    int ret = aria2::run(session, aria2::RUN_ONCE);
+    int ret = aria2::run(session_, aria2::RUN_ONCE);
     return ret == 1;
 }
 
 void AriaDownloader::toggleDownloads(void)
 {
     if (pausedGids_.empty()) {
-        auto gids = aria2::getActiveDownload(session);
+        auto gids = aria2::getActiveDownload(session_);
         for (aria2::A2Gid gid : gids) {
-            aria2::pauseDownload(session, gid, true);
+            aria2::pauseDownload(session_, gid, true);
             pausedGids_.push_back(gid);
         }
     } else {
         while (!pausedGids_.empty()) {
-            aria2::unpauseDownload(session, pausedGids_.front());
+            aria2::unpauseDownload(session_, pausedGids_.front());
             pausedGids_.pop_front();
         }
     }
@@ -87,9 +87,9 @@ AriaDownloader::DownloadCallback* AriaDownloader::callback(void)
 
 void AriaDownloader::updateStats(void)
 {
-    std::vector<aria2::A2Gid> gids = aria2::getActiveDownload(session);
+    std::vector<aria2::A2Gid> gids = aria2::getActiveDownload(session_);
     for(const auto& gid : gids) {
-        aria2::DownloadHandle* dh = aria2::getDownloadHandle(session, gid);
+        aria2::DownloadHandle* dh = aria2::getDownloadHandle(session_, gid);
         if(dh) {
             downloadSpeed_ = dh->getDownloadSpeed();
             uploadSpeed_ = dh->getUploadSpeed();
@@ -122,5 +122,5 @@ int AriaDownloader::totalSize(void)
 
 void AriaDownloader::setDownloadDirectory(const std::string& dir)
 {
-    aria2::changeGlobalOption(session, {{ "dir", dir }});
+    aria2::changeGlobalOption(session_, {{ "dir", dir }});
 }

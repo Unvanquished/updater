@@ -30,7 +30,7 @@ public:
     int totalSize(void);
 
 private:
-    aria2::Session* session;
+    aria2::Session* session_;
     DownloadCallback* callback_;
     std::list<aria2::A2Gid> pausedGids_;
     int downloadSpeed_;

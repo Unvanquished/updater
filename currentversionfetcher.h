@@ -20,7 +20,7 @@ private slots:
     void reply(QNetworkReply* reply);
 
 private:
-    std::unique_ptr<QNetworkAccessManager> manager;
+    std::unique_ptr<QNetworkAccessManager> manager_;
 
 
 };
