@@ -28,10 +28,6 @@ ApplicationWindow {
         target: downloader
         property bool updaterUpdate: false
         ignoreUnknownSignals: true
-        onUpdaterUpdateNeded: {
-            console.log(updateNeeded);
-            conn.updaterUpdate = updateNeeded;
-        }
 
         onUpdateNeeded: {
             console.log("conn.updaterUpdate=" + conn.updaterUpdate);
