@@ -1,5 +1,8 @@
 #include <QApplication>
+#include <QCommandLineOption>
+#include <QCommandLineParser>
 #include <QQmlApplicationEngine>
+#include <QFile>
 #include <QFontDatabase>
 #include <QQmlContext>
 
@@ -9,6 +12,18 @@
 #include "qmldownloader.h"
 #include "settings.h"
 
+namespace {
+
+QFile logFile;
+
+void LogMessageHandler(QtMsgType, const QMessageLogContext&, const QString& msg) {
+    logFile.write(msg.toUtf8());
+    logFile.write("\n");
+    logFile.flush();
+}
+
+} // namespace
+
 int main(int argc, char *argv[])
 {
     QCoreApplication::setOrganizationName("Unvanquished Development");
@@ -16,6 +31,24 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName("Unvanquished Updater");
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
+
+    QCommandLineOption logFileNameOption("logfile");
+    logFileNameOption.setValueName("filename");
+    QCommandLineParser optionParser;
+    optionParser.addOption(logFileNameOption);
+    optionParser.process(app);
+    QString logFilename = optionParser.value(logFileNameOption);
+    if (!logFilename.isEmpty()) {
+        logFile.setFileName(logFilename);
+        if (logFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            qInstallMessageHandler(&LogMessageHandler);
+        } else {
+            qDebug() << "Failed to open log file for writing";
+        }
+    }
+
+    qDebug() << "Git version: " << GIT_VERSION;
+
     app.setWindowIcon(QIcon(":resources/updater.png"));
     int fontId = QFontDatabase::addApplicationFont(":resources/Roboto-Regular.ttf");
     if (fontId != -1) {
