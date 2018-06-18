@@ -1,5 +1,6 @@
 #define WINVER 0x0600
 #define _WIN32_WINNT 0x0600
+#include "initguid.h"
 #include "shlobj.h"
 #include "windows.h"
 #include "winnls.h"
@@ -152,7 +153,7 @@ bool updateUpdater(const QString& updaterArchive)
     QFile backupUpdater(backup);
     if (backupUpdater.exists()) {
         if (!backupUpdater.remove()) {
-            qDebug() << "Could not remove backup updater. Aboring autoupdate.";
+            qDebug() << "Could not remove backup updater. Aborting autoupdate.";
             return false;
         }
     }
