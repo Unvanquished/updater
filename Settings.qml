@@ -53,13 +53,13 @@ Item {
         id: fileDialog
         title: "Please choose a folder"
         onAccepted: {
-            var clipLength = 'file://'.length;
-            // On Windows, apparently, there are three slashes. Increment
-            // the substring clip length as a result.
+            var clipRegex = /^file:\/\//;
+            // On Windows, apparently, there are three slashes (unless it's on a network drive).
             if (Qt.platform.os === "windows") {
-                clipLength += 1;
+                clipRegex = /^file:(\/\/\/)?/;
             }
-            updaterSettings.installPath = Qt.resolvedUrl(fileDialog.fileUrl + '/Unvanquished').substring(clipLength);
+            updaterSettings.installPath = (Qt.resolvedUrl(fileDialog.fileUrl + '/Unvanquished').toString()
+                .replace(clipRegex, '').replace(/\/\/Unvanquished$/, '/Unvanquished'));
         }
         selectFolder: true
     }
