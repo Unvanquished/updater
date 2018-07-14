@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <QCoreApplication>
 #include <QProcess>
+#include <QStandardPaths>
+#include <QString>
 
 namespace Sys {
 QString archiveName(void)
@@ -12,9 +14,51 @@ QString archiveName(void)
     return "linux64.zip";
 }
 
+void migrateHomePath(void)
+{
+    QString legacyHomePath = QDir::homePath() + "/.unvanquished";
+    QString xdgDataHome = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
+    QString xdgHomePath = xdgDataHome + "/unvanquished";
+
+    if (QDir(legacyHomePath).exists()) {
+        if (QDir(xdgHomePath).exists()) {
+            qWarning("Legacy home path %s exists but XDG home path %s already exists, doing nothing", qPrintable(legacyHomePath), qPrintable(xdgHomePath));
+            return;
+        }
+
+        if (!QDir(xdgDataHome).exists() && !QDir().mkdir(xdgDataHome)) {
+            qFatal("Could not create XDG data directory %s", qPrintable(xdgDataHome));
+        }
+
+        QFileInfo fileinfo(legacyHomePath);
+        if (fileinfo.isSymLink()) {
+            qInfo("Creating legacy home path symlink %s to XDG home path %s", qPrintable(legacyHomePath), qPrintable(xdgHomePath));
+            QFile symlink(legacyHomePath);
+            if (!symlink.link(xdgHomePath)) {
+                qFatal("Could not create symlink %s", qPrintable(xdgHomePath));
+            }
+        } else {
+            qInfo("Renaming legacy home path %s to XDG home path %s", qPrintable(legacyHomePath), qPrintable(xdgHomePath));
+            QDir directory;
+            if (!directory.rename(legacyHomePath, xdgHomePath)) {
+                qFatal("Could not rename legacy home path to %s", qPrintable(xdgHomePath));
+            }
+        }
+    }
+}
+
 QString defaultInstallPath(void)
 {
-    return QDir::homePath() + "/.local/share/Unvanquished";
+    // if needed, migrate legacy homepath to prevent the updater
+    // to create the directory before the engine tries to migrate
+    // it itself
+    migrateHomePath();
+
+    // Does not use QStandardPaths::AppDataLocation because
+    // it returns "~/.local/share/unvanquished/updater"
+    // and we want "~/.local/share/unvanquished/base"
+    // game itself puts stuff in "~/.local/share/unvanquished"
+    return QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/unvanquished/base";
 }
 
 QString executableName(void)
@@ -32,7 +76,7 @@ bool install(void)
     }
     QString desktopStr = QString(desktopFile.readAll().data())
         .arg(settings.installPath());
-    QFile outputFile(QDir::homePath() + "/.local/share/applications/unvanquished.desktop");
+    QFile outputFile(QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation) + "/unvanquished.desktop");
     if (!outputFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
         desktopFile.close();
         return false;
@@ -41,7 +85,7 @@ bool install(void)
     outputFile.close();
 
     // install icon
-    QString iconDir = QDir::homePath() + "/.local/share/icons/hicolor/128x128/apps/";
+    QString iconDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/icons/hicolor/128x128/apps/";
     QDir dir(iconDir);
     if (!dir.exists()) {
         if (!dir.mkpath(dir.path())) {
