@@ -36,7 +36,7 @@ Item {
                 Material.elevation: 1
                 iconName: "file/folder"
                 onClicked: fileDialog.open()
-                enabled: downloader.state === QmlDownloader.COMPLETED || downloader.state === QmlDownloader.IDLE
+                enabled: downloader.state === QmlDownloader.IDLE
             }
             FluidControls.TitleLabel {
                 text: "Command Line:"
