@@ -16,8 +16,6 @@ QmlDownloader::QmlDownloader() : downloadSpeed_(0),
         eta_(0),
         totalSize_(0),
         completedSize_(0),
-        paused_(true),
-        updater_update_(false),
         worker_(nullptr),
         state_(IDLE) {}
 

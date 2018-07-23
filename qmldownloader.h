@@ -79,8 +79,6 @@ private:
     std::chrono::seconds eta_;
     int totalSize_;
     int completedSize_;
-    bool paused_;
-    bool updater_update_;
 
     CurrentVersionFetcher fetcher_;
     DownloadWorker* worker_;
