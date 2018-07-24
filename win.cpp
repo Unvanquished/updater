@@ -62,6 +62,23 @@ bool CreateLink(const QString& sourcePath, const QString& workingDir,
     }
     return SUCCEEDED(hres);
 }
+
+bool GetStartMenuPath(const QString& installPath, QString* startPath) {
+    auto startMenuTye = FOLDERID_Programs;
+    if (installPath.contains("Program Files", Qt::CaseInsensitive)) {
+        startMenuTye = FOLDERID_CommonPrograms;
+    }
+    PWSTR path = nullptr;
+    HRESULT ret = SHGetKnownFolderPath(startMenuTye, 0, nullptr, &path);
+    if (SUCCEEDED(ret)) {
+        *startPath = QString::fromStdWString(std::wstring(path));
+    } else {
+        qDebug() << "SHGetKnownFolderPath failed with hresult" << ret;
+    }
+    CoTaskMemFree(path);
+    return SUCCEEDED(ret);
+}
+
 }  // namespace
 namespace Sys {
 bool IsWow64()
@@ -125,24 +142,19 @@ bool install(void)
                         " +connect \"%1\"");
 
     // Create a start menu shortcut
-    // By default, install it to the users's start menu, unless they are instaling
+    // By default, install it to the users's start menu, unless they are installing
     // the game globally.
-    auto startMenuTye = FOLDERID_Programs;
-    if (installPath.contains("Program Files", Qt::CaseInsensitive)) {
-        startMenuTye = FOLDERID_CommonPrograms;
-    }
-    PWSTR path = nullptr;
-    auto ret = SHGetKnownFolderPath(startMenuTye, 0, nullptr, &path);
-    // TODO: Bubble up error if this call fails.
-    if (!SUCCEEDED(ret)) {
-        CoTaskMemFree(path);
+    QString startPath;
+    if (!GetStartMenuPath(installPath, &startPath)) {
         return true;
     }
-    QDir dir(QString::fromStdWString(std::wstring(path)));
+    QDir dir(startPath);
     dir.mkdir("Unvanquished");
     dir.setPath(dir.path() + "\\Unvanquished");
     QString linkName = "Unvanquished";
-    CreateLink(installPath + "\\daemon.exe", installPath, dir.path() + "\\Unvanquished.lnk", linkName);
+    if (!CreateLink(installPath + "\\daemon.exe", installPath, dir.path() + "\\Unvanquished.lnk", linkName)) {
+        qDebug() << "Creating shortcut failed";
+    }
     return true;
 }
 
