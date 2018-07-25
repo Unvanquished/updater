@@ -32,6 +32,9 @@ void setRegistryKey(const QString& key,
 bool CreateLink(const QString& sourcePath, const QString& workingDir,
                 const QString& linkPath, QString& linkName)
 {
+    qDebug() << "Shortcut location:" << linkPath;
+    qDebug() << "Shortcut target:" << sourcePath;
+
     HRESULT hres;
     IShellLink* psl;
 

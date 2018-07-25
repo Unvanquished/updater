@@ -33,17 +33,21 @@ void DownloadWorker::onDownloadCallback(aria2::Session* session, aria2::Download
 {
     switch (event) {
         case aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE:
+            qDebug() << "onDownloadCallback event BT_DOWNLOAD_COMPLETE";
             if (!extractUpdate()) return;
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_COMPLETE:
+            qDebug() << "onDownloadCallback event DOWNLOAD_COMPLETE";
             if (state == DOWNLOADING_TORRENT) {
+                qDebug() << "DownloadWorker.state changed from DOWNLOADING_TORRENT to DOWNLOADING_UNVANQUISHED";
                 state = DOWNLOADING_UNVANQUISHED;
                 aria2::DownloadHandle* handle = aria2::getDownloadHandle(session, gid);
                 aria2::A2Gid torrentGid = handle->getFollowedBy()[0];
                 setDownloadPathAndFiles(session, torrentGid);
                 aria2::deleteDownloadHandle(handle);
             } else if (state == DOWNLOADING_UPDATER) {
+                qDebug() << "Updater download complete";
                 aria2::DownloadHandle* handle = aria2::getDownloadHandle(session, gid);
                 qDebug() << handle->getNumFiles();
                 if (handle->getNumFiles() > 1) {
@@ -54,21 +58,26 @@ void DownloadWorker::onDownloadCallback(aria2::Session* session, aria2::Download
                 Sys::updateUpdater(QString(files[0].path.c_str()));
                 return;
             } else {
+                qDebug() << "Unvanquished download complete (?)";
                 event = aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE;
                 if (!extractUpdate()) return;
             }
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_ERROR:
+            qDebug() << "onDownloadCallback event DOWNLOAD_ERROR";
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_PAUSE:
+            qDebug() << "onDownloadCallback event DOWNLOAD_PAUSE";
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_START:
+            qDebug() << "onDownloadCallback event DOWNLOAD_START";
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_STOP:
+            qDebug() << "onDownloadCallback event DOWNLOAD_STOP";
             break;
     }
     emit onDownloadEvent(event);

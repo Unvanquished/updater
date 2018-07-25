@@ -1,3 +1,5 @@
+#include <QDebug>
+
 #include "ariadownloader.h"
 #include "system.h"
 
@@ -42,24 +44,30 @@ AriaDownloader::~AriaDownloader()
 bool AriaDownloader::addUri(const std::string& uri)
 {
     int ret = aria2::addUri(session_, nullptr, { uri }, aria2::KeyVals());
-    return ret == 1;
+    qDebug() << "aria2::addUri returned" << ret;
+    return ret == 0;
 }
 
 bool AriaDownloader::run(void)
 {
     int ret = aria2::run(session_, aria2::RUN_ONCE);
+    if (ret != 1) {
+        qDebug() << "aria2::run returned" << ret;
+    }
     return ret == 1;
 }
 
 void AriaDownloader::toggleDownloads(void)
 {
     if (pausedGids_.empty()) {
+        qDebug() << "AriaDownloader::toggleDownloads - pausing";
         auto gids = aria2::getActiveDownload(session_);
         for (aria2::A2Gid gid : gids) {
             aria2::pauseDownload(session_, gid, true);
             pausedGids_.push_back(gid);
         }
     } else {
+        qDebug() << "AriaDownloader::toggleDownloads - resuming";
         while (!pausedGids_.empty()) {
             aria2::unpauseDownload(session_, pausedGids_.front());
             pausedGids_.pop_front();
