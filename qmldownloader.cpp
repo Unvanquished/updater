@@ -72,6 +72,7 @@ void QmlDownloader::onDownloadEvent(int event)
     switch (event) {
         case aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE:
             if (state() != COMPLETED) {
+                qDebug() << "Calling Sys::install";
                 Sys::install();
                 settings_.setCurrentVersion(currentVersion_);
                 settings_.setInstallFinished(true);
@@ -151,11 +152,13 @@ void QmlDownloader::startGame(void)
     QProcess *process = new QProcess;
     connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), process, SLOT(deleteLater()));
     connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), QApplication::instance(), SLOT(quit()));
+    qDebug() << "Starting game with command line:" << commandLine;
     process->start(commandLine);
 }
 
 void QmlDownloader::toggleDownload(void)
 {
+    qDebug() << "QmlDownloader::toggleDownload called";
     if (state() == COMPLETED) return;
     if (!worker_) {
         startUpdate();
@@ -168,6 +171,7 @@ void QmlDownloader::toggleDownload(void)
 void QmlDownloader::stopAria(void)
 {
     if (worker_) {
+        qDebug() << "Stopping downloader thread";
         worker_->stop();
         thread_.quit();
         thread_.wait();
@@ -192,6 +196,7 @@ void QmlDownloader::checkForUpdate()
 void QmlDownloader::onCurrentVersions(QString updater, QString game)
 {
     if (!updater.isEmpty() && updater != QString(GIT_VERSION)) {
+        qDebug() << "Updater update to version" << updater << "required";
         QString url = UPDATER_BASE_URL + "/" + updater + "/" + Sys::updaterArchiveName();
         temp_dir_.reset(new QTemporaryDir());
         worker_ = new DownloadWorker();

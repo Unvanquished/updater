@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
         }
     }
 
-    qDebug() << "Git version: " << GIT_VERSION;
+    qDebug() << "Git version:" << GIT_VERSION;
 
     app.setWindowIcon(QIcon(":resources/updater.png"));
     int fontId = QFontDatabase::addApplicationFont(":resources/Roboto-Regular.ttf");
