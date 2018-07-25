@@ -2,6 +2,7 @@
 #include <QProcess>
 #include <QApplication>
 #include <QDebug>
+#include <QMessageBox>
 
 #include "qmldownloader.h"
 #include "system.h"
@@ -154,6 +155,14 @@ void QmlDownloader::startGame(void)
     connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), QApplication::instance(), SLOT(quit()));
     qDebug() << "Starting game with command line:" << commandLine;
     process->start(commandLine);
+    if (!process->waitForStarted(-1)) {
+        qDebug() << "Failed to start Unvanquished process.";
+        QMessageBox errorMessageBox;
+        errorMessageBox.setText("Failed to start Unvanquished process.");
+        errorMessageBox.exec();
+        // If the process fails to start, it does not emit the 'finished' signal.
+        QApplication::instance()->quit();
+    }
 }
 
 void QmlDownloader::toggleDownload(void)
