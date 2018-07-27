@@ -217,6 +217,7 @@ std::string getCertStore()
     return "";  // Not used on windows.
 }
 
+// Settings are stored in the registry at HKEY_CURRENT_USER\Software\Unvanquished Development\Unvanquished Updater
 QSettings* makePersistentSettings(QObject* parent)
 {
     return new QSettings(parent);

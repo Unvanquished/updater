@@ -121,6 +121,7 @@ std::string getCertStore()
     return "";  // Not used on OSX.
 }
 
+// Settings are, IIUC, stored in ~/Library/Preferences/net.unvanquished.Unvanquished Updater.plist
 QSettings* makePersistentSettings(QObject* parent)
 {
     return new QSettings(parent);
