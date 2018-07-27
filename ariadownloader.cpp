@@ -48,7 +48,7 @@ bool AriaDownloader::addUri(const std::string& uri)
     return ret == 0;
 }
 
-bool AriaDownloader::run(void)
+bool AriaDownloader::run()
 {
     int ret = aria2::run(session_, aria2::RUN_ONCE);
     if (ret != 1) {
@@ -57,7 +57,7 @@ bool AriaDownloader::run(void)
     return ret == 1;
 }
 
-void AriaDownloader::toggleDownloads(void)
+void AriaDownloader::toggleDownloads()
 {
     if (pausedGids_.empty()) {
         qDebug() << "AriaDownloader::toggleDownloads - pausing";
@@ -88,12 +88,12 @@ void AriaDownloader::unregisterCallback(DownloadCallback* callback)
     }
 }
 
-AriaDownloader::DownloadCallback* AriaDownloader::callback(void)
+AriaDownloader::DownloadCallback* AriaDownloader::callback()
 {
     return callback_;
 }
 
-void AriaDownloader::updateStats(void)
+void AriaDownloader::updateStats()
 {
     std::vector<aria2::A2Gid> gids = aria2::getActiveDownload(session_);
     for(const auto& gid : gids) {
@@ -108,22 +108,22 @@ void AriaDownloader::updateStats(void)
     }
 }
 
-int AriaDownloader::downloadSpeed(void)
+int AriaDownloader::downloadSpeed()
 {
     return downloadSpeed_;
 }
 
-int AriaDownloader::uploadSpeed(void)
+int AriaDownloader::uploadSpeed()
 {
     return uploadSpeed_;
 }
 
-int AriaDownloader::completedSize(void)
+int AriaDownloader::completedSize()
 {
     return completedSize_;
 }
 
-int AriaDownloader::totalSize(void)
+int AriaDownloader::totalSize()
 {
     return totalSize_;
 }

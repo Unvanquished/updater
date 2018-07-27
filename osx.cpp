@@ -31,22 +31,22 @@ QString extractAppPath(const QString& path) {
 }
 
 namespace Sys {
-QString archiveName(void)
+QString archiveName()
 {
     return "mac.zip";
 }
 
-QString defaultInstallPath(void)
+QString defaultInstallPath()
 {
     return QDir::homePath() +  "/Games/Unvanquished";
 }
 
-QString executableName(void)
+QString executableName()
 {
     return "Unvanquished.app";
 }
 
-bool install(void)
+bool install()
 {
     Settings settings;
     QFile::link(settings.installPath() + "/Unvanquished.app",
@@ -111,7 +111,7 @@ bool updateUpdater(const QString& updaterArchive)
     return true;
 }
 
-QString updaterArchiveName(void)
+QString updaterArchiveName()
 {
     return "UnvUpdaterOSX.zip";
 }

@@ -22,11 +22,11 @@ public:
     void addUpdaterUri(const std::string& uri);
     void addTorrent(const std::string& uri);
     void setDownloadDirectory(const std::string& dir);
-    void toggle(void);
-    void stop(void);
+    void toggle();
+    void stop();
 
 public slots:
-    void download(void);
+    void download();
 
 signals:
     void downloadSpeedChanged(int speed);
@@ -37,7 +37,7 @@ signals:
 
 private:
     void setDownloadPathAndFiles(aria2::Session* session, aria2::A2Gid gid);
-    bool extractUpdate(void);
+    bool extractUpdate();
     std::string getAriaIndexOut(size_t index, std::string path);
 
     enum State {

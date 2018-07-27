@@ -104,7 +104,7 @@ std::string DownloadWorker::getAriaIndexOut(size_t index, std::string path)
 
 
 
-void DownloadWorker::download(void)
+void DownloadWorker::download()
 {
     auto start = std::chrono::steady_clock::now();
     bool ret = true;
@@ -139,7 +139,7 @@ void DownloadWorker::download(void)
     }
 }
 
-void DownloadWorker::toggle(void)
+void DownloadWorker::toggle()
 {
     downloader.toggleDownloads();
 }
@@ -150,12 +150,12 @@ void DownloadWorker::setDownloadDirectory(const std::string& dir)
     downloader.setDownloadDirectory(dir);
 }
 
-void DownloadWorker::stop(void)
+void DownloadWorker::stop()
 {
     running = false;
 }
 
-bool DownloadWorker::extractUpdate(void)
+bool DownloadWorker::extractUpdate()
 {
     QString filename = Sys::archiveName();
     auto out = JlCompress::extractDir(downloadDir + "/" + filename, downloadDir);

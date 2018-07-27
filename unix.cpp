@@ -9,12 +9,12 @@
 #include <QString>
 
 namespace Sys {
-QString archiveName(void)
+QString archiveName()
 {
     return "linux64.zip";
 }
 
-void migrateHomePath(void)
+void migrateHomePath()
 {
     QString legacyHomePath = QDir::homePath() + "/.unvanquished";
     QString xdgDataHome = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation);
@@ -47,7 +47,7 @@ void migrateHomePath(void)
     }
 }
 
-QString defaultInstallPath(void)
+QString defaultInstallPath()
 {
     // if needed, migrate legacy homepath to prevent the updater
     // to create the directory before the engine tries to migrate
@@ -61,12 +61,12 @@ QString defaultInstallPath(void)
     return QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/unvanquished/base";
 }
 
-QString executableName(void)
+QString executableName()
 {
     return "daemon";
 }
 
-bool install(void)
+bool install()
 {
     // Set up menu and protocol handler
     Settings settings;
@@ -143,7 +143,7 @@ bool updateUpdater(const QString& updaterArchive)
     return true;
 }
 
-QString updaterArchiveName(void)
+QString updaterArchiveName()
 {
     return "UnvUpdaterLinux.zip";
 }
