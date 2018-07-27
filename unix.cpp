@@ -166,9 +166,10 @@ std::string getCertStore()
     return "";
 }
 
+// Settings are stored in ~/.config/unvanquished/updater.conf
 QSettings* makePersistentSettings(QObject* parent)
 {
-    return new QSettings(parent);
+    return new QSettings("unvanquished", "updater", parent);
 }
 
 }  // namespace Sys

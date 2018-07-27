@@ -26,10 +26,8 @@ void LogMessageHandler(QtMsgType, const QMessageLogContext&, const QString& msg)
 
 int main(int argc, char *argv[])
 {
-    // The two following variables set the config file path
-    // to: ~/.config/unvanquished/updater.conf
-    QCoreApplication::setApplicationName("updater");
-    QCoreApplication::setOrganizationName("unvanquished");
+    QCoreApplication::setApplicationName("Unvanquished Updater");
+    QCoreApplication::setOrganizationName("Unvanquished Development");
     QCoreApplication::setOrganizationDomain("unvanquished.net");
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
