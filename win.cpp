@@ -107,7 +107,7 @@ bool IsWow64()
     return bIsWow64 != FALSE;
 }
 
-QString archiveName(void)
+QString archiveName()
 {
     if (IsWow64()) {
         return "win64.zip";
@@ -116,7 +116,7 @@ QString archiveName(void)
     }
 }
 
-QString defaultInstallPath(void)
+QString defaultInstallPath()
 {
     static const char* PROGRAM_FILES_VAR = "programfiles";
     static const char* PROGRAM_FILES_WOW64_VAR = "PROGRAMW6432";
@@ -125,12 +125,12 @@ QString defaultInstallPath(void)
     return installPath + "\\Unvanquished";
 }
 
-QString executableName(void)
+QString executableName()
 {
     return "daemon.exe";
 }
 
-bool install(void)
+bool install()
 {
     Settings settings;
     QString installPath = settings.installPath();
@@ -207,7 +207,7 @@ bool updateUpdater(const QString& updaterArchive)
     return true;
 }
 
-QString updaterArchiveName(void)
+QString updaterArchiveName()
 {
     return "UnvUpdaterWin.zip";
 }

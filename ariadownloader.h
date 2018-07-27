@@ -17,17 +17,17 @@ public:
     };
 
     bool addUri(const std::string& uri);
-    bool run(void);
-    void toggleDownloads(void);
+    bool run();
+    void toggleDownloads();
     void setDownloadDirectory(const std::string& dir);
     void registerCallback(DownloadCallback* callback_);
     void unregisterCallback(DownloadCallback* callback_);
-    DownloadCallback* callback(void);
-    void updateStats(void);
-    int downloadSpeed(void);
-    int uploadSpeed(void);
-    int completedSize(void);
-    int totalSize(void);
+    DownloadCallback* callback();
+    void updateStats();
+    int downloadSpeed();
+    int uploadSpeed();
+    int completedSize();
+    int totalSize();
 
 private:
     aria2::Session* session_;

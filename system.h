@@ -3,11 +3,11 @@
 #include <QString>
 
 namespace Sys {
-QString archiveName(void);
-QString defaultInstallPath(void);
-QString executableName(void);
-bool install(void);
+QString archiveName();
+QString defaultInstallPath();
+QString executableName();
+bool install();
 bool updateUpdater(const QString& updaterArchive);
-QString updaterArchiveName(void);
-std::string getCertStore(void);
+QString updaterArchiveName();
+std::string getCertStore();
 }

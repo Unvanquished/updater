@@ -112,7 +112,7 @@ void QmlDownloader::onDownloadEvent(int event)
     }
 }
 
-void QmlDownloader::startUpdate(void)
+void QmlDownloader::startUpdate()
 {
     settings_.setInstallFinished(false);
     setState(DOWNLOADING);
@@ -144,7 +144,7 @@ void QmlDownloader::startUpdate(void)
     thread_.start();
 }
 
-void QmlDownloader::startGame(void)
+void QmlDownloader::startGame()
 {
     QString cmd = settings_.installPath() + QDir::separator() + Sys::executableName();
     QString commandLine = settings_.commandLine();
@@ -165,7 +165,7 @@ void QmlDownloader::startGame(void)
     }
 }
 
-void QmlDownloader::toggleDownload(void)
+void QmlDownloader::toggleDownload()
 {
     qDebug() << "QmlDownloader::toggleDownload called";
     if (state() == COMPLETED) return;
@@ -177,7 +177,7 @@ void QmlDownloader::toggleDownload(void)
     setState(state() == DOWNLOADING ? PAUSED : DOWNLOADING);
 }
 
-void QmlDownloader::stopAria(void)
+void QmlDownloader::stopAria()
 {
     if (worker_) {
         qDebug() << "Stopping downloader thread";
