@@ -37,7 +37,7 @@ signals:
     void onMessage(QString message);
 
 private:
-    QSettings settings_;
+    QSettings* settings_;
 };
 
 

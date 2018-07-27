@@ -121,5 +121,9 @@ std::string getCertStore()
     return "";  // Not used on OSX.
 }
 
+QSettings* makePersistentSettings(QObject* parent)
+{
+    return new QSettings(parent);
+}
 
 }  // namespace Sys

@@ -166,4 +166,9 @@ std::string getCertStore()
     return "";
 }
 
+QSettings* makePersistentSettings(QObject* parent)
+{
+    return new QSettings(parent);
+}
+
 }  // namespace Sys
