@@ -10,6 +10,11 @@
 namespace {
 static const QRegularExpression COMMAND_REGEX("%command%");
 static QString UPDATER_BASE_URL("http://github.com/Unvanquished/updater2/releases/download");
+
+QString QuoteQProcessCommandArgument(QString arg) {
+    arg.replace('"', "\"\"\"");
+    return '"' + arg + '"';
+}
 }  // namespace
 
 QmlDownloader::QmlDownloader() : downloadSpeed_(0),
@@ -148,7 +153,7 @@ void QmlDownloader::startGame()
 {
     QString cmd = settings_.installPath() + QDir::separator() + Sys::executableName();
     QString commandLine = settings_.commandLine();
-    commandLine.replace(COMMAND_REGEX, cmd);
+    commandLine.replace(COMMAND_REGEX, QuoteQProcessCommandArgument(cmd));
 
     QProcess *process = new QProcess;
     connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), process, SLOT(deleteLater()));
