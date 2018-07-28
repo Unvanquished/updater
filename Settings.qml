@@ -58,8 +58,12 @@ Item {
             if (Qt.platform.os === "windows") {
                 clipRegex = /^file:(\/\/\/)?/;
             }
-            updaterSettings.installPath = (Qt.resolvedUrl(fileDialog.fileUrl + '/Unvanquished').toString()
-                .replace(clipRegex, '').replace(/\/\/Unvanquished$/, '/Unvanquished'));
+            var path = Qt.resolvedUrl(fileDialog.fileUrl + '/Unvanquished').toString();
+            path = path.replace(clipRegex, '').replace(/\/\/Unvanquished$/, '/Unvanquished');
+            if (Qt.platform.os === "windows") {
+                path = path.replace(/\//g, '\\');
+            }
+            updaterSettings.installPath = path;
         }
         selectFolder: true
     }
