@@ -136,13 +136,12 @@ bool install()
     QString installPath = settings.installPath();
 
     // Create unv:// protocol handler
+    QString quotedInstallPath = '"' + installPath + '"';
+    QString quotedExecutablePath = '"' + installPath + "\\daemon.exe\"";
     setRegistryKey("HKEY_CLASSES_ROOT\\unv", "Default", "URL: Unvanquished Protocol");
-    setRegistryKey("HKEY_CLASSES_ROOT\\unv\\DefaultIcon", "Default",
-                   installPath + "\\daemon.exe,1");
     setRegistryKey("HKEY_CLASSES_ROOT\\unv", "URL Protocol", "");
     setRegistryKey("HKEY_CLASSES_ROOT\\unv\\shell\\open\\command", "Default",
-                   installPath + "\\daemon.exe -pakpath " + installPath +
-                        " +connect \"%1\"");
+                   quotedExecutablePath + " -pakpath " + quotedInstallPath + " +connect \"%1\"");
 
     // Create a start menu shortcut
     // By default, install it to the users's start menu, unless they are installing
@@ -199,7 +198,7 @@ bool updateUpdater(const QString& updaterArchive)
         }
     }
 
-    if (!QProcess::startDetached(current)) {
+    if (!QProcess::startDetached(current, QStringList())) {
         qDebug() << "Error starting " << current;
         return false;
     }
