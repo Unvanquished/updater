@@ -135,7 +135,7 @@ bool updateUpdater(const QString& updaterArchive)
         }
     }
 
-    if (!QProcess::startDetached(current)) {
+    if (!QProcess::startDetached(current, QStringList())) {
         qDebug() << "Error starting " << current;
         return false;
     }
