@@ -1,3 +1,6 @@
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_ICON1               ICON                    "updater.ico"
+
+// https://stackoverflow.com/questions/1402137
+1 24 "resources/windows_manifest.xml"
