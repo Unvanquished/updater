@@ -209,6 +209,7 @@ void QmlDownloader::checkForUpdate()
 
 void QmlDownloader::onCurrentVersions(QString updater, QString game)
 {
+    qDebug() << "Latest versions: updater =" << updater << "game =" << game;
     if (!updater.isEmpty() && updater != QString(GIT_VERSION)) {
         qDebug() << "Updater update to version" << updater << "required";
         QString url = UPDATER_BASE_URL + "/" + updater + "/" + Sys::updaterArchiveName();
@@ -226,6 +227,7 @@ void QmlDownloader::onCurrentVersions(QString updater, QString game)
         connect(&thread_, SIGNAL(started()), worker_, SLOT(download()));
         thread_.start();
     } else if (game.isEmpty() || settings_.currentVersion() != game) {
+        qDebug() << "Game update required. Installed version is" << settings_.currentVersion();
         currentVersion_ = game;
         emit updateNeeded(true);
     } else {
