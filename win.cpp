@@ -134,6 +134,7 @@ bool install()
 {
     Settings settings;
     QString installPath = settings.installPath();
+    qDebug() << "Install path:" << installPath;
 
     // Create unv:// protocol handler
     QString quotedInstallPath = '"' + installPath + '"';

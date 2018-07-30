@@ -12,6 +12,7 @@
 
 #include "qmldownloader.h"
 #include "settings.h"
+#include "system.h"
 
 namespace {
 
@@ -21,6 +22,15 @@ void LogMessageHandler(QtMsgType, const QMessageLogContext&, const QString& msg)
     logFile.write(msg.toUtf8());
     logFile.write("\n");
     logFile.flush();
+}
+
+void LogSettings() {
+    std::unique_ptr<QSettings> settings(Sys::makePersistentSettings(nullptr));
+    QStringList storedKeys = settings->allKeys();
+    qDebug() << storedKeys.size() << "stored settings:";
+    for (const auto& key : storedKeys) {
+        qDebug() << " -" << key << "=" << settings->value(key).toString();
+    }
 }
 
 } // namespace
@@ -49,6 +59,7 @@ int main(int argc, char *argv[])
     }
 
     qDebug() << "Git version:" << GIT_VERSION;
+    LogSettings();
 
     app.setWindowIcon(QIcon(":resources/updater.png"));
     int fontId = QFontDatabase::addApplicationFont(":resources/Roboto-Regular.ttf");
