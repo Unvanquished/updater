@@ -60,6 +60,12 @@ int main(int argc, char *argv[])
 
     qDebug() << "Git version:" << GIT_VERSION;
     LogSettings();
+    try {
+        qDebug() << "Testing exception handling...";
+        throw 1;
+    } catch(int) {
+        qDebug() << "Exception handling works";
+    }
 
     app.setWindowIcon(QIcon(":resources/updater.png"));
     int fontId = QFontDatabase::addApplicationFont(":resources/Roboto-Regular.ttf");
