@@ -5,6 +5,7 @@
 #include <QFile>
 #include <QFontDatabase>
 #include <QQmlContext>
+#include <QDebug>
 
 #include "iconsimageprovider.h"
 #include "iconthemeimageprovider.h"
