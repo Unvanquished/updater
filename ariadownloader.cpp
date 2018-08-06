@@ -45,7 +45,7 @@ Ret AriaDownloader::addUri(const std::string& uri)
 {
     int ret = aria2::addUri(session, nullptr, { uri }, aria2::KeyVals());
     if (ret < 0) {
-        return Ret(QString("Error adding uri: %1").arg(QString(uri.c_str())));
+        return Ret(false) << "Error adding uri: " << uri.c_str();
     }
     return true;
 }
@@ -54,7 +54,7 @@ Ret AriaDownloader::run(void)
 {
     int ret = aria2::run(session, aria2::RUN_ONCE);
     if (ret < 0) {
-        return Ret("Error running aria loop.");
+        return Ret(false) << "Error running aria loop.";
     }
     return true;
 }
@@ -110,7 +110,7 @@ Ret AriaDownloader::updateStats(void)
     for(const auto& gid : gids) {
         aria2::DownloadHandle* dh = aria2::getDownloadHandle(session, gid);
         if(!dh) {
-            return Ret(QString("Invalid download handle for gid: %1").arg(gid));
+            return Ret(false) << "Invalid download handle for gid: " << std::to_string(gid);
         }
         downloadSpeed_ = dh->getDownloadSpeed();
         uploadSpeed_ = dh->getUploadSpeed();
@@ -145,7 +145,7 @@ Ret AriaDownloader::setDownloadDirectory(const std::string& dir)
 {
     int ret = aria2::changeGlobalOption(session, {{ "dir", dir }});
     if (ret < 0) {
-        return Ret(QString("Error setting download directory to %1").arg(dir.c_str()));
+        return Ret(false) << "Error setting download directory to " << dir;
     }
     return true;
 }

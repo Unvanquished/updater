@@ -7,6 +7,7 @@
 
 #include "quazip/quazip/JlCompress.h"
 #include "system.h"
+#include "ret.h"
 #include <QDebug>
 
 DownloadWorker::DownloadWorker(QObject *parent) : QObject(parent), downloadSpeed(0), uploadSpeed(0),
@@ -20,21 +21,26 @@ DownloadWorker::~DownloadWorker()
     downloader.unregisterCallback(this);
 }
 
-void DownloadWorker::addUpdaterUri(const std::string& uri)
+Ret DownloadWorker::addUpdaterUri(const std::string& uri)
 {
-    downloader.addUri(uri);
+    Ret ret = downloader.addUri(uri);
+    if (!ret.ok()) return ret;
     state = DOWNLOADING_UPDATER;
+    return true;
 }
 
-void DownloadWorker::addTorrent(const std::string& uri)
+Ret DownloadWorker::addTorrent(const std::string& uri)
 {
-    downloader.addUri(uri);
+    Ret ret = downloader.addUri(uri);
+    if (!ret.ok()) return ret;
     state = DOWNLOADING_TORRENT;
+    return true;
 }
 
 void DownloadWorker::onDownloadCallback(aria2::Session* session, aria2::DownloadEvent event,
                                         aria2::A2Gid gid, void* /* userData */)
 {
+    Ret ret;
     switch (event) {
         case aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE:
             if (!extractUpdate()) return;
@@ -99,7 +105,7 @@ std::string DownloadWorker::getAriaIndexOut(size_t index, std::string path)
 
 
 
-void DownloadWorker::download(void)
+void DownloadWorker::download()
 {
     auto start = std::chrono::steady_clock::now();
     paused = false;
@@ -137,29 +143,29 @@ void DownloadWorker::download(void)
     }
 }
 
-void DownloadWorker::toggle(void)
+void DownloadWorker::toggle()
 {
-    downloader.toggleDownloads();
+    return downloader.toggleDownloads();
 }
 
-void DownloadWorker::setDownloadDirectory(const std::string& dir)
+Ret DownloadWorker::setDownloadDirectory(const std::string& dir)
 {
+    Ret ret = downloader.setDownloadDirectory(dir);
+    if (!ret.ok()) return ret;
     downloadDir = dir.c_str();
-    downloader.setDownloadDirectory(dir);
 }
 
-void DownloadWorker::stop(void)
+void DownloadWorker::stop()
 {
     running = false;
 }
 
-bool DownloadWorker::extractUpdate(void)
+Ret DownloadWorker::extractUpdate()
 {
     QString filename = Sys::archiveName();
     auto out = JlCompress::extractDir(downloadDir + "/" + filename, downloadDir);
     if (out.size() < 1) {
-        emit onDownloadEvent(ERROR_EXTRACTING);
-        return false;
+        return Ret(false) << "Error extracting " << filename << " to " << downloadDir;
     }
     return true;
 }

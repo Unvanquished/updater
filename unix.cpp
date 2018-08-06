@@ -22,22 +22,27 @@ QString executableName(void)
     return "daemon";
 }
 
-bool install(void)
+Ret install(void)
 {
     // Set up menu and protocol handler
     Settings settings;
     QFile desktopFile(":resources/unvanquished.desktop");
     if (!desktopFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        return false;
+        return Ret(false) << "Error openning the desktop file for reading: " << desktopFile.fileName();
     }
     QString desktopStr = QString(desktopFile.readAll().data())
         .arg(settings.installPath());
     QFile outputFile(QDir::homePath() + "/.local/share/applications/unvanquished.desktop");
     if (!outputFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
         desktopFile.close();
-        return false;
+        return Ret(false) << "Error openning output file for writing: " << outputFile.fileName();
     }
-    outputFile.write(desktopStr.toUtf8().constData(), desktopStr.size());
+    qint64 written = outputFile.write(desktopStr.toUtf8().constData(), desktopStr.size());
+    if (written != desktopStr.size()) {
+        return Ret(false) << "Mismatched write. Expected to write "
+                          << std::to_string(desktopStr.size()) << " but only wrote "
+                          << std::to_string(written);
+    }
     outputFile.close();
 
     // install icon
@@ -45,28 +50,30 @@ bool install(void)
     QDir dir(iconDir);
     if (!dir.exists()) {
         if (!dir.mkpath(dir.path())) {
-            return false;
+            return Ret(false) << "Error creating path: " << dir.path();
         }
     }
-    QFile::copy(":resources/unvanquished.png",
-                iconDir + "unvanquished.png");
+
+    // Don't error out on icon installation failure.
+    if (!QFile::copy(":resources/unvanquished.png",
+                iconDir + "unvanquished.png")) {
+        qDebug() << "WARNING: Error installing icon to " << iconDir;
+    }
     return true;
 }
 
-bool updateUpdater(const QString& updaterArchive)
+Ret updateUpdater(const QString& updaterArchive)
 {
     QString current = QCoreApplication::applicationFilePath();
     QString backup = current + ".bak";
     QFile backupUpdater(backup);
     if (backupUpdater.exists()) {
         if (!backupUpdater.remove()) {
-            qDebug() << "Could not remove backup updater. Aboring autoupdate.";
-            return false;
+            return Ret(false) << "Could not remove backup updater. Aboring autoupdate.";
         }
     }
     if (!QFile::rename(current, backup)) {
-        qDebug() << "Could not move " << current << " to " << backup;
-        return false;
+        return Ret(false) << "Could not move " << current << " to " << backup;
     }
     QDir destination(current);
     if (!destination.cdUp()) {
