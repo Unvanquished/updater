@@ -142,7 +142,7 @@ bool install()
     setRegistryKey("HKEY_CLASSES_ROOT\\unv", "Default", "URL: Unvanquished Protocol");
     setRegistryKey("HKEY_CLASSES_ROOT\\unv", "URL Protocol", "");
     setRegistryKey("HKEY_CLASSES_ROOT\\unv\\shell\\open\\command", "Default",
-                   quotedExecutablePath + " -pakpath " + quotedInstallPath + " +connect \"%1\"");
+                   quotedExecutablePath + " -pakpath " + quotedInstallPath + " -connect \"%1\"");
 
     // Create a start menu shortcut
     // By default, install it to the users's start menu, unless they are installing
