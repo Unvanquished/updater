@@ -33,7 +33,7 @@ QString extractAppPath(const QString& path) {
 namespace Sys {
 QString archiveName()
 {
-    return "mac.zip";
+    return "macos-amd64.zip";
 }
 
 QString defaultInstallPath()

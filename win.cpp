@@ -110,9 +110,9 @@ bool IsWow64()
 QString archiveName()
 {
     if (IsWow64()) {
-        return "win64.zip";
+        return "windows-amd64.zip";
     } else {
-        return "win32.zip";
+        return "windows-i686.zip";
     }
 }
 

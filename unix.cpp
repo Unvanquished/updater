@@ -11,7 +11,7 @@
 namespace Sys {
 QString archiveName()
 {
-    return "linux64.zip";
+    return "linux-amd64.zip";
 }
 
 void migrateHomePath()
