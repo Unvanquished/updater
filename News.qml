@@ -24,7 +24,7 @@ Item {
                     var object = component.createObject(swipe);
                     var post = newsObj['posts'][i];
                     if (post['thumbnail_images']) {
-                        object.source = Qt.resolvedUrl(post['thumbnail_images']['medium']['url']);
+                        object.source = Qt.resolvedUrl(post['thumbnail_images']['full']['url']);
                     }
                     object.cardTitle = post['title_plain'];
                     object.summary = post['excerpt'];
