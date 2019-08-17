@@ -14,15 +14,6 @@ Item {
         bottomMargin: 10
     }
 
-    function stripHttpsIfWin(url) {
-
-        var httpsPrefix = 'https://'
-        if (Qt.platform.os === 'windows' && url.startsWith(httpsPrefix)) {
-            return 'http://' + url.substring(httpsPrefix.length);
-        }
-        return url;
-    }
-
     function fetchNews() {
         var news = new XMLHttpRequest();
         news.onreadystatechange = function() {
@@ -33,7 +24,7 @@ Item {
                     var object = component.createObject(swipe);
                     var post = newsObj['posts'][i];
                     if (post['thumbnail_images']) {
-                        object.source = Qt.resolvedUrl(stripHttpsIfWin(post['thumbnail_images']['medium']['url']));
+                        object.source = Qt.resolvedUrl(post['thumbnail_images']['medium']['url']);
                     }
                     object.cardTitle = post['title_plain'];
                     object.summary = post['excerpt'];
