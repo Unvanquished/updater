@@ -9,7 +9,7 @@
 
 namespace {
 static const QRegularExpression COMMAND_REGEX("%command%");
-static QString UPDATER_BASE_URL("http://github.com/Unvanquished/updater2/releases/download");
+static QString UPDATER_BASE_URL("https://github.com/Unvanquished/updater/releases/download");
 
 QString QuoteQProcessCommandArgument(QString arg) {
     arg.replace('"', "\"\"\"");
@@ -137,7 +137,7 @@ void QmlDownloader::startUpdate()
 
     worker_ = new DownloadWorker();
     worker_->setDownloadDirectory(dir.canonicalPath().toStdString());
-    worker_->addTorrent("http://cdn.unvanquished.net/current.torrent");
+    worker_->addTorrent("https://cdn.unvanquished.net/current.torrent");
     worker_->moveToThread(&thread_);
     connect(&thread_, SIGNAL(finished()), worker_, SLOT(deleteLater()));
     connect(worker_, SIGNAL(onDownloadEvent(int)), this, SLOT(onDownloadEvent(int)));
@@ -197,7 +197,7 @@ void QmlDownloader::checkForUpdate()
 {
     if (networkManager_.isOnline()) {
         connect(&fetcher_, SIGNAL(onCurrentVersions(QString, QString)), this, SLOT(onCurrentVersions(QString, QString)));
-        fetcher_.fetchCurrentVersion("http://dl.unvanquished.net/versions.json");
+        fetcher_.fetchCurrentVersion("https://dl.unvanquished.net/versions.json");
         return;
     }
     else if (!settings_.installFinished()) {
