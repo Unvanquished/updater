@@ -12,60 +12,110 @@ Flickable {
     property string summary : ""
     property string url: ""
 
-    Image {
-        id: picture
+    Rectangle {
+        id: rectangle
+
         anchors {
             left: parent.left
             top: parent.top
             margins: 20
-            verticalCenter: parent.verticalCenter
         }
 
-        width: parent.width * 0.45
-        source: item.source
-        fillMode: Image.PreserveAspectFit
-        BusyIndicator {
-            anchors.centerIn: parent
-            visible: picture.status !== Image.Ready
+        width: parent.width/2 - 30
+        height: parent.height - 50
+        clip: true
+
+        color: "transparent"
+
+        Image {
+            id: picture
+
+            anchors {
+                horizontalCenter: parent.horizontalCenter
+                verticalCenter: parent.verticalCenter
+            }
+
+            width: parent.width
+            height: parent.height
+            fillMode: Image.PreserveAspectCrop
+
+            source: item.source
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {
+                    Qt.openUrlExternally(url);
+                }
+                cursorShape: Qt.PointingHandCursor
+            }
+
+            BusyIndicator {
+                anchors.centerIn: parent
+                visible: picture.status !== Image.Ready
+            }
         }
     }
 
     Card {
         anchors {
             right: parent.right
-            verticalCenter: parent.verticalCenter
+            top: parent.top
+            margins: 20
         }
-        width: picture.paintedWidth
-        height: picture.paintedHeight
-        Layout.maximumHeight: picture.paintedHeight
+
+        width: parent.width/2 - 30
+        height: parent.height - 50
+
+        Layout.maximumHeight: parent.height - 50
         Material.theme: Material.Dark
         Material.background: "black"
-        visible: picture.status === Image.Ready
 
-        Column {
-            id: column
-            width: parent.width
-            height: parent.height
-            spacing: Units.smallSpacing * 2
-
-            TitleLabel {
-                id: title
-                text: item.cardTitle
+        Rectangle {
+            anchors {
+                horizontalCenter: parent.horizontalCenter
             }
 
-            BodyLabel {
-                id: summary
-                wrapMode: Text.WordWrap
+            width: parent.width - 15
+            height: parent.height - 15
+
+            clip: true
+            color: "transparent"
+
+            Column {
+                id: column
+
                 width: parent.width
-                text: item.summary
-                textFormat: Text.RichText
-                onLinkActivated:  {
-                    Qt.openUrlExternally(link);
+                height: parent.height
+                spacing: Units.smallSpacing * 2
+
+                TitleLabel {
+                    id: title
+                    text: item.cardTitle
+                    font.pixelSize: 30
+                    font.bold: true
                 }
-                MouseArea {
-                    anchors.fill: parent
-                    acceptedButtons: Qt.NoButton
-                    cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.ArrowCursor
+
+                BodyLabel {
+                    id: summary
+
+                    width: parent.width
+
+                    wrapMode: Text.WordWrap
+                    text: item.summary
+                    textFormat: Text.RichText
+                    font.pixelSize: 21
+                    lineHeight: 24
+                    color: "lightgrey"
+
+                    onLinkActivated:  {
+                        Qt.openUrlExternally(link);
+                    }
+
+                    MouseArea {
+                        anchors.fill: parent
+                        acceptedButtons: Qt.NoButton
+                        cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.ArrowCursor
+                    }
                 }
             }
         }
