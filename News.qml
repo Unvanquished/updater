@@ -24,13 +24,19 @@ Item {
                 for (var i = 0; i < newsObj['posts'].length; ++i) {
                     var object = component.createObject(swipe);
                     var post = newsObj['posts'][i];
+                    var found = false;
                     if (post['thumbnail_images']) {
                         if (post['thumbnail_images']['full']) {
-                            object.source = Qt.resolvedUrl(post['thumbnail_images']['full']['url']);
+                            object.fullThumbSrc = Qt.resolvedUrl(post['thumbnail_images']['full']['url']);
+                            found = true;
                         }
-                        else {
-                            object.source = "qrc:/resources/unvanquished.png"
+                        if (post['thumbnail_images']['thumbnail']) {
+                            object.smallThumbSrc = Qt.resolvedUrl(post['thumbnail_images']['thumbnail']['url']);
+                            found = true;
                         }
+                    }
+                    if (!found) {
+                        object.fullThumbSrc = "qrc:/resources/unvanquished.png"
                     }
                     object.cardTitle = post['title_plain'];
                     object.summary = post['excerpt'];

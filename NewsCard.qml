@@ -7,7 +7,8 @@ import QtQuick.Layouts 1.3
 
 Flickable {
     id: item
-    property url source : ""
+    property url fullThumbSrc : ""
+    property url smallThumbSrc : ""
     property string cardTitle : ""
     property string summary : ""
     property string url: ""
@@ -41,11 +42,11 @@ Flickable {
 
             source: "qrc:/resources/unvanquished.png"
 
-            visible: picture.status === Image.Error
+            visible: fullThumb.status === Image.Error && smallThumb.status === Image.Error
         }
 
         Image {
-            id: picture
+            id: smallThumb
 
             anchors {
                 horizontalCenter: parent.horizontalCenter
@@ -56,7 +57,24 @@ Flickable {
             height: parent.height
             fillMode: Image.PreserveAspectCrop
 
-            source: item.source
+            source: item.smallThumbSrc
+
+            visible: fullThumb.status !== Image.Ready
+        }
+
+        Image {
+            id: fullThumb
+
+            anchors {
+                horizontalCenter: parent.horizontalCenter
+                verticalCenter: parent.verticalCenter
+            }
+
+            width: parent.width
+            height: parent.height
+            fillMode: Image.PreserveAspectCrop
+
+            source: item.fullThumbSrc
         }
 
         MouseArea {
@@ -71,7 +89,8 @@ Flickable {
 
         BusyIndicator {
             anchors.centerIn: parent
-            visible: picture.status !== Image.Ready && picture.status !== Image.Error
+            visible: fullThumb.status !== Image.Ready && fullThumb.status !== Image.Error
+                && smallThumb.status !== Image.Ready && smallThumb.status !== Image.Error
         }
     }
 
