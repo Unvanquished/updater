@@ -72,4 +72,5 @@ DISTFILES += \
     resources/background.png \
     resources/header.png \
     resources/logo.png \
-    resources/tyrant.png
+    resources/tyrant.png \
+    resources/disconnected_posts.json

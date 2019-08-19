@@ -19,31 +19,56 @@ Item {
         var news = new XMLHttpRequest();
         news.onreadystatechange = function() {
             if (news.readyState === XMLHttpRequest.DONE) {
-                var newsObj = JSON.parse(news.responseText);
+                var newsObj = null;
+
+                if (news.status == 200) {
+                    try {
+                        newsObj = JSON.parse(news.responseText);
+                    } catch (error) {
+                        console.log("failed to parse posts json")
+                    }
+                } else {
+                   console.log("failed to fetch posts json")
+                }
+
+                if (newsObj === null) {
+                    console.log("fetching fallback posts json")
+                    news.open('GET', 'qrc:/resources/disconnected_posts.json')
+                    news.send();
+                    return;
+                }
+
                 var component = Qt.createComponent("qrc:/NewsCard.qml");
                 for (var i = 0; i < newsObj['posts'].length; ++i) {
                     var object = component.createObject(swipe);
                     var post = newsObj['posts'][i];
                     var found = false;
+
                     if (post['thumbnail_images']) {
                         if (post['thumbnail_images']['full']) {
                             object.fullThumbSrc = Qt.resolvedUrl(post['thumbnail_images']['full']['url']);
                             found = true;
                         }
+
                         if (post['thumbnail_images']['thumbnail']) {
                             object.smallThumbSrc = Qt.resolvedUrl(post['thumbnail_images']['thumbnail']['url']);
                             found = true;
                         }
                     }
+
                     if (!found) {
+                        console.log("thumbnail not found, use fallback thumbnail")
                         object.fullThumbSrc = "qrc:/resources/unvanquished.png"
                     }
+
                     object.cardTitle = post['title_plain'];
                     object.summary = post['excerpt'];
                     object.url = post['url'];
                 }
             }
         }
+
+        console.log("fetching recent posts JSON")
         news.open('GET', 'http://www.unvanquished.net/?json=get_recent_posts');
         news.send();
     }

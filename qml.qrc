@@ -17,5 +17,6 @@
         <file>resources/logo.png</file>
         <file>resources/tyrant.png</file>
         <file>resources/unvanquished.desktop</file>
+        <file>resources/disconnected_posts.json</file>
     </qresource>
 </RCC>
