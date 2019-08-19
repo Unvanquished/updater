@@ -28,6 +28,23 @@ Flickable {
         color: "transparent"
 
         Image {
+            id: fallback
+
+            anchors {
+                horizontalCenter: parent.horizontalCenter
+                verticalCenter: parent.verticalCenter
+            }
+
+            width: parent.width
+            height: parent.height
+            fillMode: Image.PreserveAspectCrop
+
+            source: "qrc:/resources/unvanquished.png"
+
+            visible: picture.status === Image.Error
+        }
+
+        Image {
             id: picture
 
             anchors {
@@ -40,19 +57,21 @@ Flickable {
             fillMode: Image.PreserveAspectCrop
 
             source: item.source
+        }
 
-            MouseArea {
-                anchors.fill: parent
-                onClicked: {
-                    Qt.openUrlExternally(url);
-                }
-                cursorShape: Qt.PointingHandCursor
+        MouseArea {
+            anchors.fill: parent
+
+            onClicked: {
+                Qt.openUrlExternally(url);
             }
 
-            BusyIndicator {
-                anchors.centerIn: parent
-                visible: picture.status !== Image.Ready
-            }
+            cursorShape: Qt.PointingHandCursor
+        }
+
+        BusyIndicator {
+            anchors.centerIn: parent
+            visible: picture.status !== Image.Ready && picture.status !== Image.Error
         }
     }
 
