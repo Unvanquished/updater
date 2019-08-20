@@ -25,10 +25,12 @@ Item {
                     try {
                         newsObj = JSON.parse(news.responseText);
                     } catch (error) {
-                        console.log("failed to parse posts json")
+                        console.log("failed to parse posts json with error: " + error.name);
+                        console.log("message: " + error.message);
                     }
                 } else {
-                   console.log("failed to fetch posts json")
+                    console.log("failed to fetch posts json with code: " + news.status);
+                    console.log("status: " + news.statusText);
                 }
 
                 if (newsObj === null) {
@@ -68,7 +70,7 @@ Item {
             }
         }
 
-        console.log("fetching recent posts JSON")
+        console.log("fetching recent posts json")
         news.open('GET', 'http://www.unvanquished.net/?json=get_recent_posts');
         news.send();
     }
