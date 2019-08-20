@@ -7,20 +7,29 @@ import QmlDownloader 1.0
 import "utils.js" as Utils
 
 Item {
-    width: parent.width * 0.75
+    width: parent.width * 0.65
     height: Math.min(parent.height * 0.1, 40)
-    anchors.bottom: parent.bottom
-    anchors.horizontalCenter: parent.horizontalCenter
-    anchors.bottomMargin: 60
+
+    anchors {
+        bottom: parent.bottom
+        horizontalCenter: parent.horizontalCenter
+        bottomMargin: 60
+    }
 
     Card {
-        width: parent.width - downloadAction.width
+        anchors {
+            right: parent.right
+        }
+
+        width: parent.width - downloadAction.width - 15
         height: parent.height
+
         Material.elevation: 2
         Material.theme: Material.Dark
         Material.background: "black"
 
         Item {
+
             width: parent.width
             height: parent.height
 
@@ -132,12 +141,23 @@ Item {
 
     ActionButton {
         id: downloadAction
+
+        anchors {
+            verticalCenter: parent.verticalCenter
+            left: parent.left
+            top: parent.top
+            // or bottom: parent.bottom
+        }
+
+        height: 70
+        width: 70
+
         iconName: "file/file_download"
-        scale: 0.7
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.right: parent.right
+        scale: 1.2
+
         Material.elevation: 1
         Material.background: Material.Teal
+
         onClicked: {
             if (downloader.state === QmlDownloader.COMPLETED) {
                 root.hide();
