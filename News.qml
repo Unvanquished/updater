@@ -15,8 +15,12 @@ Item {
         bottomMargin: 10
     }
 
-    function fetchNews() {
+    function fetchNews(jsonUrl) {
         var news = new XMLHttpRequest();
+
+        console.log("fetching posts json: " + jsonUrl);
+        news.open('GET', jsonUrl);
+
         news.onreadystatechange = function() {
             if (news.readyState === XMLHttpRequest.DONE) {
                 var newsObj = null;
@@ -34,13 +38,17 @@ Item {
                 }
 
                 if (newsObj === null) {
-                    console.log("fetching fallback posts json")
-                    news.open('GET', 'qrc:/resources/disconnected_posts.json')
-                    news.send();
-                    return;
+                    var fallbackJsonUrl = 'qrc:/resources/disconnected_posts.json';
+
+                    if (jsonUrl !== fallbackJsonUrl) {
+                        console.log("fetching fallback posts json");
+                        fetchNews(fallbackJsonUrl);
+                        return;
+                    }
                 }
 
                 var component = Qt.createComponent("qrc:/NewsCard.qml");
+
                 for (var i = 0; i < newsObj['posts'].length; ++i) {
                     var object = component.createObject(swipe);
                     var post = newsObj['posts'][i];
@@ -59,8 +67,8 @@ Item {
                     }
 
                     if (!found) {
-                        console.log("thumbnail not found, use fallback thumbnail")
-                        object.fullThumbSrc = "qrc:/resources/unvanquished.png"
+                        console.log("thumbnail not found, use fallback thumbnail");
+                        object.fullThumbSrc = "qrc:/resources/unvanquished.png";
                     }
 
                     object.cardTitle = post['title_plain'];
@@ -70,8 +78,6 @@ Item {
             }
         }
 
-        console.log("fetching recent posts json")
-        news.open('GET', 'http://www.unvanquished.net/?json=get_recent_posts');
         news.send();
     }
 
@@ -87,7 +93,9 @@ Item {
             right: rightButton.left
         }
 
-        Component.onCompleted: fetchNews()
+        Component.onCompleted: {
+            fetchNews('http://www.unvanquished.net/?json=get_recent_posts');
+        }
     }
 
     PageIndicator {
