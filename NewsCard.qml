@@ -114,13 +114,13 @@ Flickable {
             }
 
             width: parent.width - 15
-            height: parent.height - 15
+            height: parent.height - 15 - 30
 
             clip: true
             color: "transparent"
 
             Column {
-                id: column
+                id: excerptColumn
 
                 width: parent.width
                 height: parent.height
@@ -128,7 +128,10 @@ Flickable {
 
                 TitleLabel {
                     id: title
+
                     text: item.cardTitle
+
+					clip: true
                     font.pixelSize: 30
                     font.bold: true
                 }
@@ -136,16 +139,50 @@ Flickable {
                 BodyLabel {
                     id: summary
 
-                    width: parent.width
-
+					width: parent.width
                     wrapMode: Text.WordWrap
-                    text: item.summary
+
+                    text: item.summary.substring(0, item.summary.search("<a"))
                     textFormat: Text.RichText
+
                     font.pixelSize: 21
                     lineHeight: 24
                     color: "lightgrey"
+				}
+			}
+		}
 
-                    onLinkActivated:  {
+		Rectangle {
+            anchors {
+                horizontalCenter: parent.horizontalCenter
+				bottom: parent.bottom
+            }
+
+            width: parent.width - 15
+            height: 30
+
+            clip: true
+            color: "transparent"
+
+			Column {
+				id: linkColumn
+
+                width: parent.width
+                height: parent.height
+                spacing: Units.smallSpacing * 2
+
+				BodyLabel {
+					id: link
+
+					width: parent.width
+
+                    text: "<p style='text-align: right;'><a style='color:#00B2B8;' href='" + item.url + "'>&rarr; Continue reading</a></p>"
+                    textFormat: Text.RichText
+
+                    font.pixelSize: 21
+                    lineHeight: 24
+
+                    onLinkActivated: {
                         Qt.openUrlExternally(link);
                     }
 
