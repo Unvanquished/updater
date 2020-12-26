@@ -32,9 +32,14 @@ strip build-docker/updater2 # Optionally strip binary to reduce its size
 Search for **updater2** in build-docker directory.
 
 ## Build Windows version in docker
+
+The last 3 lines are to copy the result out of the container.
+
 ```
 docker build -t updater2-win -f Dockerfile.win .
-docker run -v `pwd`/build-docker:/build-docker -u `id -u $USER` updater2-win
-strip build-docker/updater2.exe # Optionally strip binary to reduce its size
+docker create --name updater2-win updater2-win
+docker cp updater2-win:/build/release/updater2.exe ./build-docker
+docker rm updater2-win
+
 ```
 Search for **updater2.exe** in build-docker directory.
