@@ -33,7 +33,15 @@ Search for **updater2** in build-docker directory.
 
 ## Build Windows version in docker
 
-The last 3 lines are to copy the result out of the container.
+If the code is checked out on a Windows host, you must ensure that the line endings in the aria2 submodule are LF. The symptom of CRLF newlines is `libtoolize: AC_CONFIG_MACRO_DIR([m4]) conflicts with ACLOCAL_AMFLAGS=-I m4`. To reset the newlines:
+
+```
+cd aria2
+git config core.autocrlf input
+git rm --cached . && git reset --hard
+```
+
+The first line below runs the Docker build for Windows. The last 3 lines are to copy the result out of the container.
 
 ```
 docker build -t updater2-win -f Dockerfile.win .

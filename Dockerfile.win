@@ -1,5 +1,5 @@
 FROM debian:buster-slim
-# All packages are MXE deps except dos2unix: https://mxe.cc/#requirements
+# All packages are MXE deps: https://mxe.cc/#requirements
 RUN apt-get update && apt-get install -y \
     autoconf \
     automake \
@@ -31,8 +31,7 @@ RUN apt-get update && apt-get install -y \
     sed \
     unzip \
     wget \
-    xz-utils \
-    dos2unix
+    xz-utils
 
 #########################################
 # Build Qt (and cross-compiler) via MXE #
@@ -49,8 +48,6 @@ ENV PATH=$PATH:/mxe/usr/bin
 # Build aria2 #
 ###############
 COPY aria2 /updater2/aria2
-# Let it build when checked out on a Windows host
-RUN find /updater2/aria2 -type f -print0 | xargs -0 dos2unix
 WORKDIR /updater2/aria2
 RUN autoreconf -i && ./configure --without-libxml2 --without-libexpat --without-sqlite3 --enable-libaria2 --without-libz --without-libcares --enable-static=yes ARIA2_STATIC=yes --without-libssh2 --disable-websocket --host i686-w64-mingw32.static && make -j`nproc`
 
