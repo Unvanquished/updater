@@ -26,7 +26,7 @@ mac {
 } linux {
   SOURCES += unix.cpp
 } win32 {
-  SOURCES += win.cpp
+  SOURCES += win.cpp ExecInExplorer.cpp
 }
 
 GIT_VERSION = $$system(git --git-dir $$PWD/.git --work-tree $$PWD describe --always --tags --abbrev=0)

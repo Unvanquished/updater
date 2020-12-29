@@ -15,6 +15,7 @@ bool updateUpdater(const QString& updaterArchive);
 QString updaterArchiveName();
 std::string getCertStore();
 QSettings* makePersistentSettings(QObject* parent);
+bool startGame(const QString& commandLine);
 }
 
 #endif // SYSTEM_H_
