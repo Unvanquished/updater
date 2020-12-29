@@ -153,7 +153,10 @@ void QmlDownloader::startUpdate()
 void QmlDownloader::startGame()
 {
     QString cmd = settings_.installPath() + QDir::separator() + Sys::executableName();
-    QString commandLine = settings_.commandLine();
+    QString commandLine = settings_.commandLine().trimmed();
+    if (commandLine.isEmpty()) {
+        commandLine = "%command%";
+    }
     commandLine.replace(COMMAND_REGEX, QuoteQProcessCommandArgument(cmd));
 
     QProcess *process = new QProcess;
