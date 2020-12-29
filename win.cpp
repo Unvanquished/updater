@@ -18,6 +18,8 @@
 #include <QCoreApplication>
 #include <QProcess>
 
+// ExecInExplorer.cpp
+HRESULT ShellExecInExplorerProcess(PCWSTR pszFile, PCWSTR pszArgs);
 
 namespace {
 void setRegistryKey(const QString& key,
@@ -80,6 +82,23 @@ bool GetStartMenuPath(const QString& installPath, QString* startPath) {
     }
     CoTaskMemFree(path);
     return SUCCEEDED(ret);
+}
+
+void SplitFirstArg(const std::wstring& commandLine, std::wstring* program, std::wstring* args)
+{
+    bool quoting = false;
+    for (int i = 0; i < commandLine.size(); i++) {
+        wchar_t c = commandLine.at(i);
+        if (c == L'"') {
+            quoting = !quoting;
+        } else if (!quoting && (c == L' ' || c == L'\t')) {
+            *program = commandLine.substr(0, i);
+            *args = commandLine.substr(i + 1);
+            return;
+        }
+    }
+    *program = commandLine;
+    *args = L"";
 }
 
 }  // namespace
@@ -221,6 +240,20 @@ std::string getCertStore()
 QSettings* makePersistentSettings(QObject* parent)
 {
     return new QSettings(parent);
+}
+
+bool startGame(const QString& commandLine)
+{
+    std::wstring program, args;
+    SplitFirstArg(commandLine.toStdWString(), &program, &args);
+    qDebug() << "startGame: program =" << program << "args =" << args;
+    HRESULT result = ShellExecInExplorerProcess(program.c_str(), args.c_str());
+    qDebug() << "startGame HRESULT:" << result;
+    // It returns 1 "S_FALSE" (which is considered a success by SUCCEEDED) if the application
+    // failed to start because it was given a nonexistent path. But returning success here seems
+    // good anyway because Explorer creates its own dialog
+    // box about the failure, and we don't want to pop two dialogs.
+    return SUCCEEDED(result);
 }
 
 }  // namespace Sys

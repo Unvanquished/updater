@@ -158,13 +158,21 @@ void QmlDownloader::startGame()
         commandLine = "%command%";
     }
     commandLine.replace(COMMAND_REGEX, QuoteQProcessCommandArgument(cmd));
-
+    qDebug() << "Starting game with command line:" << commandLine;
+#ifdef _WIN32
+    bool success = Sys::startGame(commandLine);
+    if (success) {
+        qDebug() << "Game started. Exiting";
+        QApplication::instance()->quit();
+    }
+#else
     QProcess *process = new QProcess;
     connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), process, SLOT(deleteLater()));
     connect(process, SIGNAL(finished(int,QProcess::ExitStatus)), QApplication::instance(), SLOT(quit()));
-    qDebug() << "Starting game with command line:" << commandLine;
     process->start(commandLine);
-    if (!process->waitForStarted(-1)) {
+    bool success = process->waitForStarted(-1);
+#endif
+    if (!success) {
         qDebug() << "Failed to start Unvanquished process.";
         QMessageBox errorMessageBox;
         errorMessageBox.setText("Failed to start Unvanquished process.");
