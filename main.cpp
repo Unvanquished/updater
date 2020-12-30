@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <QCommandLineOption>
 #include <QCommandLineParser>
+#include <QDateTime>
 #include <QQmlApplicationEngine>
 #include <QFile>
 #include <QFontDatabase>
@@ -19,6 +20,8 @@ namespace {
 QFile logFile;
 
 void LogMessageHandler(QtMsgType, const QMessageLogContext&, const QString& msg) {
+    static const QString timeFormat = "yyyy-MM-dd hh:mm:ssZ  ";
+    logFile.write(QDateTime::currentDateTimeUtc().toString(timeFormat).toUtf8());
     logFile.write(msg.toUtf8());
     logFile.write("\n");
     logFile.flush();
