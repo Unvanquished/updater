@@ -24,14 +24,10 @@ ApplicationWindow {
     }
 
     Connections {
-        id: conn
         target: downloader
-        property bool updaterUpdate: false
         ignoreUnknownSignals: true
 
         onUpdateNeeded: {
-            console.log("conn.updaterUpdate=" + conn.updaterUpdate);
-            if (conn.updaterUpdate) return
             if (updateNeeded) {
                 showUpdater()
             } else {
