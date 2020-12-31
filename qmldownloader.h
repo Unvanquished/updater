@@ -4,7 +4,6 @@
 #include <QObject>
 #include <QRegularExpression>
 #include <QSettings>
-#include <QNetworkConfigurationManager>
 #include <QThread>
 #include <QUrl>
 #include <QTemporaryDir>
@@ -44,6 +43,7 @@ public:
     int totalSize() const;
     int completedSize() const;
     DownloadState state() const;
+    void checkForUpdate();
 
 signals:
     void downloadSpeedChanged(int downloadSpeed);
@@ -66,7 +66,7 @@ public slots:
     Q_INVOKABLE void startUpdate();
     Q_INVOKABLE void toggleDownload();
     Q_INVOKABLE void startGame();
-    Q_INVOKABLE void checkForUpdate();
+    Q_INVOKABLE void autoLaunchOrUpdate();
 
 private:
     void stopAria();
@@ -84,8 +84,8 @@ private:
     DownloadWorker* worker_;
     DownloadTimeCalculator downloadTime_;
     Settings settings_;
-    QNetworkConfigurationManager networkManager_;
-    QString currentVersion_;
+    QString latestGameVersion_;
+    QString latestUpdaterVersion_;
     DownloadState state_;
     std::unique_ptr<QTemporaryDir> temp_dir_;
 

@@ -79,6 +79,7 @@ int main(int argc, char *argv[])
     }
     Settings settings;
     QmlDownloader downloader;
+    downloader.checkForUpdate();
     QQmlApplicationEngine engine;
     engine.addImportPath(QLatin1String("qrc:/"));
     engine.addImageProvider(QLatin1String("fluidicons"), new IconsImageProvider());

@@ -80,7 +80,8 @@ void QmlDownloader::onDownloadEvent(int event)
             if (state() != COMPLETED) {
                 qDebug() << "Calling Sys::install";
                 Sys::install();
-                settings_.setCurrentVersion(currentVersion_);
+                // FIXME: latestGameVersion_ could be empty if CurrentVersionFetcher didn't succeed
+                settings_.setCurrentVersion(latestGameVersion_);
                 settings_.setInstallFinished(true);
                 setState(COMPLETED);
                 setDownloadSpeed(0);
@@ -193,27 +194,29 @@ void QmlDownloader::stopAria()
     }
 }
 
+// Initiates an asynchronous request for the latest available versions.
 void QmlDownloader::checkForUpdate()
 {
-    if (networkManager_.isOnline()) {
-        connect(&fetcher_, SIGNAL(onCurrentVersions(QString, QString)), this, SLOT(onCurrentVersions(QString, QString)));
-        fetcher_.fetchCurrentVersion("https://dl.unvanquished.net/versions.json");
-        return;
-    }
-    else if (!settings_.installFinished()) {
-        emit updateNeeded(true);
-        return;
-    }
-    emit updateNeeded(false);
+    connect(&fetcher_, SIGNAL(onCurrentVersions(QString, QString)), this, SLOT(onCurrentVersions(QString, QString)));
+    fetcher_.fetchCurrentVersion("https://dl.unvanquished.net/versions.json");
 }
 
+// Receives the results of the checkForUpdate request.
 void QmlDownloader::onCurrentVersions(QString updater, QString game)
 {
-    qDebug() << "Latest versions: updater =" << updater << "game =" << game;
+    latestUpdaterVersion_ = updater;
+    latestGameVersion_ = game;
+}
+
+// This runs after the splash screen has been displayed for the programmed amount of time (and the
+// user did not click the settings button). If the CurrentVersionFetcher didn't emit anything yet,
+// proceed as if the request for versions.json failed.
+void QmlDownloader::autoLaunchOrUpdate()
+{
     qDebug() << "Previously-installed game version:" << settings_.currentVersion();
-    if (!updater.isEmpty() && updater != QString(GIT_VERSION)) {
-        qDebug() << "Updater update to version" << updater << "required";
-        QString url = UPDATER_BASE_URL + "/" + updater + "/" + Sys::updaterArchiveName();
+    if (!latestUpdaterVersion_.isEmpty() && latestUpdaterVersion_ != QString(GIT_VERSION)) {
+        qDebug() << "Updater update to version" << latestUpdaterVersion_ << "required";
+        QString url = UPDATER_BASE_URL + "/" + latestUpdaterVersion_ + "/" + Sys::updaterArchiveName();
         temp_dir_.reset(new QTemporaryDir());
         worker_ = new DownloadWorker();
         worker_->setDownloadDirectory(QDir(temp_dir_->path()).canonicalPath().toStdString());
@@ -227,9 +230,9 @@ void QmlDownloader::onCurrentVersions(QString updater, QString game)
         connect(worker_, SIGNAL(completedSizeChanged(int)), this, SLOT(setCompletedSize(int)));
         connect(&thread_, SIGNAL(started()), worker_, SLOT(download()));
         thread_.start();
-    } else if (settings_.currentVersion().isEmpty() || (!game.isEmpty() && settings_.currentVersion() != game)) {
+    } else if (settings_.currentVersion().isEmpty() ||
+               (!latestGameVersion_.isEmpty() && settings_.currentVersion() != latestGameVersion_)) {
         qDebug() << "Game update required.";
-        currentVersion_ = game;
         emit updateNeeded(true);
     } else {
         emit updateNeeded(false);

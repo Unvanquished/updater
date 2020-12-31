@@ -15,7 +15,10 @@ ApplicationWindow {
         interval: 3000
         repeat: false
         running: true
-        onTriggered: downloader.checkForUpdate()
+        onTriggered: {
+            settingsAction.enabled = false;
+            downloader.autoLaunchOrUpdate();
+        }
     }
 
     function showUpdater() {
