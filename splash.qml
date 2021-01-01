@@ -52,7 +52,7 @@ ApplicationWindow {
             left: -9
             top: -9
         }
-
+        opacity: enabled ? 1 : 0.38
         iconName: "action/settings"
         Material.elevation: 0
         Material.background: Material.Teal
