@@ -49,12 +49,12 @@ void DownloadWorker::onDownloadCallback(aria2::Session* session, aria2::Download
             } else if (state == DOWNLOADING_UPDATER) {
                 qDebug() << "Updater download complete";
                 aria2::DownloadHandle* handle = aria2::getDownloadHandle(session, gid);
-                qDebug() << handle->getNumFiles();
-                if (handle->getNumFiles() > 1) {
+                qDebug() << "Number of files in updater download:" << handle->getNumFiles();
+                if (handle->getNumFiles() != 1) {
                     return;
                 }
                 auto files = handle->getFiles();
-                qDebug() << files[0].path.c_str();
+                qDebug() << "Downloaded updater at" << files[0].path.c_str();
                 Sys::updateUpdater(QString(files[0].path.c_str()));
                 return;
             } else {

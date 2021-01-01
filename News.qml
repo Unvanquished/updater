@@ -30,11 +30,11 @@ Item {
                         newsObj = JSON.parse(news.responseText);
                     } catch (error) {
                         console.log("failed to parse posts json with error: " + error.name);
-                        console.log("message: " + error.message);
+                        console.log("json parse error message: " + error.message);
                     }
                 } else {
                     console.log("failed to fetch posts json with code: " + news.status);
-                    console.log("status: " + news.statusText);
+                    console.log("XHR status: " + news.statusText);
                 }
 
                 if (newsObj === null) {
