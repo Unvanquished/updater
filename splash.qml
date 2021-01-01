@@ -45,12 +45,12 @@ ApplicationWindow {
 
     ActionButton {
         id: settingsAction
-        scale: 0.35
+        scale: 0.8
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.margins: {
-            left: -20
-            top: -20
+            left: -9
+            top: -9
         }
 
         iconName: "action/settings"
