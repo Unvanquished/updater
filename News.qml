@@ -136,6 +136,8 @@ Item {
 
         iconName: "navigation/chevron_left"
         onClicked: swipe.decrementCurrentIndex()
+        enabled: swipe.currentIndex > 0
+        opacity: enabled ? 1 : 0.38
     }
 
     ActionButton {
@@ -149,5 +151,7 @@ Item {
 
         iconName: "navigation/chevron_right"
         onClicked: swipe.incrementCurrentIndex()
+        enabled: swipe.currentIndex + 1 < swipe.count
+        opacity: enabled ? 1 : 0.38
     }
 }
