@@ -33,10 +33,10 @@ private:
     aria2::Session* session_;
     DownloadCallback* callback_;
     std::list<aria2::A2Gid> pausedGids_;
-    int downloadSpeed_;
-    int uploadSpeed_;
-    int completedSize_;
-    int totalSize_;
+    int downloadSpeed_ = 0;
+    int uploadSpeed_ = 0;
+    int completedSize_ = 0;
+    int totalSize_ = 0;
 };
 
 #endif // ARIADOWNLOADER_H
