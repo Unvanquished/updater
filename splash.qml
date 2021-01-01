@@ -6,7 +6,7 @@ import Fluid.Material 1.0
 ApplicationWindow {
     visible: true
     id: splash
-    width: 725
+    width: 745
     height: 228
     flags: Qt.SplashScreen | Qt.WindowStaysOnTopHint
 
