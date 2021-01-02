@@ -1,9 +1,59 @@
-FROM dolcetriade/qt5-windows-static:5.8.0
-RUN pacman -Sy --noconfirm git
-COPY . /updater2
+FROM debian:buster-slim
+# All packages are MXE deps: https://mxe.cc/#requirements
+RUN apt-get update && apt-get install -y \
+    autoconf \
+    automake \
+    autopoint \
+    bash \
+    bison \
+    bzip2 \
+    flex \
+    g++ \
+    g++-multilib \
+    gettext \
+    git \
+    gperf \
+    intltool \
+    libc6-dev-i386 \
+    libgdk-pixbuf2.0-dev \
+    libltdl-dev \
+    libssl-dev \
+    libtool-bin \
+    libxml-parser-perl \
+    lzip \
+    make \
+    openssl \
+    p7zip-full \
+    patch \
+    perl \
+    python \
+    ruby \
+    sed \
+    unzip \
+    wget \
+    xz-utils
+
+#########################################
+# Build Qt (and cross-compiler) via MXE #
+#########################################
+WORKDIR /mxe
+# Last MXE commit with Qt 5.14. At present, plugins are broken in 5.15.
+RUN git clone https://github.com/mxe/mxe.git . && \
+    git checkout d63639ff6e39d66d5b0d489ef17840af522e6dca
+RUN make MXE_TARGETS=i686-w64-mingw32.static qtbase qtquickcontrols qtquickcontrols2 qtsvg qtgraphicaleffects && \
+    make MXE_TARGETS=i686-w64-mingw32.static clean-junk
+ENV PATH=$PATH:/mxe/usr/bin
+
+###############
+# Build aria2 #
+###############
+COPY aria2 /updater2/aria2
 WORKDIR /updater2/aria2
-RUN autoreconf -i && ./configure --without-libxml2 --without-libexpat --without-sqlite3 --enable-libaria2 --without-libz --without-libcares --enable-static=yes ARIA2_STATIC=yes --without-libssh2 --disable-websocket --host i686-w64-mingw32 && make clean && make -j`nproc`
-WORKDIR /updater2
-ENV PATH=/build/qt-static/bin:$PATH
-RUN qmake -config release CONFIG+=static INCLUDEPATH+=/build/qt-static/include/QtZlib QMAKE_LFLAGS+="-static -static-libgcc -static-libstdc++" && make clean && make -j`nproc`
-CMD cp release/updater2.exe /build-docker
+RUN autoreconf -i && ./configure --without-libxml2 --without-libexpat --without-sqlite3 --enable-libaria2 --without-libz --without-libcares --enable-static=yes ARIA2_STATIC=yes --without-libssh2 --disable-websocket --host i686-w64-mingw32.static && make -j`nproc`
+
+#################
+# Build updater #
+#################
+COPY . /updater2
+WORKDIR /build
+RUN i686-w64-mingw32.static-qmake-qt5 -config release /updater2 && make -j`nproc`
