@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <QCommandLineOption>
 #include <QCommandLineParser>
+#include <QDateTime>
 #include <QQmlApplicationEngine>
 #include <QFile>
 #include <QFontDatabase>
@@ -19,6 +20,8 @@ namespace {
 QFile logFile;
 
 void LogMessageHandler(QtMsgType, const QMessageLogContext&, const QString& msg) {
+    static const QString timeFormat = "yyyy-MM-dd hh:mm:ssZ  ";
+    logFile.write(QDateTime::currentDateTimeUtc().toString(timeFormat).toUtf8());
     logFile.write(msg.toUtf8());
     logFile.write("\n");
     logFile.flush();
@@ -74,13 +77,13 @@ int main(int argc, char *argv[])
         font.setPointSize(10);
         app.setFont(font);
     }
+    Settings settings;
+    QmlDownloader downloader;
     QQmlApplicationEngine engine;
     engine.addImportPath(QLatin1String("qrc:/"));
     engine.addImageProvider(QLatin1String("fluidicons"), new IconsImageProvider());
     engine.addImageProvider(QLatin1String("fluidicontheme"), new IconThemeImageProvider());
     auto* context = engine.rootContext();
-    Settings settings;
-    QmlDownloader downloader;
     context->setContextProperty("updaterSettings", &settings);
     context->setContextProperty("downloader", &downloader);
     qmlRegisterType<QmlDownloader>("QmlDownloader", 1, 0, "QmlDownloader");

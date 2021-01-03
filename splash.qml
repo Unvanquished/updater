@@ -6,7 +6,7 @@ import Fluid.Material 1.0
 ApplicationWindow {
     visible: true
     id: splash
-    width: 725
+    width: 745
     height: 228
     flags: Qt.SplashScreen | Qt.WindowStaysOnTopHint
 
@@ -24,14 +24,10 @@ ApplicationWindow {
     }
 
     Connections {
-        id: conn
         target: downloader
-        property bool updaterUpdate: false
         ignoreUnknownSignals: true
 
         onUpdateNeeded: {
-            console.log("conn.updaterUpdate=" + conn.updaterUpdate);
-            if (conn.updaterUpdate) return
             if (updateNeeded) {
                 showUpdater()
             } else {
@@ -49,14 +45,14 @@ ApplicationWindow {
 
     ActionButton {
         id: settingsAction
-        scale: 0.35
+        scale: 0.8
         anchors.top: parent.top
         anchors.right: parent.right
         anchors.margins: {
-            left: -20
-            top: -20
+            left: -9
+            top: -9
         }
-
+        opacity: enabled ? 1 : 0.38
         iconName: "action/settings"
         Material.elevation: 0
         Material.background: Material.Teal

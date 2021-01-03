@@ -37,6 +37,7 @@ Item {
                 iconName: "file/folder"
                 onClicked: fileDialog.open()
                 enabled: downloader.state === QmlDownloader.IDLE
+                opacity: enabled ? 1 : 0.38
             }
             FluidControls.TitleLabel {
                 text: "Command Line:"
