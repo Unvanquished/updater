@@ -214,7 +214,7 @@ QString updaterArchiveName()
 
 std::string getCertStore()
 {
-    return "";  // Not used on windows.
+    return "";  // Not used on Windows.
 }
 
 // Settings are stored in the registry at HKEY_CURRENT_USER\Software\Unvanquished Development\Unvanquished Updater

@@ -62,14 +62,14 @@ bool updateUpdater(const QString& updaterArchive)
     QDir backupUpdater(currentAppPath +  ".bak");
     if (backupUpdater.exists()) {
         if (!backupUpdater.removeRecursively()) {
-            qDebug() << "Error deleting old update. pls update manually";
+            qDebug() << "Error deleting old update. Please update manually";
             return false;
         }
     }
     QDir extractDir = backupUpdater;
     extractDir.cdUp();
     if (!extractDir.rename(currentApp.dirName(), backupUpdater.dirName())) {
-        qDebug() << "Could not rename bkup. pls manually update.";
+        qDebug() << "Could not rename backup. Please manually update.";
         return false;
     }
     QStringList extractedFiles = JlCompress::extractDir(updaterArchive, extractDir.absolutePath());
@@ -97,7 +97,7 @@ bool updateUpdater(const QString& updaterArchive)
     QDir extractedApp(extractedAppPath);
     if (extractedApp.dirName() != currentApp.dirName()) {
         if (!extractDir.rename(extractedApp.dirName(), currentApp.dirName())) {
-            qDebug() << "Could not rename update. pls manually update.";
+            qDebug() << "Could not rename update. Please manually update.";
             return false;
         }
     }
