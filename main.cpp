@@ -36,6 +36,21 @@ void LogSettings() {
     }
 }
 
+struct CommandLineOptions {
+    QString logFilename;
+};
+
+CommandLineOptions getCommandLineOptions(const QApplication& app) {
+    QCommandLineOption logFileNameOption("logfile");
+    logFileNameOption.setValueName("filename");
+    QCommandLineParser optionParser;
+    optionParser.addOption(logFileNameOption);
+    optionParser.process(app);
+    CommandLineOptions options;
+    options.logFilename = optionParser.value(logFileNameOption);
+    return options;
+}
+
 } // namespace
 
 int main(int argc, char *argv[])
@@ -46,14 +61,9 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
 
-    QCommandLineOption logFileNameOption("logfile");
-    logFileNameOption.setValueName("filename");
-    QCommandLineParser optionParser;
-    optionParser.addOption(logFileNameOption);
-    optionParser.process(app);
-    QString logFilename = optionParser.value(logFileNameOption);
-    if (!logFilename.isEmpty()) {
-        logFile.setFileName(logFilename);
+    CommandLineOptions options = getCommandLineOptions(app);
+    if (!options.logFilename.isEmpty()) {
+        logFile.setFileName(options.logFilename);
         if (logFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
             qInstallMessageHandler(&LogMessageHandler);
         } else {
