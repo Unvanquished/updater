@@ -47,13 +47,13 @@ ENV PATH=$PATH:/mxe/usr/bin
 ###############
 # Build aria2 #
 ###############
-COPY aria2 /updater2/aria2
-WORKDIR /updater2/aria2
+COPY aria2 /updater/aria2
+WORKDIR /updater/aria2
 RUN autoreconf -i && ./configure --without-libxml2 --without-libexpat --without-sqlite3 --enable-libaria2 --without-libz --without-libcares --enable-static=yes ARIA2_STATIC=yes --without-libssh2 --disable-websocket --host i686-w64-mingw32.static && make -j`nproc`
 
 #################
 # Build updater #
 #################
-COPY . /updater2
+COPY . /updater
 WORKDIR /build
-RUN i686-w64-mingw32.static-qmake-qt5 -config release /updater2 && make -j`nproc`
+RUN i686-w64-mingw32.static-qmake-qt5 -config release /updater && make -j`nproc`

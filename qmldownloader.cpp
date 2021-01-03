@@ -9,7 +9,7 @@
 
 namespace {
 static const QRegularExpression COMMAND_REGEX("%command%");
-static QString UPDATER_BASE_URL("http://github.com/Unvanquished/updater2/releases/download");
+static QString UPDATER_BASE_URL("http://github.com/Unvanquished/updater/releases/download");
 
 QString QuoteQProcessCommandArgument(QString arg) {
     arg.replace('"', "\"\"\"");
