@@ -5,8 +5,10 @@
 #include "system.h"
 #include <QDebug>
 
-DownloadWorker::DownloadWorker(QObject *parent) : QObject(parent), downloadSpeed(0), uploadSpeed(0),
-totalSize(0), completedSize(0), paused(true), state(IDLE), running(false), renameRegex(".*unvanquished_([0-9\\.]+/)")
+DownloadWorker::DownloadWorker(QString ariaLogFilename, QObject *parent) :
+    QObject(parent), downloadSpeed(0), uploadSpeed(0),
+    totalSize(0), completedSize(0), paused(true), state(IDLE), running(false),
+    renameRegex(".*unvanquished_([0-9\\.]+/)"), downloader(ariaLogFilename.toStdString())
 {
     downloader.registerCallback(this);
 }

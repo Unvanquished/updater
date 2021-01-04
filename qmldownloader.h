@@ -45,6 +45,8 @@ public:
     DownloadState state() const;
     void checkForUpdate();
 
+    QString ariaLogFilename_;
+
 signals:
     void downloadSpeedChanged(int downloadSpeed);
     void uploadSpeedChanged(int uploadSpeed);

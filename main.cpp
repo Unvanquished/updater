@@ -38,16 +38,21 @@ void LogSettings() {
 
 struct CommandLineOptions {
     QString logFilename;
+    QString ariaLogFilename;
 };
 
 CommandLineOptions getCommandLineOptions(const QApplication& app) {
     QCommandLineOption logFileNameOption("logfile");
     logFileNameOption.setValueName("filename");
+    QCommandLineOption ariaLogFilenameOption("arialogfile");
+    ariaLogFilenameOption.setValueName("filename");
     QCommandLineParser optionParser;
     optionParser.addOption(logFileNameOption);
+    optionParser.addOption(ariaLogFilenameOption);
     optionParser.process(app);
     CommandLineOptions options;
     options.logFilename = optionParser.value(logFileNameOption);
+    options.ariaLogFilename = optionParser.value(ariaLogFilenameOption);
     return options;
 }
 
@@ -91,6 +96,7 @@ int main(int argc, char *argv[])
     }
     Settings settings;
     QmlDownloader downloader;
+    downloader.ariaLogFilename_ = options.ariaLogFilename;
     downloader.checkForUpdate();
     QQmlApplicationEngine engine;
     engine.addImportPath(QLatin1String("qrc:/"));

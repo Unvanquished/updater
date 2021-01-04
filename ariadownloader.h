@@ -7,7 +7,7 @@
 class AriaDownloader
 {
 public:
-    AriaDownloader();
+    AriaDownloader(const std::string& ariaLogFilename);
     ~AriaDownloader();
 
     class DownloadCallback {
