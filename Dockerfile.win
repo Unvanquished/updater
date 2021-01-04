@@ -41,7 +41,7 @@ WORKDIR /mxe
 RUN git clone https://github.com/mxe/mxe.git . && \
     git checkout d63639ff6e39d66d5b0d489ef17840af522e6dca
 RUN make MXE_TARGETS=i686-w64-mingw32.static qtbase qtquickcontrols qtquickcontrols2 qtsvg qtgraphicaleffects && \
-    make MXE_TARGETS=i686-w64-mingw32.static clean-junk
+    make MXE_TARGETS=i686-w64-mingw32.static clean-junk && rm -rf pkg/ .ccache/
 ENV PATH=$PATH:/mxe/usr/bin
 
 ###############
