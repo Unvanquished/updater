@@ -72,7 +72,9 @@ int main(int argc, char *argv[])
 
     app.setWindowIcon(QIcon(":resources/updater.png"));
     int fontId = QFontDatabase::addApplicationFont(":resources/Roboto-Regular.ttf");
-    if (fontId != -1) {
+    if (fontId == -1) {
+        qDebug() << "Failed to register Roboto font";
+    } else {
         QFont font("Roboto-Regular");
         font.setPointSize(10);
         app.setFont(font);
