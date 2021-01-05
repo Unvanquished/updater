@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y autopoint autoconf gettext libcppunit-d
 ###############
 COPY aria2 /updater2/aria2
 WORKDIR /updater2/aria2
-RUN autoreconf -i && ./configure --without-libxml2 --without-libexpat --without-sqlite3 --enable-libaria2 --without-zlib --without-libcares --enable-static=yes ARIA2_STATIC=yes --without-libssh2 --disable-websocket && make clean && make -j`nproc`
+RUN autoreconf -i && ./configure --without-libxml2 --without-libexpat --without-sqlite3 --enable-libaria2 --without-zlib --without-libcares --enable-static=yes ARIA2_STATIC=yes --without-libssh2 --disable-websocket --disable-nls && make clean && make -j`nproc`
 
 #################
 # Build updater #
