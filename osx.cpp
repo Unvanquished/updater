@@ -121,7 +121,8 @@ std::string getCertStore()
     return "";  // Not used on OSX.
 }
 
-// Settings are, IIUC, stored in ~/Library/Preferences/net.unvanquished.Unvanquished Updater.plist
+// Settings are stored in "~/Library/Preferences/net.unvanquished.Unvanquished Updater.plist"
+// After deleting/changing the file, you must run `sudo killall cfprefsd` for it to take effect
 QSettings* makePersistentSettings(QObject* parent)
 {
     return new QSettings(parent);
