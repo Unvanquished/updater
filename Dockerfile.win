@@ -49,7 +49,7 @@ ENV PATH=$PATH:/mxe/usr/bin
 ###############
 COPY aria2 /updater2/aria2
 WORKDIR /updater2/aria2
-RUN autoreconf -i && ./configure --without-libxml2 --without-libexpat --without-sqlite3 --enable-libaria2 --without-libz --without-libcares --enable-static=yes ARIA2_STATIC=yes --without-libssh2 --disable-websocket --host i686-w64-mingw32.static && make -j`nproc`
+RUN autoreconf -i && ./configure --without-libxml2 --without-libexpat --without-sqlite3 --enable-libaria2 --without-libz --without-libcares --enable-static=yes ARIA2_STATIC=yes --without-libssh2 --disable-websocket --disable-nls --host i686-w64-mingw32.static && make -j`nproc`
 
 #################
 # Build updater #
