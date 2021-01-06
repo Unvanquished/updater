@@ -75,7 +75,7 @@ int main(int argc, char *argv[])
     if (fontId == -1) {
         qDebug() << "Failed to register Roboto font";
     } else {
-        QFont font("Roboto-Regular");
+        QFont font("Roboto");
         font.setPointSize(10);
         app.setFont(font);
     }
