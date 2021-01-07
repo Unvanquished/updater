@@ -59,7 +59,9 @@ Item {
             if (Qt.platform.os === "windows") {
                 clipRegex = /^file:(\/\/\/)?/;
             }
-            var path = Qt.resolvedUrl(fileDialog.fileUrl + '/Unvanquished').toString();
+            var url = fileDialog.fileUrl.toString();
+            console.log("file URL from dialog: " + url);
+            var path = url + '/Unvanquished';
             path = path.replace(clipRegex, '').replace(/\/\/Unvanquished$/, '/Unvanquished');
             if (Qt.platform.os === "windows") {
                 path = path.replace(/\//g, '\\');
