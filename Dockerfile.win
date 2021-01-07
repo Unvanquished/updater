@@ -1,3 +1,15 @@
+# Goals of this file:
+# - Prevent untracked (gitignore'd) files from affecting the build
+# - Cache as much as possible to allow quick iteration
+#
+# Hence the aria2 build should be cached since it rarely changes and takes about 5 times as long to
+# build as the updater. To permit caching, the aria2 directory needs to be copied separately before
+# the rest of updater2.
+#
+# git clean -dXff is used to delete all the files specified by .gitignore. This requires the data
+# from .git since a checked-in file will not be ignored. For aria2 it is assumed that the data
+# is stored in the updater2/.git/modules directory.
+
 FROM debian:buster-slim
 # All packages are MXE deps: https://mxe.cc/#requirements
 RUN apt-get update && apt-get install -y \
@@ -48,12 +60,15 @@ ENV PATH=$PATH:/mxe/usr/bin
 # Build aria2 #
 ###############
 COPY aria2 /updater2/aria2
+COPY .git/modules/aria2 /updater2/.git/modules/aria2
 WORKDIR /updater2/aria2
+RUN git clean -dXff
 RUN autoreconf -i && ./configure --without-libxml2 --without-libexpat --without-sqlite3 --enable-libaria2 --without-libz --without-libcares --enable-static=yes ARIA2_STATIC=yes --without-libssh2 --disable-websocket --disable-nls --host i686-w64-mingw32.static && make -j`nproc`
 
 #################
 # Build updater #
 #################
 COPY . /updater2
+RUN set -e; for D in . quazip fluid; do cd /updater2/$D && git clean -dXff; done
 WORKDIR /build
 RUN i686-w64-mingw32.static-qmake-qt5 -config release /updater2 && make -j`nproc`

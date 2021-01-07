@@ -1,0 +1,7 @@
+# Prevent the /updater2 copy from clobbering the aria lib we just built
+aria2/src/.libs 
+
+# Otherwise, the 'git clean' commands keep most unwanted files out of the build based on .gitignore.
+# Just add stuff that is particularly large or changes often (thus breaking the cache).
+build*
+Dockerfile*
