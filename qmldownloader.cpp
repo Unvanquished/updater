@@ -126,7 +126,7 @@ void QmlDownloader::startUpdate()
     QDir dir(installDir);
     if (!dir.exists()) {
         if (!dir.mkpath(dir.path())) {
-            emit statusMessage(dir.canonicalPath() + " does not exist and could not be created");
+            emit statusMessage(dir.path() + " does not exist and could not be created");
             return;
         }
     }
