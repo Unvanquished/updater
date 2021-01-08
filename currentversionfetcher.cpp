@@ -1,5 +1,6 @@
 #include "currentversionfetcher.h"
 
+#include <QDebug>
 #include <QUrl>
 #include <QNetworkRequest>
 #include <QNetworkReply>
