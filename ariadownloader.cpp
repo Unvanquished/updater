@@ -34,7 +34,7 @@ AriaDownloader::AriaDownloader(const std::string& ariaLogFilename) : callback_(n
 
     std::string certsPath = Sys::getCertStore();
     if (!certsPath.empty()) {
-        options.push_back({ "ca-certificates", certsPath });
+        options.push_back({ "ca-certificate", certsPath });
     }
     session_ = aria2::sessionNew(options, config);
 }
