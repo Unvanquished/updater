@@ -29,9 +29,8 @@ make -j4
 ```
 docker build -t updater2 .
 docker run -v `pwd`/build-docker:/build-docker -u `id -u $USER` updater2
-strip build-docker/updater2 # Optionally strip binary to reduce its size
 ```
-Search for **updater2** in build-docker directory.
+Search for **updater2** (or **updater2-nonstripped**) in build-docker directory.
 
 ## Build Windows version in docker
 

@@ -62,4 +62,6 @@ COPY . /updater2
 RUN set -e; for D in . quazip fluid; do cd /updater2/$D && git clean -dXff; done
 WORKDIR /build
 RUN /qt/bin/qmake -config release /updater2 && make -j`nproc`
-CMD cp updater2 /build-docker
+RUN mv updater2 updater2-nonstripped
+RUN strip updater2-nonstripped -o updater2
+CMD cp updater2 updater2-nonstripped /build-docker
