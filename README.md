@@ -13,7 +13,7 @@ Before building the updater itself you need to build aria2 library
 ```
 cd aria2
 autoreconf -i
-./configure --without-libxml2 --without-libexpat --without-sqlite3 --enable-libaria2 --without-zlib --without-libcares --enable-static=yes ARIA2_STATIC=yes --without-libssh2 --disable-websocket --disable-nls
+./configure --without-libxml2 --without-libexpat --without-sqlite3 --enable-libaria2 --without-zlib --without-libcares --enable-static=yes ARIA2_STATIC=yes --without-libssh2 --disable-websocket --disable-nls --with-openssl
 make -j4
 cd ..
 ```
