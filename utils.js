@@ -27,3 +27,10 @@ function humanTime(time) {
     var secs = time % 60.0
     return '' + padZeros(hours, 2) + ':' + padZeros(mins, 2) + ':' + padZeros(secs, 2) + ' left';
 }
+
+// Suitable for use outside tags
+function htmlEscape(text) {
+    return text.replace(/&/g, '&amp;')
+               .replace(/</g, '&lt;')
+               .replace(/>/g, '&gt;')
+}

@@ -97,7 +97,7 @@ void QmlDownloader::onDownloadEvent(int event)
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_ERROR:
-            emit statusMessage("Error received while downloading");
+            emit fatalMessage("Error received while downloading");
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_PAUSE:
@@ -113,7 +113,7 @@ void QmlDownloader::onDownloadEvent(int event)
             break;
 
         case DownloadWorker::ERROR_EXTRACTING:
-            emit statusMessage("Error extracting update");
+            emit fatalMessage("Error extracting update");
             break;
     }
 }
@@ -126,12 +126,12 @@ void QmlDownloader::startUpdate()
     QDir dir(installDir);
     if (!dir.exists()) {
         if (!dir.mkpath(dir.path())) {
-            emit statusMessage(dir.path() + " does not exist and could not be created");
+            emit fatalMessage(dir.path() + " does not exist and could not be created");
             return;
         }
     }
     if (!QFileInfo(installDir).isWritable()) {
-        emit statusMessage("Install dir not writable. Please select another");
+        emit fatalMessage("Install dir not writable. Please select another");
         return;
     }
     emit statusMessage("Installing to " + dir.canonicalPath());

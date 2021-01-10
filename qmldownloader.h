@@ -54,6 +54,7 @@ signals:
     void totalSizeChanged(int totalSize);
     void completedSizeChanged(int completedSize);
     void statusMessage(QString message);
+    void fatalMessage(QString message);
     void updateNeeded(bool updateNeeded);
     void stateChanged(DownloadState state);
 

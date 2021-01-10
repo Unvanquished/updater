@@ -3,6 +3,7 @@ import QtQuick.Controls 2.0
 import QtQuick.Controls.Material 2.0
 import Fluid.Controls 1.0 as FluidControls
 import Fluid.Material 1.0 as FluidMaterial
+import "utils.js" as Utils
 
 ApplicationWindow {
     id: root
@@ -18,8 +19,13 @@ ApplicationWindow {
         target: downloader
         ignoreUnknownSignals: true
         onStatusMessage: {
-            console.log(message);
+            console.log("Download status: " + message);
             infoBar.open(message);
+        }
+        onFatalMessage: {
+            console.log("Installation failed: " + message);
+            errorPopup.errorDetail = message;
+            errorPopup.open();
         }
     }
 
@@ -114,6 +120,48 @@ ApplicationWindow {
         duration: 3000
         onClicked: {
             this.hide();
+        }
+    }
+
+    Popup {
+        id: errorPopup
+        modal: true
+        focus: true
+        width: 650
+        height: 400
+        closePolicy: Popup.NoAutoClose
+        anchors.centerIn: parent
+        Material.theme: Material.Dark
+        property string errorDetail
+
+        FluidControls.BodyLabel {
+            id: errorPopupBody
+            width: parent.width
+            text: ('<h2> Installation failed. </h2> ' +
+                   '<h3> %1 </h3> <br/>' +
+                   '<p> If errors persist, go to the ' +
+                   '<a href="https://forums.unvanquished.net">forums</a>, ' +
+                   '<a href="https://unvanquished.net/chat">IRC</a>, or ' +
+                   '<a href="https://discord.gg/pHwf5K2">Discord</a> ' +
+                   'for support. </p>').arg(Utils.htmlEscape(errorPopup.errorDetail))
+            textFormat: Text.StyledText
+            linkColor: "#00B2B8"
+            wrapMode: Text.WordWrap
+            font.pixelSize: 21
+            lineHeight: 24
+            onLinkActivated: {
+                Qt.openUrlExternally(link);
+            }
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.NoButton
+                cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.ArrowCursor
+            }
+        }
+
+        FluidControls.BodyLabel {
+            text: errorPopupBody.hoveredLink
+            anchors.bottom: parent.bottom
         }
     }
 }
