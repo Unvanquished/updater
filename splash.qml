@@ -38,6 +38,8 @@ ApplicationWindow {
                 downloader.startGame();
             }
         }
+
+        // TODO: respond to onFatalMessage
     }
 
     Image {
