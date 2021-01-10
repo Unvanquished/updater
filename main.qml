@@ -135,6 +135,7 @@ ApplicationWindow {
         property string errorDetail
 
         FluidControls.BodyLabel {
+            id: errorPopupBody
             width: parent.width
             text: ('<h2> Installation failed. </h2> ' +
                    '<h3> %1 </h3> <br/>' +
@@ -156,6 +157,11 @@ ApplicationWindow {
                 acceptedButtons: Qt.NoButton
                 cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.ArrowCursor
             }
+        }
+
+        FluidControls.BodyLabel {
+            text: errorPopupBody.hoveredLink
+            anchors.bottom: parent.bottom
         }
     }
 }
