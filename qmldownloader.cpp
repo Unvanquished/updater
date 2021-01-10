@@ -136,7 +136,7 @@ void QmlDownloader::startUpdate()
     }
     emit statusMessage("Installing to " + dir.canonicalPath());
 
-    worker_ = new DownloadWorker();
+    worker_ = new DownloadWorker(ariaLogFilename_);
     worker_->setDownloadDirectory(dir.canonicalPath().toStdString());
     worker_->addTorrent("https://cdn.unvanquished.net/current.torrent");
     worker_->moveToThread(&thread_);
@@ -218,7 +218,7 @@ void QmlDownloader::autoLaunchOrUpdate()
         qDebug() << "Updater update to version" << latestUpdaterVersion_ << "required";
         QString url = UPDATER_BASE_URL + "/" + latestUpdaterVersion_ + "/" + Sys::updaterArchiveName();
         temp_dir_.reset(new QTemporaryDir());
-        worker_ = new DownloadWorker();
+        worker_ = new DownloadWorker(ariaLogFilename_);
         worker_->setDownloadDirectory(QDir(temp_dir_->path()).canonicalPath().toStdString());
         worker_->addUpdaterUri(url.toStdString());
         worker_->moveToThread(&thread_);

@@ -36,6 +36,26 @@ void LogSettings() {
     }
 }
 
+struct CommandLineOptions {
+    QString logFilename;
+    QString ariaLogFilename;
+};
+
+CommandLineOptions getCommandLineOptions(const QApplication& app) {
+    QCommandLineOption logFileNameOption("logfile");
+    logFileNameOption.setValueName("filename");
+    QCommandLineOption ariaLogFilenameOption("arialogfile");
+    ariaLogFilenameOption.setValueName("filename");
+    QCommandLineParser optionParser;
+    optionParser.addOption(logFileNameOption);
+    optionParser.addOption(ariaLogFilenameOption);
+    optionParser.process(app);
+    CommandLineOptions options;
+    options.logFilename = optionParser.value(logFileNameOption);
+    options.ariaLogFilename = optionParser.value(ariaLogFilenameOption);
+    return options;
+}
+
 } // namespace
 
 int main(int argc, char *argv[])
@@ -46,14 +66,9 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
 
-    QCommandLineOption logFileNameOption("logfile");
-    logFileNameOption.setValueName("filename");
-    QCommandLineParser optionParser;
-    optionParser.addOption(logFileNameOption);
-    optionParser.process(app);
-    QString logFilename = optionParser.value(logFileNameOption);
-    if (!logFilename.isEmpty()) {
-        logFile.setFileName(logFilename);
+    CommandLineOptions options = getCommandLineOptions(app);
+    if (!options.logFilename.isEmpty()) {
+        logFile.setFileName(options.logFilename);
         if (logFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
             qInstallMessageHandler(&LogMessageHandler);
         } else {
@@ -81,6 +96,7 @@ int main(int argc, char *argv[])
     }
     Settings settings;
     QmlDownloader downloader;
+    downloader.ariaLogFilename_ = options.ariaLogFilename;
     downloader.checkForUpdate();
     QQmlApplicationEngine engine;
     engine.addImportPath(QLatin1String("qrc:/"));

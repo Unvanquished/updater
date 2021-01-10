@@ -15,7 +15,7 @@ public:
         ERROR_EXTRACTING = 100
     };
 
-    explicit DownloadWorker(QObject *parent = 0);
+    explicit DownloadWorker(QString ariaLogFilename, QObject *parent = 0);
     ~DownloadWorker();
     void onDownloadCallback(aria2::Session* session, aria2::DownloadEvent event,
                             aria2::A2Gid gid, void* userDataevent);
