@@ -1,6 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtQuick.Controls.Material 2.0
+import Fluid.Controls 1.0 as FluidControls
 import Fluid.Material 1.0
 
 ApplicationWindow {
@@ -48,6 +49,16 @@ ApplicationWindow {
         source: "qrc:/resources/splash.png"
     }
 
+    FluidControls.BodyLabel {
+        Material.theme: Material.Dark
+        text: "Updating launcher..."
+        visible: downloader.totalSize > 0
+        anchors.bottom: updaterUpdateProgress.top
+        anchors.left: parent.left
+        anchors.margins: { left: 20 }
+        font.pixelSize: 17
+    }
+
     ActionButton {
         id: settingsAction
         scale: 0.8
@@ -68,6 +79,7 @@ ApplicationWindow {
     }
 
     ProgressBar {
+        id: updaterUpdateProgress
         anchors.bottom: parent.bottom
         width: parent.width
         from: 0.0
@@ -76,7 +88,6 @@ ApplicationWindow {
         value: downloader.completedSize / downloader.totalSize
         Material.accent: Material.Teal
     }
-
 
     Loader {
         id: updaterWindowLoader
