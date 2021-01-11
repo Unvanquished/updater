@@ -123,45 +123,8 @@ ApplicationWindow {
         }
     }
 
-    Popup {
+    UpdateFailed {
         id: errorPopup
-        modal: true
-        focus: true
-        width: 650
-        height: 400
-        closePolicy: Popup.NoAutoClose
-        anchors.centerIn: parent
-        Material.theme: Material.Dark
-        property string errorDetail
-
-        FluidControls.BodyLabel {
-            id: errorPopupBody
-            width: parent.width
-            text: ('<h2> Installation failed. </h2> ' +
-                   '<h3> %1 </h3> <br/>' +
-                   '<p> If errors persist, go to the ' +
-                   '<a href="https://forums.unvanquished.net">forums</a>, ' +
-                   '<a href="https://unvanquished.net/chat">IRC</a>, or ' +
-                   '<a href="https://discord.gg/pHwf5K2">Discord</a> ' +
-                   'for support. </p>').arg(Utils.htmlEscape(errorPopup.errorDetail))
-            textFormat: Text.StyledText
-            linkColor: "#00B2B8"
-            wrapMode: Text.WordWrap
-            font.pixelSize: 21
-            lineHeight: 24
-            onLinkActivated: {
-                Qt.openUrlExternally(link);
-            }
-            MouseArea {
-                anchors.fill: parent
-                acceptedButtons: Qt.NoButton
-                cursorShape: parent.hoveredLink ? Qt.PointingHandCursor : Qt.ArrowCursor
-            }
-        }
-
-        FluidControls.BodyLabel {
-            text: errorPopupBody.hoveredLink
-            anchors.bottom: parent.bottom
-        }
+        failedOperation: 'Game installation'
     }
 }
