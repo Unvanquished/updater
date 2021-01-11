@@ -7,6 +7,7 @@
         <file>News.qml</file>
         <file>NewsCard.qml</file>
         <file>DownloadInfo.qml</file>
+        <file>UpdateFailed.qml</file>
         <file>resources/splash.png</file>
         <file>splash.qml</file>
         <file>Settings.qml</file>

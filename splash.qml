@@ -23,11 +23,13 @@ ApplicationWindow {
     }
 
     function showUpdater() {
+        splashConnections.enabled = false;
         updaterWindowLoader.active = true
         splash.hide();
     }
 
     Connections {
+        id: splashConnections
         target: downloader
         ignoreUnknownSignals: true
 
@@ -40,7 +42,12 @@ ApplicationWindow {
             }
         }
 
-        // TODO: respond to onFatalMessage
+        onFatalMessage: {
+            updateFailed.errorDetail = message;
+            updateFailedWindow.show();
+            updateFailed.open();
+            splash.hide();
+        }
     }
 
     Image {
@@ -93,5 +100,18 @@ ApplicationWindow {
         id: updaterWindowLoader
         active: false
         source: "qrc:/main.qml"
+    }
+
+    ApplicationWindow {
+        id: updateFailedWindow
+        visible: false
+        width: updateFailed.width
+        height: updateFailed.height
+        maximumWidth: updateFailed.width
+        maximumHeight: updateFailed.height
+        UpdateFailed {
+            id: updateFailed
+            failedOperation: 'Launcher self-update'
+        }
     }
 }
