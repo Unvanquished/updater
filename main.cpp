@@ -39,6 +39,7 @@ void LogSettings() {
 struct CommandLineOptions {
     QString logFilename;
     QString ariaLogFilename;
+    int splashMilliseconds = 3000;
 };
 
 CommandLineOptions getCommandLineOptions(const QApplication& app) {
@@ -46,15 +47,22 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
     logFileNameOption.setValueName("filename");
     QCommandLineOption ariaLogFilenameOption("arialogfile");
     ariaLogFilenameOption.setValueName("filename");
+    QCommandLineOption splashMsOption("splashms");
+    splashMsOption.setValueName("duration in milliseconds");
     QCommandLineParser optionParser;
     optionParser.addHelpOption();
     optionParser.addVersionOption();
     optionParser.addOption(logFileNameOption);
     optionParser.addOption(ariaLogFilenameOption);
+    optionParser.addOption(splashMsOption);
     optionParser.process(app);
     CommandLineOptions options;
     options.logFilename = optionParser.value(logFileNameOption);
     options.ariaLogFilename = optionParser.value(ariaLogFilenameOption);
+    int splashMs = optionParser.value(splashMsOption).toInt();
+    if (splashMs > 0) {
+        options.splashMilliseconds = splashMs;
+    }
     return options;
 }
 
@@ -108,6 +116,7 @@ int main(int argc, char *argv[])
     auto* context = engine.rootContext();
     context->setContextProperty("updaterSettings", &settings);
     context->setContextProperty("downloader", &downloader);
+    context->setContextProperty("splashMilliseconds", options.splashMilliseconds);
     qmlRegisterType<QmlDownloader>("QmlDownloader", 1, 0, "QmlDownloader");
 
     engine.load(QUrl(QLatin1String("qrc:/splash.qml")));

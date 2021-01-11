@@ -12,7 +12,7 @@ ApplicationWindow {
 
     Timer {
         id: timer
-        interval: 3000
+        interval: splashMilliseconds
         repeat: false
         running: true
         onTriggered: {
