@@ -22,7 +22,7 @@ QString extractAppPath(const QString& path) {
         }
         if (path.isRoot()) {
             qDebug() << "Failed to find .app name.";
-            return "false""";
+            return "";
         }
         return path.absolutePath();
     }
