@@ -160,7 +160,7 @@ Item {
 
         onClicked: {
             if (downloader.state === QmlDownloader.COMPLETED) {
-                root.hide();
+                root.close();
                 downloader.startGame();
                 return;
             }

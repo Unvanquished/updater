@@ -253,6 +253,7 @@ bool startGame(const QString& commandLine)
     // failed to start because it was given a nonexistent path. But returning success here seems
     // good anyway because Explorer creates its own dialog
     // box about the failure, and we don't want to pop two dialogs.
+    // Strangely, ShellExecInExplorerProcess blocks until the user closes Explorer's message box in that case.
     return SUCCEEDED(result);
 }
 
