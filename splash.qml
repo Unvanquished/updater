@@ -37,7 +37,7 @@ ApplicationWindow {
             if (updateNeeded) {
                 showUpdater()
             } else {
-                splash.hide();
+                splash.close();
                 downloader.startGame();
             }
         }
