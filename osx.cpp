@@ -41,11 +41,6 @@ QString defaultInstallPath()
     return QDir::homePath() +  "/Games/Unvanquished";
 }
 
-QString executableName()
-{
-    return "Unvanquished.app";
-}
-
 bool install()
 {
     Settings settings;
@@ -126,6 +121,25 @@ std::string getCertStore()
 QSettings* makePersistentSettings(QObject* parent)
 {
     return new QSettings(parent);
+}
+
+QString getGameCommand(const QString& installPath)
+{
+    return "/usr/bin/open " +
+           QuoteQProcessCommandArgument(installPath + QDir::separator() + "Unvanquished.app") +
+           " --args";
+}
+
+bool startGame(const QString& commandLine)
+{
+    if (commandLine.startsWith("/usr/bin/open ")) {
+        // Get the return code of `open` to see whether the app was started successfully
+        int ret = QProcess::execute(commandLine);
+        qDebug() << "/usr/bin/open returned" << ret;
+        return ret == 0;
+    } else {
+        return QProcess::startDetached(commandLine);
+    }
 }
 
 }  // namespace Sys

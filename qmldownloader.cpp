@@ -10,11 +10,6 @@
 namespace {
 static const QRegularExpression COMMAND_REGEX("%command%");
 static QString UPDATER_BASE_URL("https://github.com/Unvanquished/updater/releases/download");
-
-QString QuoteQProcessCommandArgument(QString arg) {
-    arg.replace('"', "\"\"\"");
-    return '"' + arg + '"';
-}
 }  // namespace
 
 QmlDownloader::QmlDownloader() : downloadSpeed_(0),
@@ -152,20 +147,13 @@ void QmlDownloader::startUpdate()
 
 void QmlDownloader::startGame()
 {
-    QString cmd = settings_.installPath() + QDir::separator() + Sys::executableName();
     QString commandLine = settings_.commandLine().trimmed();
     if (commandLine.isEmpty()) {
         commandLine = "%command%";
     }
-    commandLine.replace(COMMAND_REGEX, QuoteQProcessCommandArgument(cmd));
+    commandLine.replace(COMMAND_REGEX, Sys::getGameCommand(settings_.installPath()));
     qDebug() << "Starting game with command line:" << commandLine;
-#ifdef _WIN32
-    bool success = Sys::startGame(commandLine);
-#else
-    QProcess process;
-    bool success = process.startDetached(commandLine);
-#endif
-    if (success) {
+    if (Sys::startGame(commandLine)) {
         qDebug() << "Game started successfully";
     } else {
         qDebug() << "Failed to start Unvanquished process.";

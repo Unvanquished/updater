@@ -61,11 +61,6 @@ QString defaultInstallPath()
     return QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/unvanquished/base";
 }
 
-QString executableName()
-{
-    return "daemon";
-}
-
 bool install()
 {
     // Set up menu and protocol handler
@@ -170,6 +165,16 @@ std::string getCertStore()
 QSettings* makePersistentSettings(QObject* parent)
 {
     return new QSettings("unvanquished", "updater", parent);
+}
+
+QString getGameCommand(const QString& installPath)
+{
+    return QuoteQProcessCommandArgument(installPath + QDir::separator() + "daemon");
+}
+
+bool startGame(const QString& commandLine)
+{
+    return QProcess::startDetached(commandLine);
 }
 
 }  // namespace Sys
