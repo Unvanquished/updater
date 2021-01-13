@@ -144,11 +144,6 @@ QString defaultInstallPath()
     return installPath + "\\Unvanquished";
 }
 
-QString executableName()
-{
-    return "daemon.exe";
-}
-
 bool install()
 {
     Settings settings;
@@ -240,6 +235,11 @@ std::string getCertStore()
 QSettings* makePersistentSettings(QObject* parent)
 {
     return new QSettings(parent);
+}
+
+QString getGameCommand(const QString& installPath)
+{
+    return QuoteQProcessCommandArgument(installPath + QDir::separator() + "daemon.exe");
 }
 
 bool startGame(const QString& commandLine)
