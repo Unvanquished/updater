@@ -45,7 +45,7 @@ Item {
             }
             TextField {
                 text: updaterSettings.commandLine
-                onAccepted: updaterSettings.commandLine = this.text
+                onEditingFinished: updaterSettings.commandLine = this.text
             }
         }
     }
