@@ -1,4 +1,5 @@
 #include "system.h"
+#include <unistd.h>
 #include "settings.h"
 #include "quazip/quazip/JlCompress.h"
 #include <QDir>
@@ -59,6 +60,14 @@ QString defaultInstallPath()
     // and we want "~/.local/share/unvanquished/base"
     // game itself puts stuff in "~/.local/share/unvanquished"
     return QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/unvanquished/base";
+}
+
+bool validateInstallPath(const QString& installPath)
+{
+    // The default install location is inside the homepath and ends with /base (any user-selected
+    // path must end with /Unvanquished). Running as root with this location may result in an
+    // unusable install, if the homepath ends up not writable by the regular user.
+    return !(installPath.endsWith("/base") && getuid() == 0);
 }
 
 bool install()
