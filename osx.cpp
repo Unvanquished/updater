@@ -41,6 +41,13 @@ QString defaultInstallPath()
     return QDir::homePath() +  "/Games/Unvanquished";
 }
 
+bool validateInstallPath(const QString&)
+{
+    // The default install location is not in the Unvanquished homepath, so the problem which
+    // can occur on Linux is not likely to arise.
+    return true;
+}
+
 bool install()
 {
     Settings settings;

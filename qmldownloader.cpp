@@ -115,6 +115,11 @@ void QmlDownloader::onDownloadEvent(int event)
 
 void QmlDownloader::startUpdate()
 {
+    if (!Sys::validateInstallPath(settings_.installPath())) {
+        emit fatalMessage("You are running as root, which may cause the installation to"
+                          " work incorrectly. Restart the program without using 'sudo'.");
+        return;
+    }
     settings_.setInstallFinished(false);
     setState(DOWNLOADING);
     QString installDir = settings_.installPath();

@@ -9,6 +9,7 @@
 namespace Sys {
 QString archiveName();
 QString defaultInstallPath();
+bool validateInstallPath(const QString& installPath); // Checks installing as root in homepath on Linux
 bool install();
 bool updateUpdater(const QString& updaterArchive);
 QString updaterArchiveName();

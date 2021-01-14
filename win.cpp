@@ -144,6 +144,12 @@ QString defaultInstallPath()
     return installPath + "\\Unvanquished";
 }
 
+bool validateInstallPath(const QString&)
+{
+    // Running as administrator does not have file ownership implications like on Unix.
+    return true;
+}
+
 bool install()
 {
     Settings settings;
