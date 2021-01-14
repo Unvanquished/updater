@@ -184,6 +184,7 @@ Item {
                 downloadAction.iconName = "av/play_arrow";
                 instruction.visible = true;
                 instruction.text = "Press the button to play the game";
+                root.alert(0);
             }
         }
     }

@@ -26,6 +26,7 @@ ApplicationWindow {
             console.log("Installation failed: " + message);
             errorPopup.errorDetail = message;
             errorPopup.open();
+            root.alert(0);
         }
     }
 
