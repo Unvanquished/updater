@@ -153,8 +153,8 @@ void QmlDownloader::startUpdate()
 void QmlDownloader::startGame()
 {
     QString commandLine = settings_.commandLine().trimmed();
-    if (commandLine.isEmpty()) {
-        commandLine = "%command%";
+    if (!commandLine.contains(COMMAND_REGEX)) {
+        commandLine = "%command% " + commandLine;
     }
     commandLine.replace(COMMAND_REGEX, Sys::getGameCommand(settings_.installPath()));
     qDebug() << "Starting game with command line:" << commandLine;
