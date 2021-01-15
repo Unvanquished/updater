@@ -44,6 +44,10 @@ unix:LIBS += -lz "-L$$PWD/aria2/src/.libs" -laria2
 
 win32:RC_FILE = updater.rc
 
+# Plain Unvanquished icon, used for the app bundle and hence the Launchpad shortcut.
+# When the updater is running, the one with arrows is displayed as its icon.
+mac: ICON = resources/Unvanquished.icns
+
 # Additional import path used to resolve QML modules in Qt Creator's code model
 QML_IMPORT_PATH += fluid/src/imports/controls/qmldir
 
