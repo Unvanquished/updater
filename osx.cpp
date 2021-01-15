@@ -50,9 +50,19 @@ bool validateInstallPath(const QString&)
 
 bool install()
 {
+    QDir applications(QDir::homePath() + "/Applications");
+    if (!applications.exists()) {
+        if (!applications.mkpath(".")) {
+            qDebug() << "can't create ~/Applications";
+            return false;
+        }
+    }
     Settings settings;
-    QFile::link(settings.installPath() + "/Unvanquished.app",
-	            QDir::homePath() + "/Applications/Unvanquished.app");
+    if (!QFile::link(settings.installPath() + QDir::separator() + "updater.app",
+                     applications.absoluteFilePath("Unvanquished.app"))) {
+        qDebug() << "failed to create Applications link";
+        return false;
+    }
     return true;
 }
 
