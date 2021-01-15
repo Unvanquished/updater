@@ -74,19 +74,36 @@ bool install()
 {
     // Set up menu and protocol handler
     Settings settings;
-    QFile desktopFile(":resources/unvanquished.desktop");
-    if (!desktopFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        return false;
+    QString desktopDir = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation);
+    QFile::remove(desktopDir + "/unvanquished.desktop"); // updater v0.0.5 and before
+    for (QString desktopFileName :
+         {QString("net.unvanquished.Unvanquished.desktop"),
+          QString("net.unvanquished.UnvanquishedProtocolHandler.desktop")}) {
+        QFile desktopFile(":resources/" + desktopFileName);
+        if (!desktopFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+            qDebug() << "missing resource" << desktopFileName;
+            return false;
+        }
+        QString desktopStr = QString(desktopFile.readAll().data())
+            .arg(settings.installPath());
+        QFile outputFile(desktopDir + "/" + desktopFileName);
+        if (!outputFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+            qDebug() << "error opening" << desktopFileName;
+            return false;
+        }
+        if (outputFile.write(desktopStr.toUtf8().constData(), desktopStr.size())
+            != desktopStr.size()) {
+            qDebug() << "error writing" << desktopFileName;
+            return false;
+        }
     }
-    QString desktopStr = QString(desktopFile.readAll().data())
-        .arg(settings.installPath());
-    QFile outputFile(QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation) + "/unvanquished.desktop");
-    if (!outputFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
-        desktopFile.close();
-        return false;
-    }
-    outputFile.write(desktopStr.toUtf8().constData(), desktopStr.size());
-    outputFile.close();
+    int ret = QProcess::execute("xdg-mime",
+                                {QString("default"),
+                                 desktopDir + "/net.unvanquished.UnvanquishedProtocolHandler.desktop",
+                                 QString("x-scheme-handler/unv")});
+    qDebug() << "xdg-mime returned" << ret;
+    ret = QProcess::execute("update-desktop-database", {desktopDir});
+    qDebug() << "update-desktop-database returned" << ret;
 
     // install icon
     QString iconDir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/icons/hicolor/128x128/apps/";
