@@ -181,6 +181,23 @@ bool install()
     return true;
 }
 
+bool installUpdater(const QString& installPath) {
+    QFileInfo src(QCoreApplication::applicationFilePath());
+    QFileInfo dest(installPath + QDir::separator() + "updater.exe");
+    if (src == dest) {
+        qDebug() << "Updater already in install location";
+        return true;
+    }
+    if (dest.exists()) {
+        qDebug() << "Deleting updater in install path";
+        if (!QFile::remove(dest.filePath())) {
+            return false;
+        }
+    }
+    qDebug() << "Copying updater from" << src.absoluteFilePath();
+    return QFile::copy(src.absoluteFilePath(), dest.filePath());
+}
+
 bool updateUpdater(const QString& updaterArchive)
 {
     QString current = QCoreApplication::applicationFilePath();

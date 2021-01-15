@@ -101,6 +101,25 @@ bool install()
     return true;
 }
 
+bool installUpdater(const QString& installPath) {
+    QFileInfo src(QCoreApplication::applicationFilePath());
+    QFileInfo dest(installPath + QDir::separator() + "updater");
+    if (src == dest) {
+        qDebug() << "Updater already in install location";
+        return true;
+    }
+    if (dest.exists()) {
+        qDebug() << "Deleting updater in install path";
+        if (!QFile::remove(dest.filePath())) {
+            return false;
+        }
+    }
+    qDebug() << "Copying updater from" << src.absoluteFilePath();
+    return QFile::copy(src.absoluteFilePath(), dest.filePath()) &&
+           QFile::setPermissions(dest.filePath(), static_cast<QFileDevice::Permissions>(0x775));
+           // Yes it is really supposed to be 0x775 not 0775
+}
+
 bool updateUpdater(const QString& updaterArchive)
 {
     QString current = QCoreApplication::applicationFilePath();
