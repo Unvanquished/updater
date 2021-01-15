@@ -11,6 +11,7 @@ QString archiveName();
 QString defaultInstallPath();
 bool validateInstallPath(const QString& installPath); // Checks installing as root in homepath on Linux
 bool install();
+bool installUpdater(const QString& installPath); // Copies current application to <install path>/updater[.exe|.app]
 bool updateUpdater(const QString& updaterArchive);
 QString updaterArchiveName();
 std::string getCertStore();

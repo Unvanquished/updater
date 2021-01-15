@@ -56,6 +56,27 @@ bool install()
     return true;
 }
 
+bool installUpdater(const QString& installPath) {
+    QString currentAppPath = extractAppPath(QCoreApplication::applicationFilePath());
+    if (currentAppPath.isEmpty()) return false;
+    QDir src(currentAppPath);
+    QDir dest(installPath + QDir::separator() + "updater.app");
+    if (src == dest) {
+        qDebug() << "Updater already in install location";
+        return true;
+    }
+    if (dest.exists()) {
+        qDebug() << "Deleting updater in install path";
+        if (!dest.removeRecursively()) {
+            return false;
+        }
+    }
+    qDebug() << "Copying updater from" << src.absolutePath();
+    int ret = QProcess::execute("/bin/cp", {QString("-R"), src.path(), dest.path()});
+    qDebug() << "cp returned" << ret;
+    return ret == 0;
+}
+
 bool updateUpdater(const QString& updaterArchive)
 {
     QString currentAppPath = extractAppPath(QCoreApplication::applicationFilePath());
