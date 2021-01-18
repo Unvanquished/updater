@@ -58,8 +58,9 @@ bool install()
         }
     }
     Settings settings;
-    if (!QFile::link(settings.installPath() + QDir::separator() + "updater.app",
-                     applications.absoluteFilePath("Unvanquished.app"))) {
+    QString linkPath = applications.absoluteFilePath("Unvanquished.app");
+    QFile::remove(linkPath);
+    if (!QFile::link(settings.installPath() + QDir::separator() + "updater.app", linkPath)) {
         qDebug() << "failed to create Applications link";
         return false;
     }
