@@ -23,29 +23,57 @@
 #include "system.h"
 
 SplashController::SplashController(
-    RelaunchCommand command, const QString& updateUpdaterVersion,
+    RelaunchCommand command, const QString& updateUpdaterUrl,
     const QString& connectUrl, const Settings& settings) :
-        relaunchCommand_(command), updateUpdaterVersion_(updateUpdaterVersion),
+        relaunchCommand_(command), updateUpdaterUrl_(updateUpdaterUrl),
         connectUrl_(connectUrl), settings_(settings) {}
 
 // Possibly initiates an asynchronous request for the latest available versions.
 void SplashController::checkForUpdate()
 {
-    // Don't need versions.json if we already know what to do next
-    if (relaunchCommand_ != RelaunchCommand::NONE) {
-        return;
+    // Don't need current.json if we already know what to do next
+    switch(relaunchCommand_) {
+        case RelaunchCommand::NONE:
+        case RelaunchCommand::UPDATE_GAME:
+            break;
+        case RelaunchCommand::UPDATE_UPDATER:
+            if (!updateUpdaterUrl_.isEmpty()) {
+                return;
+            }
+            break;
+        default:
+            return;
     }
 
-    connect(&fetcher_, SIGNAL(onCurrentVersions(QString, QString)),
-            this, SLOT(onCurrentVersions(QString, QString)));
-    fetcher_.fetchCurrentVersion("https://dl.unvanquished.net/versions.json");
+    connect(&fetcher_, SIGNAL(onCurrentVersions(QString, QString, QString, QString, QString)),
+            this, SLOT(onCurrentVersions(QString, QString, QString, QString, QString)));
+
+    fetcher_.fetchCurrentVersion("https://cdn.unvanquished.net/current.json");
+}
+
+QString SplashController::gameUrl() const {
+    return latestGameUrl_;
+}
+
+QString SplashController::newsUrl() const {
+    return latestNewsUrl_;
 }
 
 // Receives the results of the checkForUpdate request.
-void SplashController::onCurrentVersions(QString updater, QString game)
+void SplashController::onCurrentVersions(QString updaterVersion, QString updaterUrl, QString gameVersion, QString gameUrl, QString newsUrl)
 {
-    latestUpdaterVersion_ = updater;
-    latestGameVersion_ = game;
+    latestUpdaterVersion_ = updaterVersion;
+    latestUpdaterUrl_ = updaterUrl;
+    latestGameVersion_ = gameVersion;
+    latestGameUrl_ = gameUrl;
+	latestNewsUrl_ = newsUrl;
+
+    emit newsUrlFetched(newsUrl);
+
+    if (relaunchCommand_ == RelaunchCommand::UPDATE_UPDATER && updateUpdaterUrl_.isEmpty()) {
+        updateUpdaterUrl_ = latestUpdaterUrl_;
+        emit updaterUpdateNeeded();
+    }
 }
 
 // Return value is whether the program should exit
@@ -69,7 +97,7 @@ void SplashController::launchGameIfInstalled()
 
 // This runs after the splash screen has been displayed for the programmed amount of time (and the
 // user did not click the settings button). If the CurrentVersionFetcher didn't emit anything yet,
-// proceed as if the request for versions.json failed.
+// proceed as if the request for current.json failed.
 void SplashController::autoLaunchOrUpdate()
 {
     qDebug() << "Previously-installed game version:" << settings_.installedVersion();
@@ -82,9 +110,15 @@ void SplashController::autoLaunchOrUpdate()
             return;
 
         case RelaunchCommand::UPDATE_UPDATER:
-            qDebug() << "Updater update to" << updateUpdaterVersion_ << "requested as relaunch action";
-            // It is assumed the process is already elevated
-            emit updaterUpdate(updateUpdaterVersion_);
+            // When the splash screen is displayed, this function is called, but the current.json
+            // fetch has not succeeded yet. Only do something at that time when the updater url is
+            // passed by command line. When the current.json fetch has succeeded, this function is
+            // called again if there was no url passed by command line.
+            if (!updateUpdaterUrl_.isEmpty()) {
+                qDebug() << "Updater update to" << updateUpdaterUrl_ << "requested as relaunch action";
+                // It is assumed the process is already elevated
+                emit updaterUpdate(updateUpdaterUrl_);
+            }
             return;
 
         case RelaunchCommand::PLAY_NOW:
@@ -94,17 +128,18 @@ void SplashController::autoLaunchOrUpdate()
             break;
     }
 
-    // If no relaunch action, detect update needed based on versions.json
-    if (!latestUpdaterVersion_.isEmpty() && latestUpdaterVersion_ != QString(GIT_VERSION)) {
+    // If no relaunch action, detect update needed based on current.json
+    QString gitUpdaterVersion = "v" + latestUpdaterVersion_;
+    if (!latestUpdaterVersion_.isEmpty() && gitUpdaterVersion != QString(GIT_VERSION)) {
         qDebug() << "Updater update to version" << latestUpdaterVersion_ << "required";
+        QString updaterArgs = "--splashms 1 --internalcommand updateupdater --updaterurl " + latestUpdaterUrl_;
         // Remember the URL if we are doing updater update
-        QString updaterArgs = "--splashms 1 --internalcommand updateupdater:" + latestUpdaterVersion_;
         if (!connectUrl_.isEmpty()) {
             updaterArgs += " -- " + connectUrl_;
         }
         switch (Sys::RelaunchElevated(updaterArgs)) {
             case Sys::ElevationResult::UNNEEDED:
-                emit updaterUpdate(latestUpdaterVersion_);
+                emit updaterUpdate(latestUpdaterUrl_);
                 return;
             case Sys::ElevationResult::RELAUNCHED:
                 QCoreApplication::quit();

@@ -25,13 +25,13 @@
 
 namespace Sys {
 QString archiveName();
+QString updaterSystem();
 QString defaultInstallPath();
 void initApplicationName(); // influences default storage location for QSettings
 bool validateInstallPath(const QString& installPath); // Checks installing as root in homepath on Linux
 bool installShortcuts(); // Install launch menu entries and protocol handlers
 bool installUpdater(const QString& installPath); // Copies current application to <install path>/updater[.exe|.app]
 bool updateUpdater(const QString& updaterArchive, const QString& connectUrl);
-QString updaterArchiveName();
 std::string getCertStore();
 QSettings* makePersistentSettings(QObject* parent);
 QString getGameCommand(const QString& installPath); // Substitution for %command%

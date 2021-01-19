@@ -62,7 +62,7 @@ struct CommandLineOptions {
     QString ariaLogFilename;
     int splashMilliseconds = 3000;
     RelaunchCommand relaunchCommand = RelaunchCommand::NONE;
-    QString updateUpdaterVersion;
+    QString updateUpdaterUrl;
     QString connectUrl;
 };
 
@@ -121,6 +121,8 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
     splashMsOption.setValueName("duration in milliseconds");
     QCommandLineOption internalCommandOption("internalcommand");
     internalCommandOption.setValueName("command");
+    QCommandLineOption updaterUrl("updaterurl");
+    updaterUrl.setValueName("url");
     QCommandLineParser optionParser;
     optionParser.addHelpOption();
     optionParser.addVersionOption();
@@ -128,6 +130,7 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
     optionParser.addOption(ariaLogFilenameOption);
     optionParser.addOption(splashMsOption);
     optionParser.addOption(internalCommandOption);
+    optionParser.addOption(updaterUrl);
     optionParser.addPositionalArgument("URL", "address of Unvanquished server to connect to", "[URL]");
     optionParser.process(app);
     CommandLineOptions options;
@@ -144,9 +147,13 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
             options.relaunchCommand = RelaunchCommand::PLAY_NOW;
         } else if (command == "updategame") {
             options.relaunchCommand = RelaunchCommand::UPDATE_GAME;
-        } else if (command.startsWith("updateupdater:")) {
+        } else if (command.startsWith("updateupdater")) {
             options.relaunchCommand = RelaunchCommand::UPDATE_UPDATER;
-            options.updateUpdaterVersion = command.section(':', 1);
+            if (optionParser.isSet(updaterUrl)) {
+                options.updateUpdaterUrl = optionParser.value(updaterUrl);
+            } else {
+                options.updateUpdaterUrl = "";
+            }
         } else {
             argParseError("Invalid --internalcommand option: " + command);
         }
@@ -208,9 +215,9 @@ int main(int argc, char *argv[])
     }
 
     SplashController splashController(
-        options.relaunchCommand, options.updateUpdaterVersion, options.connectUrl, settings);
+        options.relaunchCommand, options.updateUpdaterUrl, options.connectUrl, settings);
     splashController.checkForUpdate();
-    QmlDownloader downloader(options.ariaLogFilename, options.connectUrl, settings);
+    QmlDownloader downloader(options.ariaLogFilename, options.connectUrl, splashController, settings);
     QQmlApplicationEngine engine;
     engine.addImportPath(QLatin1String("qrc:/"));
     engine.addImageProvider(QLatin1String("fluidicons"), new IconsImageProvider());
