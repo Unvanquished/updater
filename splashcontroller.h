@@ -26,7 +26,7 @@
 
 inline QString updaterAppVersion()
 {
-    return "v0.2.1";
+    return "0.2.1";
 }
 
 // These are used only on Windows where relaunching is needed for admin (de)elevation.
@@ -48,7 +48,7 @@ class SplashController : public QObject
 private:
     // Actions from command line args
     RelaunchCommand relaunchCommand_;
-    QString updateUpdaterVersion_; // If command is UPDATE_UPDATER
+    QString updateUpdaterUrl_; // If command is UPDATE_UPDATER
     QString connectUrl_; // for pre-updater-update elevation
 
     const Settings& settings_;
@@ -56,22 +56,29 @@ private:
     // Latest versions fetching
     CurrentVersionFetcher fetcher_;
     QString latestUpdaterVersion_;
+    QString latestUpdaterUrl_;
     QString latestGameVersion_;
+    QString latestGameUrl_;
+    QString latestNewsUrl_;
 
 public:
     SplashController(
-        RelaunchCommand command, const QString& updateUpdaterVersion,
+        RelaunchCommand command, const QString& updateUpdaterUrl,
         const QString& connectUrl, const Settings& settings);
     void checkForUpdate();
+    QString gameUrl() const;
+    QString newsUrl() const;
     Q_INVOKABLE bool relaunchForSettings();
     Q_INVOKABLE void autoLaunchOrUpdate();
 
 signals:
     void updateNeeded(bool updateNeeded);
-    void updaterUpdate(QString version);
+    void updaterUpdateNeeded();
+    void updaterUpdate(QString updaterUrl);
+    void newsUrlFetched(QString newsUrl);
 
 private slots:
-    void onCurrentVersions(QString updater, QString game);
+    void onCurrentVersions(QString updaterVersion, QString updaterUrl, QString gameVersion, QString gameUrl, QString newsUrl);
 
 private:
     void launchGameIfInstalled();
