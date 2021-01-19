@@ -10,8 +10,6 @@ import QmlDownloader 1.0
 Item {
     id: settingsItem
     width: parent.width
-    property string installPath: ""
-    property string commandLine: ""
     Column {
         width: parent.width
         Pane {
