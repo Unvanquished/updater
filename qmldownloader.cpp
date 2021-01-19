@@ -82,7 +82,6 @@ void QmlDownloader::onDownloadEvent(int event)
                 Sys::install();
                 // FIXME: latestGameVersion_ could be empty if CurrentVersionFetcher didn't succeed
                 settings_.setCurrentVersion(latestGameVersion_);
-                settings_.setInstallFinished(true);
                 setState(COMPLETED);
                 setDownloadSpeed(0);
                 setUploadSpeed(0);
@@ -125,7 +124,6 @@ void QmlDownloader::startUpdate()
                           " work incorrectly. Restart the program without using 'sudo'.");
         return;
     }
-    settings_.setInstallFinished(false);
     setState(DOWNLOADING);
     QString installDir = settings_.installPath();
     QDir dir(installDir);
