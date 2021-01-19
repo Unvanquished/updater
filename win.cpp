@@ -150,7 +150,7 @@ bool validateInstallPath(const QString&)
     return true;
 }
 
-bool install()
+bool installShortcuts()
 {
     Settings settings;
     QString installPath = settings.installPath();
@@ -169,7 +169,7 @@ bool install()
     // the game globally.
     QString startPath;
     if (!GetStartMenuPath(installPath, &startPath)) {
-        return true;
+        return false;
     }
     QDir dir(startPath);
     dir.mkdir("Unvanquished");
@@ -177,6 +177,7 @@ bool install()
     QString linkName = "Unvanquished";
     if (!CreateLink(installPath + "\\daemon.exe", installPath, dir.path() + "\\Unvanquished.lnk", linkName)) {
         qDebug() << "Creating shortcut failed";
+        return false;
     }
     return true;
 }

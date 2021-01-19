@@ -48,7 +48,7 @@ bool validateInstallPath(const QString&)
     return true;
 }
 
-bool install()
+bool installShortcuts()
 {
     QDir applications(QDir::homePath() + "/Applications");
     if (!applications.exists()) {

@@ -88,12 +88,15 @@ void QmlDownloader::onDownloadEvent(int event)
                     return;
                 }
                 qDebug() << "Calling Sys::install";
-                Sys::install();
+                if (Sys::installShortcuts()) {
+                    emit statusMessage("Up to date");
+                } else {
+                    emit statusMessage("Error installing shortcuts");
+                }
                 setState(COMPLETED);
                 setDownloadSpeed(0);
                 setUploadSpeed(0);
                 setCompletedSize(totalSize_);
-                emit statusMessage("Up to date");
                 stopAria();
             }
             break;
