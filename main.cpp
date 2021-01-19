@@ -41,6 +41,7 @@ struct CommandLineOptions {
     QString ariaLogFilename;
     int splashMilliseconds = 3000;
     QString updateUpdaterVersion;
+    bool updateGame;
 };
 
 CommandLineOptions getCommandLineOptions(const QApplication& app) {
@@ -52,6 +53,7 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
     splashMsOption.setValueName("duration in milliseconds");
     QCommandLineOption updateUpdaterOption("updateupdaterto");
     updateUpdaterOption.setValueName("updater version");
+    QCommandLineOption updateGameOption("updategame");
     QCommandLineParser optionParser;
     optionParser.addHelpOption();
     optionParser.addVersionOption();
@@ -59,6 +61,7 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
     optionParser.addOption(ariaLogFilenameOption);
     optionParser.addOption(splashMsOption);
     optionParser.addOption(updateUpdaterOption);
+    optionParser.addOption(updateGameOption);
     optionParser.process(app);
     CommandLineOptions options;
     options.logFilename = optionParser.value(logFileNameOption);
@@ -68,6 +71,7 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
         options.splashMilliseconds = splashMs;
     }
     options.updateUpdaterVersion = optionParser.value(updateUpdaterOption);
+    options.updateGame = optionParser.isSet(updateGameOption);
     return options;
 }
 
@@ -118,6 +122,9 @@ int main(int argc, char *argv[])
         // Don't request versions.json because it would clobber the verson
     } else {
         downloader.checkForUpdate();
+        if (options.updateGame) {
+            downloader.forceGameUpdate();
+        }
     }
     QQmlApplicationEngine engine;
     engine.addImportPath(QLatin1String("qrc:/"));

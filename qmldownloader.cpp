@@ -19,6 +19,7 @@ QmlDownloader::QmlDownloader() : downloadSpeed_(0),
         completedSize_(0),
         worker_(nullptr),
         forceUpdaterUpdate_(false),
+        forceGameUpdate_(false),
         state_(IDLE) {}
 
 QmlDownloader::~QmlDownloader()
@@ -209,6 +210,12 @@ void QmlDownloader::forceUpdaterUpdate(const QString& version)
     latestUpdaterVersion_ = version;
 }
 
+// Launch the update window later even if the installed and current game versions match
+void QmlDownloader::forceGameUpdate()
+{
+    forceGameUpdate_ = true;
+}
+
 // Receives the results of the checkForUpdate request.
 void QmlDownloader::onCurrentVersions(QString updater, QString game)
 {
@@ -222,8 +229,11 @@ void QmlDownloader::onCurrentVersions(QString updater, QString game)
 void QmlDownloader::autoLaunchOrUpdate()
 {
     qDebug() << "Previously-installed game version:" << settings_.currentVersion();
-    if (forceUpdaterUpdate_ ||
-        (!latestUpdaterVersion_.isEmpty() && latestUpdaterVersion_ != QString(GIT_VERSION))) {
+    if (forceGameUpdate_) {
+        qDebug() << "Game update menu requested";
+        emit updateNeeded(true);
+    } else if (forceUpdaterUpdate_ ||
+               (!latestUpdaterVersion_.isEmpty() && latestUpdaterVersion_ != QString(GIT_VERSION))) {
         qDebug() << "Updater update to version" << latestUpdaterVersion_ << "required";
         QString url = UPDATER_BASE_URL + "/" + latestUpdaterVersion_ + "/" + Sys::updaterArchiveName();
         temp_dir_.reset(new QTemporaryDir());
