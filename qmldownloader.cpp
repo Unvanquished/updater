@@ -18,6 +18,7 @@ QmlDownloader::QmlDownloader() : downloadSpeed_(0),
         totalSize_(0),
         completedSize_(0),
         worker_(nullptr),
+        forceUpdaterUpdate_(false),
         state_(IDLE) {}
 
 QmlDownloader::~QmlDownloader()
@@ -201,6 +202,13 @@ void QmlDownloader::checkForUpdate()
     fetcher_.fetchCurrentVersion("https://dl.unvanquished.net/versions.json");
 }
 
+// Initiate updater update to specified version
+void QmlDownloader::forceUpdaterUpdate(const QString& version)
+{
+    forceUpdaterUpdate_ = true;
+    latestUpdaterVersion_ = version;
+}
+
 // Receives the results of the checkForUpdate request.
 void QmlDownloader::onCurrentVersions(QString updater, QString game)
 {
@@ -214,7 +222,8 @@ void QmlDownloader::onCurrentVersions(QString updater, QString game)
 void QmlDownloader::autoLaunchOrUpdate()
 {
     qDebug() << "Previously-installed game version:" << settings_.currentVersion();
-    if (!latestUpdaterVersion_.isEmpty() && latestUpdaterVersion_ != QString(GIT_VERSION)) {
+    if (forceUpdaterUpdate_ ||
+        (!latestUpdaterVersion_.isEmpty() && latestUpdaterVersion_ != QString(GIT_VERSION))) {
         qDebug() << "Updater update to version" << latestUpdaterVersion_ << "required";
         QString url = UPDATER_BASE_URL + "/" + latestUpdaterVersion_ + "/" + Sys::updaterArchiveName();
         temp_dir_.reset(new QTemporaryDir());

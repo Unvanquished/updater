@@ -40,6 +40,7 @@ struct CommandLineOptions {
     QString logFilename;
     QString ariaLogFilename;
     int splashMilliseconds = 3000;
+    QString updateUpdaterVersion;
 };
 
 CommandLineOptions getCommandLineOptions(const QApplication& app) {
@@ -49,12 +50,15 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
     ariaLogFilenameOption.setValueName("filename");
     QCommandLineOption splashMsOption("splashms");
     splashMsOption.setValueName("duration in milliseconds");
+    QCommandLineOption updateUpdaterOption("updateupdaterto");
+    updateUpdaterOption.setValueName("updater version");
     QCommandLineParser optionParser;
     optionParser.addHelpOption();
     optionParser.addVersionOption();
     optionParser.addOption(logFileNameOption);
     optionParser.addOption(ariaLogFilenameOption);
     optionParser.addOption(splashMsOption);
+    optionParser.addOption(updateUpdaterOption);
     optionParser.process(app);
     CommandLineOptions options;
     options.logFilename = optionParser.value(logFileNameOption);
@@ -63,6 +67,7 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
     if (splashMs > 0) {
         options.splashMilliseconds = splashMs;
     }
+    options.updateUpdaterVersion = optionParser.value(updateUpdaterOption);
     return options;
 }
 
@@ -108,7 +113,12 @@ int main(int argc, char *argv[])
     Settings settings;
     QmlDownloader downloader;
     downloader.ariaLogFilename_ = options.ariaLogFilename;
-    downloader.checkForUpdate();
+    if (!options.updateUpdaterVersion.isEmpty()) {
+        downloader.forceUpdaterUpdate(options.updateUpdaterVersion);
+        // Don't request versions.json because it would clobber the verson
+    } else {
+        downloader.checkForUpdate();
+    }
     QQmlApplicationEngine engine;
     engine.addImportPath(QLatin1String("qrc:/"));
     engine.addImageProvider(QLatin1String("fluidicons"), new IconsImageProvider());

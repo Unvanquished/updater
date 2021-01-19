@@ -44,6 +44,7 @@ public:
     int completedSize() const;
     DownloadState state() const;
     void checkForUpdate();
+    void forceUpdaterUpdate(const QString& version);
 
     QString ariaLogFilename_;
 
@@ -87,6 +88,7 @@ private:
     DownloadWorker* worker_;
     DownloadTimeCalculator downloadTime_;
     Settings settings_;
+    bool forceUpdaterUpdate_;
     QString latestGameVersion_;
     QString latestUpdaterVersion_;
     DownloadState state_;
