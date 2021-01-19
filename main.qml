@@ -15,6 +15,8 @@ ApplicationWindow {
     Material.primary: Material.DarkBlue
     Material.accent: Material.Violet
 
+    property string selectedInstallPath: updaterSettings.installPath
+
     Connections {
         target: downloader
         ignoreUnknownSignals: true

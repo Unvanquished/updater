@@ -28,7 +28,7 @@ Item {
                 padding: 16
             }
             FluidControls.Subheader {
-                text: updaterSettings.installPath
+                text: selectedInstallPath
             }
             FluidMaterial.ActionButton {
                 Material.elevation: 1
@@ -64,7 +64,7 @@ Item {
             if (Qt.platform.os === "windows") {
                 path = path.replace(/\//g, '\\');
             }
-            updaterSettings.installPath = path;
+            selectedInstallPath = path;
         }
         selectFolder: true
     }

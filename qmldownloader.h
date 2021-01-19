@@ -68,8 +68,7 @@ public slots:
     void onDownloadEvent(int event);
     void onCurrentVersions(QString updater, QString game);
 
-    Q_INVOKABLE void startUpdate();
-    Q_INVOKABLE void toggleDownload();
+    Q_INVOKABLE void toggleDownload(QString installPath);
     Q_INVOKABLE void startGame();
     Q_INVOKABLE void autoLaunchOrUpdate();
 
@@ -77,6 +76,7 @@ private:
     void stopAria();
     void setState(DownloadState state);
     void startDownload(const QUrl& url, const QDir& destination);
+    void startUpdate(const QString& selectedInstallPath);
 
     QThread thread_;
     int downloadSpeed_;

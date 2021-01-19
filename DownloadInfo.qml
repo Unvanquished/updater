@@ -164,7 +164,7 @@ Item {
                 downloader.startGame();
                 return;
             }
-            downloader.toggleDownload();
+            downloader.toggleDownload(selectedInstallPath);
         }
     }
 

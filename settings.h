@@ -20,6 +20,7 @@ public:
 
     QString installPath() const;
     QString commandLine() const;
+    // currentVersion should be a non-empty iff there is a usable installation at installPath
     QString currentVersion() const;
 
     void setInstallPath(const QString& installPath);

@@ -2,6 +2,7 @@
 #include <sstream>
 #include "downloadworker.h"
 #include "quazip/quazip/JlCompress.h"
+#include "settings.h"
 #include "system.h"
 #include <QDebug>
 
@@ -159,6 +160,8 @@ void DownloadWorker::stop()
 
 bool DownloadWorker::extractUpdate()
 {
+    qDebug() << "Clearing installed version prior to extraction";
+    Settings().setCurrentVersion("");
     QString filename = Sys::archiveName();
     auto out = JlCompress::extractDir(downloadDir + "/" + filename, downloadDir);
     if (out.size() < 1) {

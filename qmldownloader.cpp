@@ -75,6 +75,13 @@ void QmlDownloader::onDownloadEvent(int event)
     switch (event) {
         case aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE:
             if (state() != COMPLETED) {
+                // The game should be playable at this point - set the installed version
+                if (latestGameVersion_.isEmpty()) {
+                    latestGameVersion_ = "unknown";
+                }
+                qDebug() << "Setting installed version to" << latestGameVersion_;
+                settings_.setCurrentVersion(latestGameVersion_);
+
                 qDebug() << "installUpdater in" << settings_.installPath();
                 if (!Sys::installUpdater(settings_.installPath())) {
                     emit fatalMessage("Error installing launcher");
@@ -82,8 +89,6 @@ void QmlDownloader::onDownloadEvent(int event)
                 }
                 qDebug() << "Calling Sys::install";
                 Sys::install();
-                // FIXME: latestGameVersion_ could be empty if CurrentVersionFetcher didn't succeed
-                settings_.setCurrentVersion(latestGameVersion_);
                 setState(COMPLETED);
                 setDownloadSpeed(0);
                 setUploadSpeed(0);
@@ -119,28 +124,35 @@ void QmlDownloader::onDownloadEvent(int event)
     }
 }
 
-void QmlDownloader::startUpdate()
+void QmlDownloader::startUpdate(const QString& selectedInstallPath)
 {
-    if (!Sys::validateInstallPath(settings_.installPath())) {
+    qDebug() << "Selected install path:" << selectedInstallPath;
+    if (!Sys::validateInstallPath(selectedInstallPath)) {
         emit fatalMessage("You are running as root, which may cause the installation to"
                           " work incorrectly. Restart the program without using 'sudo'.");
         return;
     }
-    setState(DOWNLOADING);
-    QString installDir = settings_.installPath();
-    QDir dir(installDir);
+
+    QDir dir(selectedInstallPath);
     if (!dir.exists()) {
         if (!dir.mkpath(dir.path())) {
             emit fatalMessage(dir.path() + " does not exist and could not be created");
             return;
         }
     }
-    if (!QFileInfo(installDir).isWritable()) {
+    if (!QFileInfo(selectedInstallPath).isWritable()) {
         emit fatalMessage("Install dir not writable. Please select another");
         return;
     }
+    // Persist the install path only now that download has been initiated and we know the path is good
     emit statusMessage("Installing to " + dir.canonicalPath());
+    if (settings_.installPath() != selectedInstallPath) {
+        qDebug() << "Clearing installed version because path was changed";
+        settings_.setCurrentVersion("");
+    }
+    settings_.setInstallPath(selectedInstallPath);
 
+    setState(DOWNLOADING);
     worker_ = new DownloadWorker(ariaLogFilename_);
     worker_->setDownloadDirectory(dir.canonicalPath().toStdString());
     worker_->addTorrent("https://cdn.unvanquished.net/current.torrent");
@@ -173,12 +185,12 @@ void QmlDownloader::startGame()
     }
 }
 
-void QmlDownloader::toggleDownload()
+void QmlDownloader::toggleDownload(QString installPath)
 {
     qDebug() << "QmlDownloader::toggleDownload called";
     if (state() == COMPLETED) return;
     if (!worker_) {
-        startUpdate();
+        startUpdate(installPath);
         return;
     }
     worker_->toggle();
