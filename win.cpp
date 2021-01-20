@@ -175,7 +175,7 @@ bool installShortcuts()
     dir.mkdir("Unvanquished");
     dir.setPath(dir.path() + "\\Unvanquished");
     QString linkName = "Unvanquished";
-    if (!CreateLink(installPath + "\\daemon.exe", installPath, dir.path() + "\\Unvanquished.lnk", linkName)) {
+    if (!CreateLink(installPath + "\\updater.exe", installPath, dir.path() + "\\Unvanquished.lnk", linkName)) {
         qDebug() << "Creating shortcut failed";
         return false;
     }
