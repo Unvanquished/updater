@@ -38,3 +38,8 @@ void Settings::setCurrentVersion(const QString& currentVersion) {
     settings_->setValue(Settings::CURRENT_VERSION, currentVersion);
     emit currentVersionChanged(currentVersion);
 }
+
+void Settings::sync()
+{
+    settings_->sync();
+}

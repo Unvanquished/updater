@@ -25,6 +25,7 @@ public:
     void setInstallPath(const QString& installPath);
     void setCommandLine(const QString& commandLine);
     void setCurrentVersion(const QString& currentVersion);
+    void sync();
 
 signals:
     void installPathChanged(QString installPath);

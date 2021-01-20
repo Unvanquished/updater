@@ -6,10 +6,32 @@
 #include <QDebug>
 #include <QCoreApplication>
 #include <QProcess>
+#include <QRegularExpression>
 #include <QStandardPaths>
 #include <QString>
 
 namespace Sys {
+
+namespace {
+
+// Use QProcess::splitCommand in Qt 5.15+
+QStringList splitArgs(const QString& command) {
+    QRegularExpression argPart(R"regex((")""|"([^\"]*)"?|([^ ]))regex");
+    QRegularExpression arg("(" + argPart.pattern() + ")+");
+    QStringList list;
+    for (QRegularExpressionMatchIterator i = arg.globalMatch(command); i.hasNext(); ) {
+        QString str;
+        for (QRegularExpressionMatchIterator j = argPart.globalMatch(i.next().captured()); j.hasNext(); ) {
+            QRegularExpressionMatch match = j.next();
+            str += match.captured(match.lastCapturedIndex());
+        }
+        list.append(str);
+    }
+    return list;
+}
+
+} // namespace
+
 QString archiveName()
 {
     return "linux-amd64.zip";
@@ -219,7 +241,21 @@ QString getGameCommand(const QString& installPath)
 
 bool startGame(const QString& commandLine)
 {
-    return QProcess::startDetached(commandLine);
+    Settings settings;
+    settings.sync(); // since normal shutdown will be skipped
+    std::vector<std::string> args;
+    for (const QString& arg : splitArgs(commandLine)) {
+        args.push_back(arg.toStdString());
+    }
+    if (args.empty()) return false;
+    std::vector<const char*> argv;
+    for (const std::string& arg : args) {
+        argv.push_back(arg.c_str());
+    }
+    argv.push_back(nullptr);
+    execvp(argv[0], const_cast<char* const*>(argv.data()));
+    qDebug() << "execvp failed: errno =" << errno;
+    return false;
 }
 
 }  // namespace Sys
