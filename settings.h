@@ -15,6 +15,7 @@ public:
     const QString COMMAND_LINE = "settings/commandLineParameters";
     const QString CURRENT_VERSION = "settings/currentVersion";
     // const QString INSTALL_FINISHED = "settings/installFinished";  // No longer used
+    const QString WRITE_PROBE = "writeProbe";
 
     Settings();
 
@@ -27,6 +28,7 @@ public:
     void setCommandLine(const QString& commandLine);
     void setCurrentVersion(const QString& currentVersion);
     void sync();
+    QSettings::Status testWrite();
 
 signals:
     void installPathChanged(QString installPath);

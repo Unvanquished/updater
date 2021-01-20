@@ -270,9 +270,13 @@ QString getGameCommand(const QString& installPath)
 
 bool startGame(const QString& commandLine)
 {
+    if (Settings().testWrite() == QSettings::AccessError) {
+        qDebug() << "not admin, start game normally";
+        return QProcess::startDetached(commandLine);
+    }
     std::wstring program, args;
     SplitFirstArg(commandLine.toStdWString(), &program, &args);
-    qDebug() << "startGame: program =" << program << "args =" << args;
+    qDebug() << "startGame de-elevated: program =" << program << "args =" << args;
     HRESULT result = ShellExecInExplorerProcess(program.c_str(), args.c_str());
     qDebug() << "startGame HRESULT:" << result;
     // It returns 1 "S_FALSE" (which is considered a success by SUCCEEDED) if the application
