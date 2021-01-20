@@ -287,4 +287,31 @@ bool startGame(const QString& commandLine)
     return SUCCEEDED(result);
 }
 
+// Care should be taken when using this function to avoid any possibility of an endless restart loop.
+// RelaunchElevated is skipped when --updateupdaterto or --updategame is used in order to avoid this.
+ElevationResult RelaunchElevated(const QString& flags)
+{
+    if (Settings().testWrite() == QSettings::NoError) {
+        qDebug() << "Process already has administrator privileges";
+        return ElevationResult::UNNEEDED;
+    }
+    std::wstring updaterPath = QCoreApplication::applicationFilePath().toStdWString();
+    std::wstring parameters = flags.toStdWString();
+    SHELLEXECUTEINFOW info{};
+    info.cbSize = sizeof(info);
+    // "Applications that exit immediately after calling ShellExecuteEx should specify this flag"
+    info.fMask = SEE_MASK_NOASYNC;
+    info.lpVerb = L"runas";
+    info.lpFile = updaterPath.c_str();
+    info.lpParameters = parameters.c_str();
+    info.nShow = SW_SHOW;
+    if (ShellExecuteExW(&info)) {
+        qDebug() << "Successfully relaunched as administrator";
+        return ElevationResult::RELAUNCHED;
+    } else {
+        qDebug() << "Launch as administrator failed. SE_ERR_xxx code" << info.hInstApp;
+        return ElevationResult::FAILED;
+    }
+}
+
 }  // namespace Sys

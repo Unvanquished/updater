@@ -71,12 +71,14 @@ public slots:
     Q_INVOKABLE void toggleDownload(QString installPath);
     Q_INVOKABLE void startGame();
     Q_INVOKABLE void autoLaunchOrUpdate();
+    Q_INVOKABLE bool relaunchForSettings();
 
 private:
     void stopAria();
     void setState(DownloadState state);
     void startDownload(const QUrl& url, const QDir& destination);
     void startUpdate(const QString& selectedInstallPath);
+    void launchGameIfInstalled();
 
     QThread thread_;
     int downloadSpeed_;

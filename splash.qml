@@ -80,8 +80,12 @@ ApplicationWindow {
         Material.elevation: 0
         Material.background: Material.Teal
         onClicked: {
-            showUpdater();
             timer.stop();
+            if (downloader.relaunchForSettings()) {
+                splash.close();
+            } else {
+                showUpdater();
+            }
         }
     }
 

@@ -238,6 +238,17 @@ void QmlDownloader::onCurrentVersions(QString updater, QString game)
     latestGameVersion_ = game;
 }
 
+void QmlDownloader::launchGameIfInstalled()
+{
+    if (settings_.currentVersion().isEmpty()) {
+        qDebug() << "No game installed, exiting";
+        QCoreApplication::quit();
+    } else {
+        qDebug() << "Fall back to launching installed game";
+        emit updateNeeded(false);
+    }
+}
+
 // This runs after the splash screen has been displayed for the programmed amount of time (and the
 // user did not click the settings button). If the CurrentVersionFetcher didn't emit anything yet,
 // proceed as if the request for versions.json failed.
@@ -250,6 +261,18 @@ void QmlDownloader::autoLaunchOrUpdate()
     } else if (forceUpdaterUpdate_ ||
                (!latestUpdaterVersion_.isEmpty() && latestUpdaterVersion_ != QString(GIT_VERSION))) {
         qDebug() << "Updater update to version" << latestUpdaterVersion_ << "required";
+        if (!forceUpdaterUpdate_) {
+            switch (Sys::RelaunchElevated("--splashms 1 --updateupdaterto " + latestUpdaterVersion_)) {
+                case Sys::ElevationResult::UNNEEDED:
+                    break;
+                case Sys::ElevationResult::RELAUNCHED:
+                    QCoreApplication::quit();
+                    return;
+                case Sys::ElevationResult::FAILED:
+                    launchGameIfInstalled();
+                    return;
+            }
+        }
         QString url = UPDATER_BASE_URL + "/" + latestUpdaterVersion_ + "/" + Sys::updaterArchiveName();
         temp_dir_.reset(new QTemporaryDir());
         worker_ = new DownloadWorker(ariaLogFilename_);
@@ -267,10 +290,27 @@ void QmlDownloader::autoLaunchOrUpdate()
     } else if (settings_.currentVersion().isEmpty() ||
                (!latestGameVersion_.isEmpty() && settings_.currentVersion() != latestGameVersion_)) {
         qDebug() << "Game update required.";
+        switch (Sys::RelaunchElevated("--splashms 1 --updategame")) {
+            case Sys::ElevationResult::UNNEEDED:
+                break;
+            case Sys::ElevationResult::RELAUNCHED:
+                QCoreApplication::quit();
+                return;
+            case Sys::ElevationResult::FAILED:
+                launchGameIfInstalled();
+                return;
+        }
         emit updateNeeded(true);
     } else {
         emit updateNeeded(false);
     }
+}
+
+// Return value is whether the program should exit
+bool QmlDownloader::relaunchForSettings()
+{
+    qDebug() << "Possibly relaunching to open settings window";
+    return Sys::RelaunchElevated("--splashms 1 --updategame") != Sys::ElevationResult::UNNEEDED;
 }
 
 QmlDownloader::DownloadState QmlDownloader::state() const

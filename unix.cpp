@@ -257,4 +257,9 @@ bool startGame(const QString& commandLine)
     return false;
 }
 
+ElevationResult RelaunchElevated(const QString& flags)
+{
+    return ElevationResult::UNNEEDED;
+}
+
 }  // namespace Sys
