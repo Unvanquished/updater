@@ -60,9 +60,9 @@ void DownloadWorker::onDownloadCallback(aria2::Session* session, aria2::Download
                 Sys::updateUpdater(QString(files[0].path.c_str()));
                 return;
             } else {
-                qDebug() << "Unvanquished download complete (?)";
-                event = aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE;
-                if (!extractUpdate()) return;
+                // For a torrent, happens when aria2 is stopped
+                qDebug() << "final EVENT_ON_DOWNLOAD_COMPLETE";
+                return;
             }
             break;
 
