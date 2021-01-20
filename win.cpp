@@ -255,10 +255,12 @@ std::string getCertStore()
     return "";  // Not used on Windows.
 }
 
-// Settings are stored in the registry at HKEY_CURRENT_USER\Software\Unvanquished Development\Unvanquished Updater
+// Settings are stored in the registry at (on 64-bit Windows)
+// HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Unvanquished Development\Unvanquished Updater
+// ≤v0.0.5 used HKEY_CURRENT_USER\Software\Unvanquished Development\Unvanquished Updater
 QSettings* makePersistentSettings(QObject* parent)
 {
-    return new QSettings(parent);
+    return new QSettings(QSettings::SystemScope, parent);
 }
 
 QString getGameCommand(const QString& installPath)
