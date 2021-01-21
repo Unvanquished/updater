@@ -53,7 +53,7 @@ docker rm updater2-win
 ```
 Search for **updater2.exe** in build-docker directory.
 
-## Build Mac version
+## Build Mac version natively
 
 ### Build Qt
 ```
