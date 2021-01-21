@@ -21,6 +21,7 @@ RUN apt-get update && apt-get install -y \
     git \
     libtool \
     make \
+    p7zip-full \
     pkg-config \
     python \
     xz-utils
@@ -62,3 +63,6 @@ COPY . /updater2
 RUN set -e; for D in . quazip fluid; do cd /updater2/$D && git clean -dXff; done
 WORKDIR /build
 RUN /qt/bin/qmake -config release QMAKE_LFLAGS+="-static" INCLUDEPATH+=/qt/include/QtZlib /updater2 && make -j`nproc`
+WORKDIR /release-win
+ARG release
+RUN if [ -n "$release" ]; then cp /build/release/updater2.exe UnvanquishedUpdater.exe && 7z -tzip -mx=9 a UnvUpdaterWin.zip UnvanquishedUpdater.exe; fi
