@@ -129,11 +129,11 @@ Flickable {
                 TitleLabel {
                     id: title
 
-					width: parent.width
+                    width: parent.width
                     text: item.cardTitle
 
                     wrapMode: Text.WordWrap
-					clip: true
+                    clip: true
                     font.pixelSize: 30
                     font.bold: true
                 }
@@ -141,7 +141,7 @@ Flickable {
                 BodyLabel {
                     id: summary
 
-					width: parent.width
+                    width: parent.width
                     wrapMode: Text.WordWrap
 
                     text: item.summary.substring(0, item.summary.search("<a"))
@@ -150,14 +150,14 @@ Flickable {
                     font.pixelSize: 21
                     lineHeight: 24
                     color: "lightgrey"
-				}
-			}
-		}
+                }
+            }
+        }
 
-		Rectangle {
+        Rectangle {
             anchors {
                 horizontalCenter: parent.horizontalCenter
-				bottom: parent.bottom
+                bottom: parent.bottom
             }
 
             width: parent.width - 15
@@ -166,17 +166,17 @@ Flickable {
             clip: true
             color: "transparent"
 
-			Column {
-				id: linkColumn
+            Column {
+                id: linkColumn
 
                 width: parent.width
                 height: parent.height
                 spacing: Units.smallSpacing * 2
 
-				BodyLabel {
-					id: link
+                BodyLabel {
+                    id: link
 
-					width: parent.width
+                    width: parent.width
 
                     text: "<p style='text-align: right;'><a style='color:#00B2B8;' href='" + item.url + "'>&rarr; Continue reading</a></p>"
                     textFormat: Text.RichText
