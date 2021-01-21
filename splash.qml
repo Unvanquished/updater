@@ -68,17 +68,28 @@ ApplicationWindow {
 
     ActionButton {
         id: settingsAction
-        scale: 0.8
-        anchors.top: parent.top
-        anchors.right: parent.right
-        anchors.margins: {
-            left: -9
-            top: -9
+
+        anchors {
+            top: parent.top
+            right: parent.right
+
+            margins: {
+                top: 5
+                right: 9
+            }
         }
-        opacity: enabled ? 1 : 0.38
+
+        height: 48
+        width: 48
+
         iconName: "action/settings"
+        scale: 1.35
+
+        opacity: enabled ? 1 : 0.38
+
         Material.elevation: 0
         Material.background: Material.Teal
+
         onClicked: {
             showUpdater();
             timer.stop();
