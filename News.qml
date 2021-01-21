@@ -94,7 +94,7 @@ Item {
         }
 
         Component.onCompleted: {
-            fetchNews('https://unvanquished.net/api/get_recent_posts/');
+            fetchNews(downloader.newsUrl);
         }
     }
 

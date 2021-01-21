@@ -19,6 +19,7 @@
 class QmlDownloader : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString newsUrl READ newsUrl)
     Q_PROPERTY(int downloadSpeed READ downloadSpeed NOTIFY downloadSpeedChanged)
     Q_PROPERTY(int uploadSpeed READ uploadSpeed NOTIFY uploadSpeedChanged)
     Q_PROPERTY(int eta READ eta NOTIFY etaChanged)
@@ -37,6 +38,7 @@ public:
 
     QmlDownloader();
     ~QmlDownloader();
+    QString newsUrl() const;
     int downloadSpeed() const;
     int uploadSpeed() const;
     int eta() const;
@@ -59,12 +61,13 @@ signals:
     void stateChanged(DownloadState state);
 
 public slots:
+    void setNewsUrl(QString newsUrl);
     void setDownloadSpeed(int speed);
     void setUploadSpeed(int speed);
     void setTotalSize(int size);
     void setCompletedSize(int size);
     void onDownloadEvent(int event);
-    void onCurrentVersions(QString updater, QString game);
+    void onCurrentVersions(QString updaterVersion, QString updaterUrl, QString gameVersion, QString gameUrl, QString newsUrl);
 
     Q_INVOKABLE void startUpdate();
     Q_INVOKABLE void toggleDownload();
@@ -87,8 +90,11 @@ private:
     DownloadWorker* worker_;
     DownloadTimeCalculator downloadTime_;
     Settings settings_;
-    QString latestGameVersion_;
     QString latestUpdaterVersion_;
+    QString latestUpdaterUrl_;
+    QString latestGameVersion_;
+    QString latestGameUrl_;
+    QString latestNewsUrl_;
     DownloadState state_;
     std::unique_ptr<QTemporaryDir> temp_dir_;
 

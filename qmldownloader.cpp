@@ -9,7 +9,6 @@
 
 namespace {
 static const QRegularExpression COMMAND_REGEX("%command%");
-static QString UPDATER_BASE_URL("https://github.com/Unvanquished/updater/releases/download");
 }  // namespace
 
 QmlDownloader::QmlDownloader() : downloadSpeed_(0),
@@ -23,6 +22,10 @@ QmlDownloader::QmlDownloader() : downloadSpeed_(0),
 QmlDownloader::~QmlDownloader()
 {
     stopAria();
+}
+
+QString QmlDownloader::newsUrl() const {
+    return latestNewsUrl_;
 }
 
 int QmlDownloader::downloadSpeed() const {
@@ -43,6 +46,10 @@ int QmlDownloader::totalSize() const {
 
 int QmlDownloader::completedSize() const {
     return completedSize_;
+}
+
+void QmlDownloader::setNewsUrl(QString newsUrl) {
+    latestNewsUrl_ = newsUrl;
 }
 
 void QmlDownloader::setDownloadSpeed(int speed) {
@@ -141,7 +148,7 @@ void QmlDownloader::startUpdate()
 
     worker_ = new DownloadWorker(ariaLogFilename_);
     worker_->setDownloadDirectory(dir.canonicalPath().toStdString());
-    worker_->addTorrent("https://cdn.unvanquished.net/current.torrent");
+    worker_->addTorrent(latestGameUrl_.toStdString());
     worker_->moveToThread(&thread_);
     connect(&thread_, SIGNAL(finished()), worker_, SLOT(deleteLater()));
     connect(worker_, SIGNAL(onDownloadEvent(int)), this, SLOT(onDownloadEvent(int)));
@@ -197,15 +204,19 @@ void QmlDownloader::stopAria()
 // Initiates an asynchronous request for the latest available versions.
 void QmlDownloader::checkForUpdate()
 {
-    connect(&fetcher_, SIGNAL(onCurrentVersions(QString, QString)), this, SLOT(onCurrentVersions(QString, QString)));
-    fetcher_.fetchCurrentVersion("https://dl.unvanquished.net/versions.json");
+    connect(&fetcher_, SIGNAL(onCurrentVersions(QString, QString, QString, QString, QString)), this, SLOT(onCurrentVersions(QString, QString, QString, QString, QString)));
+    fetcher_.fetchCurrentVersion("https://cdn.unvanquished.net/current.json");
 }
 
 // Receives the results of the checkForUpdate request.
-void QmlDownloader::onCurrentVersions(QString updater, QString game)
+void QmlDownloader::onCurrentVersions(QString updaterVersion, QString updaterUrl, QString gameVersion, QString gameUrl, QString newsUrl)
 {
-    latestUpdaterVersion_ = updater;
-    latestGameVersion_ = game;
+    latestUpdaterVersion_ = updaterVersion;
+    latestUpdaterUrl_ = updaterUrl;
+    latestGameVersion_ = gameVersion;
+    latestGameUrl_ = gameUrl;
+
+    setNewsUrl(newsUrl);
 }
 
 // This runs after the splash screen has been displayed for the programmed amount of time (and the
@@ -214,13 +225,13 @@ void QmlDownloader::onCurrentVersions(QString updater, QString game)
 void QmlDownloader::autoLaunchOrUpdate()
 {
     qDebug() << "Previously-installed game version:" << settings_.currentVersion();
-    if (!latestUpdaterVersion_.isEmpty() && latestUpdaterVersion_ != QString(GIT_VERSION)) {
+    QString gitUpdaterVersion = "v" + latestUpdaterVersion_;
+    if (!latestUpdaterVersion_.isEmpty() && gitUpdaterVersion != QString(GIT_VERSION)) {
         qDebug() << "Updater update to version" << latestUpdaterVersion_ << "required";
-        QString url = UPDATER_BASE_URL + "/" + latestUpdaterVersion_ + "/" + Sys::updaterArchiveName();
         temp_dir_.reset(new QTemporaryDir());
         worker_ = new DownloadWorker(ariaLogFilename_);
         worker_->setDownloadDirectory(QDir(temp_dir_->path()).canonicalPath().toStdString());
-        worker_->addUpdaterUri(url.toStdString());
+        worker_->addUpdaterUri(latestUpdaterUrl_.toStdString());
         worker_->moveToThread(&thread_);
         connect(&thread_, SIGNAL(finished()), worker_, SLOT(deleteLater()));
         connect(worker_, SIGNAL(onDownloadEvent(int)), this, SLOT(onDownloadEvent(int)));

@@ -37,6 +37,11 @@ QString archiveName()
     return "linux-amd64.zip";
 }
 
+QString updaterSystem()
+{
+    return "linux-amd64";
+}
+
 void migrateHomePath()
 {
     QString legacyHomePath = QDir::homePath() + "/.unvanquished";
@@ -203,11 +208,6 @@ bool updateUpdater(const QString& updaterArchive)
     }
     QCoreApplication::quit();
     return true;
-}
-
-QString updaterArchiveName()
-{
-    return "UnvUpdaterLinux.zip";
 }
 
 std::string getCertStore()
