@@ -129,8 +129,10 @@ Flickable {
                 TitleLabel {
                     id: title
 
+					width: parent.width
                     text: item.cardTitle
 
+                    wrapMode: Text.WordWrap
 					clip: true
                     font.pixelSize: 30
                     font.bold: true
