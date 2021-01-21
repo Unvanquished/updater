@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y \
     libxkbcommon-dev \
     make \
     perl \
+    p7zip-full \
     pkg-config \
     python \
     xz-utils \
@@ -62,6 +63,8 @@ COPY . /updater2
 RUN set -e; for D in . quazip fluid; do cd /updater2/$D && git clean -dXff; done
 WORKDIR /build
 RUN /qt/bin/qmake -config release QMAKE_LFLAGS+="-no-pie" /updater2 && make -j`nproc`
-RUN mv updater2 updater2-nonstripped
-RUN strip updater2-nonstripped -o updater2
-CMD cp updater2 updater2-nonstripped /build-docker
+RUN mv updater2 updater2-nonstripped && strip updater2-nonstripped -o updater2
+ARG release
+RUN if [ -n "$release" ]; then cp updater2 UnvanquishedUpdater && 7z -tzip -mx=9 a UnvUpdaterLinux.zip UnvanquishedUpdater; fi
+ENV zipfile=${release:+UnvUpdaterLinux.zip}
+CMD cp updater2 updater2-nonstripped $zipfile /build-docker
