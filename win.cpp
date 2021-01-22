@@ -288,7 +288,7 @@ bool startGame(const QString& commandLine)
 }
 
 // Care should be taken when using this function to avoid any possibility of an endless restart loop.
-// RelaunchElevated is skipped when --updateupdaterto or --updategame is used in order to avoid this.
+// RelaunchElevated is skipped when --update-updater-to or --update-game is used in order to avoid this.
 ElevationResult RelaunchElevated(const QString& flags)
 {
     if (Settings().testWrite() == QSettings::NoError) {

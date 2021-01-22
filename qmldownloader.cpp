@@ -262,7 +262,7 @@ void QmlDownloader::autoLaunchOrUpdate()
                (!latestUpdaterVersion_.isEmpty() && latestUpdaterVersion_ != QString(GIT_VERSION))) {
         qDebug() << "Updater update to version" << latestUpdaterVersion_ << "required";
         if (!forceUpdaterUpdate_) {
-            switch (Sys::RelaunchElevated("--splashms 1 --updateupdaterto " + latestUpdaterVersion_)) {
+            switch (Sys::RelaunchElevated("--splashms 1 --update-updater-to " + latestUpdaterVersion_)) {
                 case Sys::ElevationResult::UNNEEDED:
                     break;
                 case Sys::ElevationResult::RELAUNCHED:
@@ -290,7 +290,7 @@ void QmlDownloader::autoLaunchOrUpdate()
     } else if (settings_.currentVersion().isEmpty() ||
                (!latestGameVersion_.isEmpty() && settings_.currentVersion() != latestGameVersion_)) {
         qDebug() << "Game update required.";
-        switch (Sys::RelaunchElevated("--splashms 1 --updategame")) {
+        switch (Sys::RelaunchElevated("--splashms 1 --update-game")) {
             case Sys::ElevationResult::UNNEEDED:
                 break;
             case Sys::ElevationResult::RELAUNCHED:
@@ -310,7 +310,7 @@ void QmlDownloader::autoLaunchOrUpdate()
 bool QmlDownloader::relaunchForSettings()
 {
     qDebug() << "Possibly relaunching to open settings window";
-    return Sys::RelaunchElevated("--splashms 1 --updategame") != Sys::ElevationResult::UNNEEDED;
+    return Sys::RelaunchElevated("--splashms 1 --update-game") != Sys::ElevationResult::UNNEEDED;
 }
 
 QmlDownloader::DownloadState QmlDownloader::state() const

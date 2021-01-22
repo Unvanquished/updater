@@ -51,9 +51,9 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
     ariaLogFilenameOption.setValueName("filename");
     QCommandLineOption splashMsOption("splashms");
     splashMsOption.setValueName("duration in milliseconds");
-    QCommandLineOption updateUpdaterOption("updateupdaterto");
+    QCommandLineOption updateUpdaterOption("update-updater-to");
     updateUpdaterOption.setValueName("updater version");
-    QCommandLineOption updateGameOption("updategame");
+    QCommandLineOption updateGameOption("update-game");
     QCommandLineParser optionParser;
     optionParser.addHelpOption();
     optionParser.addVersionOption();
