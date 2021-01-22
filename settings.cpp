@@ -1,4 +1,5 @@
 #include "settings.h"
+#include <QRandomGenerator>
 #include "system.h"
 
 const char kDefaultCommand[] = "%command%";
@@ -42,4 +43,14 @@ void Settings::setCurrentVersion(const QString& currentVersion) {
 void Settings::sync()
 {
     settings_->sync();
+}
+
+// This is a hack to detect whether the program is running as administrator on Windows,
+// by testing whether it can write in HKEY_LOCAL_MACHINE in the registry
+QSettings::Status Settings::testWrite()
+{
+    QString randomData = QString::number(QRandomGenerator::global()->generate64());
+    settings_->setValue(WRITE_PROBE, randomData);
+    sync();
+    return settings_->status();
 }

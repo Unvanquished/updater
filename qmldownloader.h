@@ -44,6 +44,8 @@ public:
     int completedSize() const;
     DownloadState state() const;
     void checkForUpdate();
+    void forceUpdaterUpdate(const QString& version);
+    void forceGameUpdate();
 
     QString ariaLogFilename_;
 
@@ -66,15 +68,17 @@ public slots:
     void onDownloadEvent(int event);
     void onCurrentVersions(QString updater, QString game);
 
-    Q_INVOKABLE void startUpdate();
-    Q_INVOKABLE void toggleDownload();
+    Q_INVOKABLE void toggleDownload(QString installPath);
     Q_INVOKABLE void startGame();
     Q_INVOKABLE void autoLaunchOrUpdate();
+    Q_INVOKABLE bool relaunchForSettings();
 
 private:
     void stopAria();
     void setState(DownloadState state);
     void startDownload(const QUrl& url, const QDir& destination);
+    void startUpdate(const QString& selectedInstallPath);
+    void launchGameIfInstalled();
 
     QThread thread_;
     int downloadSpeed_;
@@ -87,6 +91,8 @@ private:
     DownloadWorker* worker_;
     DownloadTimeCalculator downloadTime_;
     Settings settings_;
+    bool forceUpdaterUpdate_;
+    bool forceGameUpdate_;
     QString latestGameVersion_;
     QString latestUpdaterVersion_;
     DownloadState state_;

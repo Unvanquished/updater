@@ -150,7 +150,7 @@ bool validateInstallPath(const QString&)
     return true;
 }
 
-bool install()
+bool installShortcuts()
 {
     Settings settings;
     QString installPath = settings.installPath();
@@ -169,14 +169,15 @@ bool install()
     // the game globally.
     QString startPath;
     if (!GetStartMenuPath(installPath, &startPath)) {
-        return true;
+        return false;
     }
     QDir dir(startPath);
     dir.mkdir("Unvanquished");
     dir.setPath(dir.path() + "\\Unvanquished");
     QString linkName = "Unvanquished";
-    if (!CreateLink(installPath + "\\daemon.exe", installPath, dir.path() + "\\Unvanquished.lnk", linkName)) {
+    if (!CreateLink(installPath + "\\updater.exe", installPath, dir.path() + "\\Unvanquished.lnk", linkName)) {
         qDebug() << "Creating shortcut failed";
+        return false;
     }
     return true;
 }
@@ -254,10 +255,12 @@ std::string getCertStore()
     return "";  // Not used on Windows.
 }
 
-// Settings are stored in the registry at HKEY_CURRENT_USER\Software\Unvanquished Development\Unvanquished Updater
+// Settings are stored in the registry at (on 64-bit Windows)
+// HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Unvanquished Development\Unvanquished Updater
+// ≤v0.0.5 used HKEY_CURRENT_USER\Software\Unvanquished Development\Unvanquished Updater
 QSettings* makePersistentSettings(QObject* parent)
 {
-    return new QSettings(parent);
+    return new QSettings(QSettings::SystemScope, parent);
 }
 
 QString getGameCommand(const QString& installPath)
@@ -267,9 +270,13 @@ QString getGameCommand(const QString& installPath)
 
 bool startGame(const QString& commandLine)
 {
+    if (Settings().testWrite() == QSettings::AccessError) {
+        qDebug() << "not admin, start game normally";
+        return QProcess::startDetached(commandLine);
+    }
     std::wstring program, args;
     SplitFirstArg(commandLine.toStdWString(), &program, &args);
-    qDebug() << "startGame: program =" << program << "args =" << args;
+    qDebug() << "startGame de-elevated: program =" << program << "args =" << args;
     HRESULT result = ShellExecInExplorerProcess(program.c_str(), args.c_str());
     qDebug() << "startGame HRESULT:" << result;
     // It returns 1 "S_FALSE" (which is considered a success by SUCCEEDED) if the application
@@ -278,6 +285,33 @@ bool startGame(const QString& commandLine)
     // box about the failure, and we don't want to pop two dialogs.
     // Strangely, ShellExecInExplorerProcess blocks until the user closes Explorer's message box in that case.
     return SUCCEEDED(result);
+}
+
+// Care should be taken when using this function to avoid any possibility of an endless restart loop.
+// RelaunchElevated is skipped when --update-updater-to or --update-game is used in order to avoid this.
+ElevationResult RelaunchElevated(const QString& flags)
+{
+    if (Settings().testWrite() == QSettings::NoError) {
+        qDebug() << "Process already has administrator privileges";
+        return ElevationResult::UNNEEDED;
+    }
+    std::wstring updaterPath = QCoreApplication::applicationFilePath().toStdWString();
+    std::wstring parameters = flags.toStdWString();
+    SHELLEXECUTEINFOW info{};
+    info.cbSize = sizeof(info);
+    // "Applications that exit immediately after calling ShellExecuteEx should specify this flag"
+    info.fMask = SEE_MASK_NOASYNC;
+    info.lpVerb = L"runas";
+    info.lpFile = updaterPath.c_str();
+    info.lpParameters = parameters.c_str();
+    info.nShow = SW_SHOW;
+    if (ShellExecuteExW(&info)) {
+        qDebug() << "Successfully relaunched as administrator";
+        return ElevationResult::RELAUNCHED;
+    } else {
+        qDebug() << "Launch as administrator failed. SE_ERR_xxx code" << info.hInstApp;
+        return ElevationResult::FAILED;
+    }
 }
 
 }  // namespace Sys

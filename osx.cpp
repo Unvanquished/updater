@@ -48,7 +48,7 @@ bool validateInstallPath(const QString&)
     return true;
 }
 
-bool install()
+bool installShortcuts()
 {
     QDir applications(QDir::homePath() + "/Applications");
     if (!applications.exists()) {
@@ -179,6 +179,11 @@ bool startGame(const QString& commandLine)
     } else {
         return QProcess::startDetached(commandLine);
     }
+}
+
+ElevationResult RelaunchElevated(const QString& flags)
+{
+    return ElevationResult::UNNEEDED;
 }
 
 }  // namespace Sys

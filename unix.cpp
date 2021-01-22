@@ -92,7 +92,7 @@ bool validateInstallPath(const QString& installPath)
     return !(installPath.endsWith("/base") && getuid() == 0);
 }
 
-bool install()
+bool installShortcuts()
 {
     // Set up menu and protocol handler
     Settings settings;
@@ -135,9 +135,8 @@ bool install()
             return false;
         }
     }
-    QFile::copy(":resources/unvanquished.png",
-                iconDir + "unvanquished.png");
-    return true;
+    QFile::remove(iconDir + "unvanquished.png");
+    return QFile::copy(":resources/unvanquished.png", iconDir + "unvanquished.png");
 }
 
 bool installUpdater(const QString& installPath) {
@@ -256,6 +255,11 @@ bool startGame(const QString& commandLine)
     execvp(argv[0], const_cast<char* const*>(argv.data()));
     qDebug() << "execvp failed: errno =" << errno;
     return false;
+}
+
+ElevationResult RelaunchElevated(const QString& flags)
+{
+    return ElevationResult::UNNEEDED;
 }
 
 }  // namespace Sys
