@@ -61,7 +61,7 @@ RUN autoreconf -i && PKG_CONFIG_PATH=/openssl/lib/pkgconfig ./configure --withou
 COPY . /updater2
 RUN set -e; for D in . quazip fluid; do cd /updater2/$D && git clean -dXff; done
 WORKDIR /build
-RUN /qt/bin/qmake -config release /updater2 && make -j`nproc`
+RUN /qt/bin/qmake -config release QMAKE_LFLAGS+="-no-pie" /updater2 && make -j`nproc`
 RUN mv updater2 updater2-nonstripped
 RUN strip updater2-nonstripped -o updater2
 CMD cp updater2 updater2-nonstripped /build-docker
