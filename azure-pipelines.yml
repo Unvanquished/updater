@@ -1,0 +1,40 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: 'macOS-10.15'
+
+steps:
+- script: 'git submodule update --init'
+  displayName: 'Check out code'
+- script: |
+    set -e
+    sudo xcode-select -s /Applications/Xcode_12.1.1.app/Contents/Developer
+    brew install autoconf automake pkg-config gettext
+    ./mac-build-aria.sh
+  displayName: 'Build aria2'
+- script: |
+    set -e
+    curl -LO https://download.qt.io/archive/qt/5.14/5.14.2/single/qt-everywhere-src-5.14.2.tar.xz
+    tar -xzf qt-everywhere-src-5.14.2.tar.xz
+    cd qt-everywhere-src-5.14.2
+    MODULES=qtbase,qtquickcontrols,qtquickcontrols2,qtsvg,qtgraphicaleffects
+    ./configure -opensource -confirm-license -release -optimize-size -no-shared -no-framework -static --c++std=14 -nomake tests -nomake tools -nomake examples "--prefix=$PWD/../qt"
+    eval make -j`sysctl -n hw.logicalcpu` module-{$MODULES} || eval make -j`sysctl -n hw.logicalcpu` module-{$MODULES} 
+    eval make module-{$MODULES}-install_subtargets
+  displayName: 'Build Qt'
+- script: |
+    set -e
+    mkdir build; cd build
+    ../qt/bin/qmake -config release ..
+    make
+    mv updater2.app 'Unvanquished Updater.app'
+    zip -9 -r UnvUpdaterOSX.zip 'Unvanquished Updater.app'
+  displayName: 'Build updater'
+- publish: $(System.DefaultWorkingDirectory)/build/UnvUpdaterOSX.zip
+  artifact: UpdaterZip
