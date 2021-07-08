@@ -39,7 +39,7 @@ If the code is checked out on a Windows host, you must ensure that the line endi
 ```
 cd aria2
 git config core.autocrlf input
-git rm --cached . && git reset --hard
+git rm -r --cached . && git reset --hard
 ```
 
 The first line below runs the Docker build for Windows. The last 3 lines are to copy the result out of the container.
