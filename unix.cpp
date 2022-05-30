@@ -253,7 +253,7 @@ bool startGame(const QString& commandLine)
     }
     argv.push_back(nullptr);
     execvp(argv[0], const_cast<char* const*>(argv.data()));
-    qDebug() << "execvp failed: errno =" << errno;
+    qDebug() << "execvp failed: " << strerror( errno ) << "errno =" << errno;
     return false;
 }
 
