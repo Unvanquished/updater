@@ -5,6 +5,7 @@
 #include "settings.h"
 #include "system.h"
 #include <QDebug>
+#include <QDir>
 
 DownloadWorker::DownloadWorker(QString ariaLogFilename, QObject *parent) :
     QObject(parent), downloadSpeed(0), uploadSpeed(0),
@@ -27,6 +28,13 @@ void DownloadWorker::addUpdaterUri(const std::string& uri)
 
 void DownloadWorker::addTorrent(const std::string& uri)
 {
+    // Delete the old .zip for the system. aria2c has issues truncating files on the first try.
+    QString archivePath = downloadDir + "/" + Sys::archiveName();
+    if (QFile::exists(archivePath)) {
+        if (!QFile::remove(archivePath)) {
+            qDebug() << "Error deleting old updater. There might be corruption...";
+        }
+    }
     downloader.addUri(uri);
     state = DOWNLOADING_TORRENT;
 }
