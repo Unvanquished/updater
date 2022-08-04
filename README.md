@@ -63,6 +63,7 @@ cd qt-everywhere-src-5.14.2
 MODULES=qtbase,qtquickcontrols,qtquickcontrols2,qtsvg,qtgraphicaleffects
 # Default install location (--prefix): /usr/local/Qt-5.14.2
 ./configure -opensource -confirm-license -release -optimize-size -no-shared -no-framework -static --c++std=14 -nomake tests -nomake tools -nomake examples
+cat <(echo '#include <CoreGraphics/CGColorSpace.h>') qtbase/src/plugins/platforms/cocoa/qiosurfacegraphicsbuffer.h > tmp && mv tmp qtbase/src/plugins/platforms/cocoa/qiosurfacegraphicsbuffer.h
 eval make -j`sysctl -n hw.logicalcpu` module-{$MODULES}
 echo $?  # If nonzero, repeat previous command
 eval sudo make module-{$MODULES}-install_subtargets
@@ -70,7 +71,9 @@ eval sudo make module-{$MODULES}-install_subtargets
 
 ### Build aria2
 ```
-brew install autoconf automake pkg-config gettext
+brew install autoconf automake libtool pkg-config gettext
+# If building on M1, target x86 by running in Rosetta: arch -x86_64 ./mac-build-aria.sh
+# (the --target option to configure doesn't seem to have any effect)
 ./mac-build-aria.sh
 ```
 
