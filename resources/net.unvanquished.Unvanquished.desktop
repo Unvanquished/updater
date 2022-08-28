@@ -6,6 +6,7 @@ Icon=unvanquished
 Terminal=false
 Type=Application
 Exec="%1/updater"
+TryExec="%1/updater"
 Categories=Game;ActionGame;StrategyGame;
 # Probably doesn't work since the updater is initially launched, not daemon
 PrefersNonDefaultGPU=true
