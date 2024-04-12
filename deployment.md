@@ -1,7 +1,7 @@
 ## Network resources used by the updater
 - News REST endpoint which returns links to Wordpress articles on unvanquished.net. The featured image in each news article must be a type which is supported by the updater (see issue #51). Currently PNG and JPEG are known to work.
 - versions.json file on unvanquished.net, used to determine whether update is needed
-- Github releases. These are targeted by download links un unvanquished.net and by the updater's self-update process.
+- Github releases. These are targeted by download links on unvanquished.net and by the updater's self-update process.
 - Torrent URL used to download the latest game version
 
 ## Release process
@@ -22,6 +22,7 @@
         ```
         docker build -t updater2 . --build-arg=release=1
         docker run -v `pwd`/build-docker:/build-docker -u `id -u $USER` updater2
+        ```
     2. Upload `UnvUpdaterLinux.zip` from `build-docker/`.
 
     ### Windows
