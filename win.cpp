@@ -39,12 +39,22 @@
 HRESULT ShellExecInExplorerProcess(PCWSTR pszFile, PCWSTR pszArgs);
 
 namespace {
-void setRegistryKey(const QString& key,
+void setRegistryKey(HKEY root,
+                    const QString& key,
                     const QString& name,
                     const QString& value)
 {
-    QSettings registry(key, QSettings::NativeFormat);
-    registry.setValue(name, value);
+    std::wstring valueW = value.toStdWString();
+    LSTATUS error = RegSetKeyValueW(
+        root,
+        key.toStdWString().c_str(),
+        name.isEmpty() ? nullptr : name.toStdWString().c_str(),
+        REG_SZ,
+        valueW.c_str(),
+        sizeof(wchar_t) * (valueW.size() + 1));
+    if (error != ERROR_SUCCESS) {
+        qDebug() << "Failed to set registry key" << key << "code" << error;
+    }
 }
 
 // Create a Shortcut. Code from https://msdn.microsoft.com/en-us/library/bb776891(VS.85).aspx
@@ -176,9 +186,9 @@ bool installShortcuts()
     // Create unv:// protocol handler
     QString quotedInstallPath = '"' + installPath + '"';
     QString quotedExecutablePath = '"' + installPath + "\\daemon.exe\"";
-    setRegistryKey("HKEY_CLASSES_ROOT\\unv", "Default", "URL: Unvanquished Protocol");
-    setRegistryKey("HKEY_CLASSES_ROOT\\unv", "URL Protocol", "");
-    setRegistryKey("HKEY_CLASSES_ROOT\\unv\\shell\\open\\command", "Default",
+    setRegistryKey(HKEY_CLASSES_ROOT, "unv", "", "URL: Unvanquished Protocol");
+    setRegistryKey(HKEY_CLASSES_ROOT, "unv", "URL Protocol", "");
+    setRegistryKey(HKEY_CLASSES_ROOT, "unv\\shell\\open\\command", "",
                    quotedExecutablePath + " -connect \"%1\"");
 
     // Create a start menu shortcut
