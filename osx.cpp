@@ -186,15 +186,15 @@ QString getGameCommand(const QString& installPath)
            " --args";
 }
 
-bool startGame(const QString& commandLine)
+QString startGame(const QString& commandLine)
 {
     if (commandLine.startsWith("/usr/bin/open ")) {
         // Get the return code of `open` to see whether the app was started successfully
         int ret = QProcess::execute(commandLine);
         qDebug() << "/usr/bin/open returned" << ret;
-        return ret == 0;
+        return ret == 0 ? "" : QString("/usr/bin/open returned %1").arg(ret);
     } else {
-        return QProcess::startDetached(commandLine);
+        return QProcess::startDetached(commandLine) ? "" : "startDetached failed";
     }
 }
 

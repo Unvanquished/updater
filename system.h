@@ -34,7 +34,7 @@ QString updaterArchiveName();
 std::string getCertStore();
 QSettings* makePersistentSettings(QObject* parent);
 QString getGameCommand(const QString& installPath); // Substitution for %command%
-bool startGame(const QString& commandLine);
+QString startGame(const QString& commandLine);
 
 // Windows: relaunch with UAC elevation if necessary
 // Other platforms always return UNNEEDED

@@ -312,11 +312,11 @@ QString getGameCommand(const QString& installPath)
     return QuoteQProcessCommandArgument(installPath + QDir::separator() + "daemon.exe");
 }
 
-bool startGame(const QString& commandLine)
+QString startGame(const QString& commandLine)
 {
     if (!runningAsAdmin()) {
         qDebug() << "not admin, start game normally";
-        return QProcess::startDetached(commandLine);
+        return QProcess::startDetached(commandLine) ? "" : "startDetached failed";
     }
     std::wstring program, args;
     SplitFirstArg(commandLine.toStdWString(), &program, &args);
@@ -328,7 +328,10 @@ bool startGame(const QString& commandLine)
     // good anyway because Explorer creates its own dialog
     // box about the failure, and we don't want to pop two dialogs.
     // Strangely, ShellExecInExplorerProcess blocks until the user closes Explorer's message box in that case.
-    return SUCCEEDED(result);
+    if (SUCCEEDED(result)) {
+        return "";
+    }
+    return QString("error %1 while launching as non-admin").arg(result);
 }
 
 // Care should be taken when using this function to avoid any possibility of an endless restart loop.

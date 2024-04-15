@@ -255,7 +255,7 @@ QString getGameCommand(const QString& installPath)
     return QuoteQProcessCommandArgument(installPath + QDir::separator() + "daemon");
 }
 
-bool startGame(const QString& commandLine)
+QString startGame(const QString& commandLine)
 {
     Settings settings;
     settings.sync(); // since normal shutdown will be skipped
@@ -263,15 +263,17 @@ bool startGame(const QString& commandLine)
     for (const QString& arg : splitArgs(commandLine)) {
         args.push_back(arg.toStdString());
     }
-    if (args.empty()) return false;
+    if (args.empty()) return "missing command line";
     std::vector<const char*> argv;
     for (const std::string& arg : args) {
         argv.push_back(arg.c_str());
     }
     argv.push_back(nullptr);
     execvp(argv[0], const_cast<char* const*>(argv.data()));
-    qDebug() << "execvp failed: " << strerror( errno ) << "errno =" << errno;
-    return false;
+
+    QString msg = QString("error %1 (%2)").arg(errno).arg(strerror(errno));
+    qDebug() << "execvp failed:" << msg;
+    return msg;
 }
 
 ElevationResult RelaunchElevated(const QString& flags)
