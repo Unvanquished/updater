@@ -34,6 +34,7 @@
 #include <QDebug>
 #include <QCoreApplication>
 #include <QProcess>
+#include <QMessageBox>
 
 // ExecInExplorer.cpp
 HRESULT ShellExecInExplorerProcess(PCWSTR pszFile, PCWSTR pszArgs);
@@ -55,6 +56,22 @@ void setRegistryKey(HKEY root,
     if (error != ERROR_SUCCESS) {
         qDebug() << "Failed to set registry key" << key << "code" << error;
     }
+}
+
+bool runningAsAdmin() {
+    switch (Settings().testWrite()) {
+    case QSettings::NoError:
+        return true;
+    case QSettings::AccessError:
+        return false;
+    case QSettings::FormatError:
+        break;
+    }
+
+    QMessageBox errorMessageBox;
+    errorMessageBox.setText("Windows registry not working");
+    errorMessageBox.exec();
+    exit(1);
 }
 
 // Create a Shortcut. Code from https://msdn.microsoft.com/en-us/library/bb776891(VS.85).aspx
@@ -297,7 +314,7 @@ QString getGameCommand(const QString& installPath)
 
 bool startGame(const QString& commandLine)
 {
-    if (Settings().testWrite() == QSettings::AccessError) {
+    if (!runningAsAdmin()) {
         qDebug() << "not admin, start game normally";
         return QProcess::startDetached(commandLine);
     }
@@ -318,7 +335,7 @@ bool startGame(const QString& commandLine)
 // RelaunchElevated is skipped when --update-updater-to or --update-game is used in order to avoid this.
 ElevationResult RelaunchElevated(const QString& flags)
 {
-    if (Settings().testWrite() == QSettings::NoError) {
+    if (runningAsAdmin()) {
         qDebug() << "Process already has administrator privileges";
         return ElevationResult::UNNEEDED;
     }
