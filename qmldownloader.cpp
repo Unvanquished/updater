@@ -195,12 +195,13 @@ void QmlDownloader::startGame()
     }
     commandLine.replace(COMMAND_REGEX, Sys::getGameCommand(settings_.installPath()));
     qDebug() << "Starting game with command line:" << commandLine;
-    if (Sys::startGame(commandLine)) {
+    QString error = Sys::startGame(commandLine);
+    if (error.isEmpty()) {
         qDebug() << "Game started successfully";
     } else {
-        qDebug() << "Failed to start Unvanquished process.";
+        qDebug() << "Failed to start Unvanquished process:" << error;
         QMessageBox errorMessageBox;
-        errorMessageBox.setText("Failed to start Unvanquished process.");
+        errorMessageBox.setText("Failed to start Unvanquished process: " + error);
         errorMessageBox.exec();
     }
 }
