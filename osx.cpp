@@ -186,7 +186,7 @@ QString getGameCommand(const QString& installPath)
            " --args";
 }
 
-QString startGame(const QString& commandLine)
+QString startGame(const QString& commandLine, bool)
 {
     if (commandLine.startsWith("/usr/bin/open ")) {
         // Get the return code of `open` to see whether the app was started successfully

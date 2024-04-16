@@ -255,7 +255,7 @@ QString getGameCommand(const QString& installPath)
     return QuoteQProcessCommandArgument(installPath + QDir::separator() + "daemon");
 }
 
-QString startGame(const QString& commandLine)
+QString startGame(const QString& commandLine, bool)
 {
     Settings settings;
     settings.sync(); // since normal shutdown will be skipped

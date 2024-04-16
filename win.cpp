@@ -40,6 +40,30 @@
 HRESULT ShellExecInExplorerProcess(PCWSTR pszFile, PCWSTR pszArgs);
 
 namespace {
+
+// Returns true if it is a nonempty string (REG_SZ)
+bool registryKeyExists(HKEY root,
+                       const QString& key,
+                       const QString& name)
+{
+    DWORD sizeInBytes = 999999;
+    LSTATUS error = RegGetValueW(
+        root,
+        key.toStdWString().c_str(),
+        name.toStdWString().c_str(),
+        RRF_RT_REG_SZ,
+        nullptr, //(out) variant type
+        nullptr, //output buffer
+        &sizeInBytes);
+    if (error != ERROR_SUCCESS) {
+        if (error != ERROR_FILE_NOT_FOUND) {
+            qDebug() << "Failed to check registry key" << key << "code" << error;
+        }
+        return false;
+    }
+    return sizeInBytes > sizeof(wchar_t);
+}
+
 void setRegistryKey(HKEY root,
                     const QString& key,
                     const QString& name,
@@ -126,23 +150,6 @@ bool GetStartMenuPath(const QString& installPath, QString* startPath) {
     }
     CoTaskMemFree(path);
     return SUCCEEDED(ret);
-}
-
-void SplitFirstArg(const std::wstring& commandLine, std::wstring* program, std::wstring* args)
-{
-    bool quoting = false;
-    for (int i = 0; i < commandLine.size(); i++) {
-        wchar_t c = commandLine.at(i);
-        if (c == L'"') {
-            quoting = !quoting;
-        } else if (!quoting && (c == L' ' || c == L'\t')) {
-            *program = commandLine.substr(0, i);
-            *args = commandLine.substr(i + 1);
-            return;
-        }
-    }
-    *program = commandLine;
-    *args = L"";
 }
 
 }  // namespace
@@ -312,17 +319,41 @@ QString getGameCommand(const QString& installPath)
     return QuoteQProcessCommandArgument(installPath + QDir::separator() + "daemon.exe");
 }
 
-QString startGame(const QString& commandLine)
+// Equivalent to selecting "High performance" for the program in "Graphics settings"
+// This must be run while non-elevated because the admin user may be a different user
+static void setGraphicsPreference()
+{
+    const QString key = "Software\\Microsoft\\DirectX\\UserGpuPreferences";
+    const QString path = Settings().installPath() + QDir::separator() + "daemon.exe";
+
+    if (registryKeyExists(HKEY_CURRENT_USER, key, path)) {
+        qDebug() << "graphics registry setting already exists";
+        return;
+    }
+
+    qDebug() << "writing graphics preference to registry";
+    setRegistryKey(HKEY_CURRENT_USER, key, path, "GpuPreference=2;");
+}
+
+QString startGame(const QString& commandLine, bool failIfWindowsAdmin)
 {
     if (!runningAsAdmin()) {
         qDebug() << "not admin, start game normally";
+        setGraphicsPreference();
         return QProcess::startDetached(commandLine) ? "" : "startDetached failed";
     }
-    std::wstring program, args;
-    SplitFirstArg(commandLine.toStdWString(), &program, &args);
-    qDebug() << "startGame de-elevated: program =" << program << "args =" << args;
+
+    if (failIfWindowsAdmin) {
+        // De-elevation already failed. Bail out to make sure a restart loop is never possible
+        return "Please launch Unvanquished from a non-administrator context.";
+    }
+
+    // Relaunch the updater without elevation so that the graphics preference can be set.
+    std::wstring program = QCoreApplication::applicationFilePath().toStdWString();
+    std::wstring args = L"--playnow";
+    qDebug() << "restarting de-elevated: program =" << program << "args =" << args;
     HRESULT result = ShellExecInExplorerProcess(program.c_str(), args.c_str());
-    qDebug() << "startGame HRESULT:" << result;
+    qDebug() << "HRESULT:" << result;
     // It returns 1 "S_FALSE" (which is considered a success by SUCCEEDED) if the application
     // failed to start because it was given a nonexistent path. But returning success here seems
     // good anyway because Explorer creates its own dialog
@@ -331,7 +362,7 @@ QString startGame(const QString& commandLine)
     if (SUCCEEDED(result)) {
         return "";
     }
-    return QString("error %1 while launching as non-admin").arg(result);
+    return QString("error %1 while relaunching updater as non-admin").arg(result);
 }
 
 // Care should be taken when using this function to avoid any possibility of an endless restart loop.

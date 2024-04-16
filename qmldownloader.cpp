@@ -189,13 +189,18 @@ void QmlDownloader::startUpdate(const QString& selectedInstallPath)
 
 void QmlDownloader::startGame()
 {
-    QString commandLine = settings_.commandLine().trimmed();
+    StartGame(settings_, false);
+}
+
+void StartGame(const Settings& settings, bool failIfWindowsAdmin)
+{
+    QString commandLine = settings.commandLine().trimmed();
     if (!commandLine.contains(COMMAND_REGEX)) {
         commandLine = "%command% " + commandLine;
     }
-    commandLine.replace(COMMAND_REGEX, Sys::getGameCommand(settings_.installPath()));
+    commandLine.replace(COMMAND_REGEX, Sys::getGameCommand(settings.installPath()));
     qDebug() << "Starting game with command line:" << commandLine;
-    QString error = Sys::startGame(commandLine);
+    QString error = Sys::startGame(commandLine, failIfWindowsAdmin);
     if (error.isEmpty()) {
         qDebug() << "Game started successfully";
     } else {
