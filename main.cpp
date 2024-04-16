@@ -59,6 +59,7 @@ struct CommandLineOptions {
     int splashMilliseconds = 3000;
     QString updateUpdaterVersion;
     bool updateGame;
+    bool playNow;
 };
 
 CommandLineOptions getCommandLineOptions(const QApplication& app) {
@@ -71,6 +72,7 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
     QCommandLineOption updateUpdaterOption("update-updater-to");
     updateUpdaterOption.setValueName("updater version");
     QCommandLineOption updateGameOption("update-game");
+    QCommandLineOption playNowOption("playnow");
     QCommandLineParser optionParser;
     optionParser.addHelpOption();
     optionParser.addVersionOption();
@@ -79,6 +81,7 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
     optionParser.addOption(splashMsOption);
     optionParser.addOption(updateUpdaterOption);
     optionParser.addOption(updateGameOption);
+    optionParser.addOption(playNowOption);
     optionParser.process(app);
     CommandLineOptions options;
     options.logFilename = optionParser.value(logFileNameOption);
@@ -89,6 +92,7 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
     }
     options.updateUpdaterVersion = optionParser.value(updateUpdaterOption);
     options.updateGame = optionParser.isSet(updateGameOption);
+    options.playNow = optionParser.isSet(playNowOption);
     return options;
 }
 
@@ -123,6 +127,12 @@ int main(int argc, char *argv[])
     }
 
     app.setWindowIcon(QIcon(":resources/updater.png"));
+
+    if (options.playNow) { // This is only used on Windows
+        StartGame(Settings(), true);
+        return 0;
+    }
+
     int fontId = QFontDatabase::addApplicationFont(":resources/Roboto-Regular.ttf");
     if (fontId == -1) {
         qDebug() << "Failed to register Roboto font";

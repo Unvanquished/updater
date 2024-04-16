@@ -33,6 +33,8 @@
 #include "downloadtimecalculator.h"
 #include "settings.h"
 
+void StartGame(const Settings& settings, bool failIfWindowsAdmin);
+
 class QmlDownloader : public QObject
 {
     Q_OBJECT
