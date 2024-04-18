@@ -6,4 +6,4 @@
 	url = https://github.com/aria2/aria2.git
 [submodule "quazip"]
 	path = quazip
-	url = https://github.com/mnafees/quazip.git
+	url = https://github.com/stachenov/quazip.git
