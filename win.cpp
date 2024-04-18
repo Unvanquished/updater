@@ -156,25 +156,11 @@ bool GetStartMenuPath(const QString& installPath, QString* startPath) {
 namespace Sys {
 bool IsWow64()
 {
-    BOOL bIsWow64 = FALSE;
-
-    typedef BOOL (APIENTRY *LPFN_ISWOW64PROCESS)
-    (HANDLE, PBOOL);
-
-    LPFN_ISWOW64PROCESS fnIsWow64Process;
-
-    HMODULE module = GetModuleHandle(L"kernel32");
-    const char funcName[] = "IsWow64Process";
-    fnIsWow64Process = (LPFN_ISWOW64PROCESS)
-    GetProcAddress(module, funcName);
-
-    if(NULL != fnIsWow64Process)
-    {
-        if (!fnIsWow64Process(GetCurrentProcess(),
-            &bIsWow64))
-            return false;
+    BOOL b;
+    if (!IsWow64Process(GetCurrentProcess(), &b)) {
+        qDebug() << "IsWow64Process broken";
     }
-    return bIsWow64 != FALSE;
+    return b;
 }
 
 QString archiveName()
