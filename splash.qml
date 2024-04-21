@@ -109,6 +109,7 @@ ApplicationWindow {
 
         onClicked: {
             timer.stop();
+            settingsAction.enabled = false;
             if (downloader.relaunchForSettings()) {
                 splash.close();
             } else {
