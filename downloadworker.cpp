@@ -27,7 +27,7 @@
 DownloadWorker::DownloadWorker(QString ariaLogFilename, QObject *parent) :
     QObject(parent), downloadSpeed(0), uploadSpeed(0),
     totalSize(0), completedSize(0), paused(true), state(IDLE), running(false),
-    renameRegex(".*unvanquished_([0-9\\.]+/)"), downloader(ariaLogFilename.toStdString())
+    renameRegex(".*unvanquished_([0-9.]+)/"), downloader(ariaLogFilename.toStdString())
 {
     downloader.registerCallback(this);
 }
@@ -126,7 +126,19 @@ void DownloadWorker::setDownloadPathAndFiles(aria2::Session* session, aria2::A2G
 std::string DownloadWorker::getAriaIndexOut(size_t index, std::string path)
 {
     QString oldPath(path.c_str());
-    oldPath.replace(renameRegex, "");
+    QRegularExpressionMatch match = renameRegex.match(oldPath);
+    if (!match.hasMatch()) {
+        qDebug() << "Path in download does not have expected format:" << oldPath;
+    } else {
+        QString version = match.captured(1);
+        if (unvanquishedVersion.isEmpty()) {
+            qDebug() << "Detected Unvanquished version from download:" << version;
+            unvanquishedVersion = version;
+        } else if (unvanquishedVersion != version) {
+            qDebug() << "Different versions detected from download paths" << unvanquishedVersion << "and" << version;
+        }
+        oldPath.remove(0, match.capturedLength(0)); // delete the matching prefix
+    }
     return std::to_string(index) + "=" + oldPath.toStdString();
 }
 
@@ -186,12 +198,22 @@ void DownloadWorker::stop()
 bool DownloadWorker::extractUpdate()
 {
     qDebug() << "Clearing installed version prior to extraction";
-    Settings().setCurrentVersion("");
+    Settings settings;
+    settings.setCurrentVersion("");
     QString filename = Sys::archiveName();
     auto out = JlCompress::extractDir(downloadDir + "/" + filename, downloadDir);
     if (out.size() < 1) {
         emit onDownloadEvent(ERROR_EXTRACTING);
         return false;
     }
+
+    // Game should be playable at this point - set the installed version
+    if (unvanquishedVersion.isEmpty()) {
+        qDebug() << "Failed to determine version of downloaded game!";
+    } else {
+        qDebug() << "Setting installed version to" << unvanquishedVersion;
+        settings.setCurrentVersion(unvanquishedVersion);
+    }
+
     return true;
 }

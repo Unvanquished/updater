@@ -92,13 +92,6 @@ void QmlDownloader::onDownloadEvent(int event)
     switch (event) {
         case aria2::EVENT_ON_BT_DOWNLOAD_COMPLETE:
             if (state() != COMPLETED) {
-                // The game should be playable at this point - set the installed version
-                if (latestGameVersion_.isEmpty()) {
-                    latestGameVersion_ = "unknown";
-                }
-                qDebug() << "Setting installed version to" << latestGameVersion_;
-                settings_.setCurrentVersion(latestGameVersion_);
-
                 qDebug() << "installUpdater in" << settings_.installPath();
                 if (!Sys::installUpdater(settings_.installPath())) {
                     emit fatalMessage("Error installing launcher");

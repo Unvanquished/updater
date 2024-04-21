@@ -74,6 +74,7 @@ private:
     QRegularExpression renameRegex;
     AriaDownloader downloader;
     QString downloadDir;
+    QString unvanquishedVersion; // determined from path names in the download
 };
 
 #endif // DOWNLOADWORKER_H
