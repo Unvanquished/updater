@@ -148,6 +148,7 @@ Flickable {
 
                     width: parent.width
                     text: item.cardTitle
+                    textFormat: Text.RichText
 
                     wrapMode: Text.WordWrap
                     clip: true
