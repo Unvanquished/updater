@@ -276,7 +276,7 @@ QString startGame(const QString& commandLine, bool)
     return msg;
 }
 
-ElevationResult RelaunchElevated(const QString& flags)
+ElevationResult RelaunchElevated(const QString&)
 {
     return ElevationResult::UNNEEDED;
 }
