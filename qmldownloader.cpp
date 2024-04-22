@@ -310,6 +310,7 @@ void QmlDownloader::autoLaunchOrUpdate()
         connect(worker_, SIGNAL(completedSizeChanged(int)), this, SLOT(setCompletedSize(int)));
         connect(&thread_, SIGNAL(started()), worker_, SLOT(download()));
         thread_.start();
+        emit updaterUpdate();
     } else if (settings_.currentVersion().isEmpty() ||
                (!latestGameVersion_.isEmpty() && settings_.currentVersion() != latestGameVersion_)) {
         qDebug() << "Game update required.";
