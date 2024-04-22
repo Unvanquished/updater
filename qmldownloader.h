@@ -78,6 +78,7 @@ signals:
     void fatalMessage(QString message);
     void updateNeeded(bool updateNeeded);
     void stateChanged(DownloadState state);
+    void updaterUpdate();
 
 public slots:
     void setDownloadSpeed(int speed);

@@ -50,12 +50,32 @@ ApplicationWindow {
         target: downloader
         ignoreUnknownSignals: true
 
-        onUpdateNeeded: {
+        onUpdateNeeded: {  // game update only
             if (updateNeeded) {
                 showUpdater()
             } else {
                 splash.close();
                 downloader.startGame();
+            }
+        }
+
+        onUpdaterUpdate: {
+            updaterUpdateLabel.visible = true;
+
+            // Now allow the window to go behind other windows in the z-order.
+            if (Qt.platform.os === "windows") {
+                // On Windows, additionally change the flags so that the app has an icon
+                // in the task bar (but remains borderless). The hide/show is needed to make the
+                // task bar icon appear.
+                splash.flags = Qt.Window | Qt.FramelessWindowHint;
+                splash.hide();
+                splash.show();
+            } else {
+                // Don't set the same window flags as on Windows because it makes the splash screen
+                // change position on GNOME.
+                // On Mac, WindowStaysOnTopHint doesn't even do anything and there is always
+                // a taskbar icon.
+                splash.flags &= ~Qt.WindowStaysOnTopHint;
             }
         }
 
@@ -74,9 +94,10 @@ ApplicationWindow {
     }
 
     FluidControls.BodyLabel {
+        id: updaterUpdateLabel
         Material.theme: Material.Dark
         text: "Updating launcher..."
-        visible: downloader.totalSize > 0
+        visible: false
         anchors.bottom: updaterUpdateProgress.top
         anchors.left: parent.left
         anchors.margins: { left: 20 }
