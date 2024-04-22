@@ -59,6 +59,7 @@ Item {
                 padding: 16
             }
             TextField {
+                Layout.preferredWidth: 0.28 * settingsItem.width
                 text: updaterSettings.commandLine
                 onEditingFinished: updaterSettings.commandLine = this.text
             }
