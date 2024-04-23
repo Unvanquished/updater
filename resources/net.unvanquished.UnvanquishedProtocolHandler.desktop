@@ -5,7 +5,7 @@ NoDisplay=true
 Terminal=false
 Type=Application
 Exec="%1/daemon" -connect %u
-TryExec="%1/daemon"
+TryExec=%1/daemon
 MimeType=x-scheme-handler/unv
 # Unclear if this will work when Breakpad is enabled
 PrefersNonDefaultGPU=true
