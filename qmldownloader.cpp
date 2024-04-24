@@ -182,16 +182,23 @@ void QmlDownloader::startUpdate(const QString& selectedInstallPath)
 
 void QmlDownloader::startGame()
 {
-    StartGame(settings_, false);
+    StartGame(settings_, connectUrl_, false);
 }
 
-void StartGame(const Settings& settings, bool failIfWindowsAdmin)
+void StartGame(const Settings& settings, const QString& connectUrl, bool failIfWindowsAdmin)
 {
-    QString commandLine = settings.commandLine().trimmed();
-    if (!commandLine.contains(COMMAND_REGEX)) {
-        commandLine = "%command% " + commandLine;
+    QString gameCommand = Sys::getGameCommand(settings.installPath());
+    QString commandLine;
+    if (!connectUrl.isEmpty()) {
+        // Behave for now as the old protocol handler which ignores the custom command
+        commandLine = gameCommand + " -connect " + connectUrl;
+    } else {
+        commandLine = settings.commandLine().trimmed();
+        if (!commandLine.contains(COMMAND_REGEX)) {
+            commandLine = "%command% " + commandLine;
+        }
+        commandLine.replace(COMMAND_REGEX, gameCommand);
     }
-    commandLine.replace(COMMAND_REGEX, Sys::getGameCommand(settings.installPath()));
     qDebug() << "Starting game with command line:" << commandLine;
     QString error = Sys::startGame(commandLine, failIfWindowsAdmin);
     if (error.isEmpty()) {
@@ -268,12 +275,16 @@ void QmlDownloader::launchGameIfInstalled()
 // This runs after the splash screen has been displayed for the programmed amount of time (and the
 // user did not click the settings button). If the CurrentVersionFetcher didn't emit anything yet,
 // proceed as if the request for versions.json failed.
+// TODO: make a new SplashController object to handle all this logic of deciding where to go
+// from the splash screen.
 void QmlDownloader::autoLaunchOrUpdate()
 {
     qDebug() << "Previously-installed game version:" << settings_.currentVersion();
     if (forceGameUpdate_) {
         qDebug() << "Game update menu requested";
         emit updateNeeded(true);
+        // Forget about the URL if we go into the install menu
+        connectUrl_.clear();
     } else if (forceUpdaterUpdate_ ||
                (!latestUpdaterVersion_.isEmpty() && latestUpdaterVersion_ != QString(GIT_VERSION))) {
         qDebug() << "Updater update to version" << latestUpdaterVersion_ << "required";
@@ -307,6 +318,7 @@ void QmlDownloader::autoLaunchOrUpdate()
     } else if (settings_.currentVersion().isEmpty() ||
                (!latestGameVersion_.isEmpty() && settings_.currentVersion() != latestGameVersion_)) {
         qDebug() << "Game update required.";
+        connectUrl_.clear();
         switch (Sys::RelaunchElevated("--splashms 1 --update-game")) {
             case Sys::ElevationResult::UNNEEDED:
                 break;
