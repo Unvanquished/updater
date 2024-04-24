@@ -33,7 +33,7 @@
 #include "downloadtimecalculator.h"
 #include "settings.h"
 
-void StartGame(const Settings& settings, bool failIfWindowsAdmin);
+void StartGame(const Settings& settings, const QString& connectUrl, bool failIfWindowsAdmin);
 
 class QmlDownloader : public QObject
 {
@@ -67,6 +67,7 @@ public:
     void forceGameUpdate();
 
     QString ariaLogFilename_;
+    QString connectUrl_;
 
 signals:
     void downloadSpeedChanged(int downloadSpeed);

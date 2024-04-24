@@ -24,6 +24,8 @@
 #include <QFontDatabase>
 #include <QQmlContext>
 #include <QDebug>
+#include <QMessageBox>
+#include <QRegularExpression>
 
 #include "iconsimageprovider.h"
 #include "iconthemeimageprovider.h"
@@ -60,7 +62,54 @@ struct CommandLineOptions {
     QString updateUpdaterVersion;
     bool updateGame;
     bool playNow;
+    QString connectUrl;
 };
+
+static void argParseError(const QString& message)
+{
+    QMessageBox::critical(nullptr, "Unvanquished Updater", message);
+    exit(1);
+}
+
+QString getURLFromPositionalOptions(const QCommandLineParser& parser)
+{
+    QStringList args = parser.positionalArguments();
+    if (args.empty()) {
+        return "";
+    } else if (args.size() > 1) {
+        argParseError("Too many command line arguments.");
+    }
+
+    QString url = args[0];
+    QRegularExpression scheme("^[a-zA-Z][-+.a-zA-Z]*://");
+    url.replace(scheme, ""); // Strip scheme
+
+    int passwordEnd = url.indexOf('@') + 1; // relies on -1 => not found
+    if (passwordEnd >= url.size()) {
+        argParseError("URL argument is empty");
+    }
+
+    // Square brackets are shell globbing metacharacters but may be used in IPv6 addresses.
+    // Take advantage of a Daemon parsing quirk that it will still be understood without the
+    // leading '['.
+    if (url[passwordEnd] == '[') {
+        url.remove(passwordEnd, 1);
+    }
+
+    // When connect URL + custom command are supported together, we have to consider the pessimistic case
+    // of a custom command line like   bash -c "%command%"
+    // so metacharacters from any common shells must be forbidden.
+    // What we need to accept are domain names and IP addresses.
+    // Also throw in '@' for limited support of the password feature (unv://hunter2@1.2.3.4)
+    QRegularExpression forbiddenChar(R"regex([^a-zA-Z0-9./\-\]_:@])regex");
+    int forbiddenIndex = url.indexOf(forbiddenChar);
+    if (forbiddenIndex >= 0) {
+        argParseError("URL \"" + args[0] + "\" contains forbidden character '"
+                      + url[forbiddenIndex] + "'");
+    }
+
+    return "unv://" + url;
+}
 
 CommandLineOptions getCommandLineOptions(const QApplication& app) {
     QCommandLineOption logFileNameOption("logfile");
@@ -82,8 +131,10 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
     optionParser.addOption(updateUpdaterOption);
     optionParser.addOption(updateGameOption);
     optionParser.addOption(playNowOption);
+    optionParser.addPositionalArgument("URL", "address of Unvanquished server to connect to", "[URL]");
     optionParser.process(app);
     CommandLineOptions options;
+    options.connectUrl = getURLFromPositionalOptions(optionParser);
     options.logFilename = optionParser.value(logFileNameOption);
     options.ariaLogFilename = optionParser.value(ariaLogFilenameOption);
     int splashMs = optionParser.value(splashMsOption).toInt();
@@ -117,6 +168,10 @@ int main(int argc, char *argv[])
         }
     }
 
+    if (!options.connectUrl.isEmpty()) {
+        qDebug() << "Will connect to URL:" << options.connectUrl;
+    }
+
     qDebug() << "Git version:" << GIT_VERSION;
     LogSettings();
     try {
@@ -129,7 +184,7 @@ int main(int argc, char *argv[])
     app.setWindowIcon(QIcon(":resources/updater.png"));
 
     if (options.playNow) { // This is only used on Windows
-        StartGame(Settings(), true);
+        StartGame(Settings(), options.connectUrl, true);
         return 0;
     }
 
@@ -144,6 +199,7 @@ int main(int argc, char *argv[])
     Settings settings;
     QmlDownloader downloader;
     downloader.ariaLogFilename_ = options.ariaLogFilename;
+    downloader.connectUrl_ = options.connectUrl;
     if (!options.updateUpdaterVersion.isEmpty()) {
         downloader.forceUpdaterUpdate(options.updateUpdaterVersion);
         // Don't request versions.json because it would clobber the verson
