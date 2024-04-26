@@ -194,12 +194,11 @@ bool installShortcuts()
     qDebug() << "Install path:" << installPath;
 
     // Create unv:// protocol handler
-    QString quotedInstallPath = '"' + installPath + '"';
-    QString quotedExecutablePath = '"' + installPath + "\\daemon.exe\"";
+    QString quotedExecutablePath = '"' + installPath + "\\updater.exe\"";
     setRegistryKey(HKEY_CLASSES_ROOT, "unv", "", "URL: Unvanquished Protocol");
     setRegistryKey(HKEY_CLASSES_ROOT, "unv", "URL Protocol", "");
     setRegistryKey(HKEY_CLASSES_ROOT, "unv\\shell\\open\\command", "",
-                   quotedExecutablePath + " -connect \"%1\"");
+                   quotedExecutablePath + " -- \"%1\"");
 
     // Create a start menu shortcut
     // By default, install it to the users's start menu, unless they are installing

@@ -115,26 +115,23 @@ bool installShortcuts()
     Settings settings;
     QString desktopDir = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation);
     QFile::remove(desktopDir + "/unvanquished.desktop"); // updater v0.0.5 and before
-    for (QString desktopFileName :
-         {QString("net.unvanquished.Unvanquished.desktop"),
-          QString("net.unvanquished.UnvanquishedProtocolHandler.desktop")}) {
-        QFile desktopFile(":resources/" + desktopFileName);
-        if (!desktopFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-            qDebug() << "missing resource" << desktopFileName;
-            return false;
-        }
-        QString desktopStr = QString(desktopFile.readAll().data())
-            .arg(settings.installPath());
-        QFile outputFile(desktopDir + "/" + desktopFileName);
-        if (!outputFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
-            qDebug() << "error opening" << desktopFileName;
-            return false;
-        }
-        if (outputFile.write(desktopStr.toUtf8().constData(), desktopStr.size())
-            != desktopStr.size()) {
-            qDebug() << "error writing" << desktopFileName;
-            return false;
-        }
+    QFile::remove(desktopDir + "/net.unvanquished.UnvanquishedProtocolHandler.desktop"); // up to v0.2.0
+
+    QString desktopFileName = "net.unvanquished.Unvanquished.desktop";
+    QFile desktopFile(":resources/" + desktopFileName);
+    if (!desktopFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qDebug() << "missing resource" << desktopFileName;
+        return false;
+    }
+    QString desktopStr = QString(desktopFile.readAll().data()).arg(settings.installPath());
+    QFile outputFile(desktopDir + "/" + desktopFileName);
+    if (!outputFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+        qDebug() << "error opening" << desktopFileName;
+        return false;
+    }
+    if (outputFile.write(desktopStr.toUtf8().constData(), desktopStr.size()) != desktopStr.size()) {
+        qDebug() << "error writing" << desktopFileName;
+        return false;
     }
     int ret = QProcess::execute("xdg-mime",
                                 {QString("default"),
