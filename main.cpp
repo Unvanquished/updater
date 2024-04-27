@@ -60,8 +60,8 @@ struct CommandLineOptions {
     QString ariaLogFilename;
     int splashMilliseconds = 3000;
     QString updateUpdaterVersion;
-    bool updateGame;
-    bool playNow;
+    bool updateGame = false;
+    bool playNow = false;
     QString connectUrl;
 };
 
@@ -118,19 +118,15 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
     ariaLogFilenameOption.setValueName("filename");
     QCommandLineOption splashMsOption("splashms");
     splashMsOption.setValueName("duration in milliseconds");
-    QCommandLineOption updateUpdaterOption("update-updater-to");
-    updateUpdaterOption.setValueName("updater version");
-    QCommandLineOption updateGameOption("update-game");
-    QCommandLineOption playNowOption("playnow");
+    QCommandLineOption internalCommandOption("internalcommand");
+    internalCommandOption.setValueName("command");
     QCommandLineParser optionParser;
     optionParser.addHelpOption();
     optionParser.addVersionOption();
     optionParser.addOption(logFileNameOption);
     optionParser.addOption(ariaLogFilenameOption);
     optionParser.addOption(splashMsOption);
-    optionParser.addOption(updateUpdaterOption);
-    optionParser.addOption(updateGameOption);
-    optionParser.addOption(playNowOption);
+    optionParser.addOption(internalCommandOption);
     optionParser.addPositionalArgument("URL", "address of Unvanquished server to connect to", "[URL]");
     optionParser.process(app);
     CommandLineOptions options;
@@ -141,9 +137,18 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
     if (splashMs > 0) {
         options.splashMilliseconds = splashMs;
     }
-    options.updateUpdaterVersion = optionParser.value(updateUpdaterOption);
-    options.updateGame = optionParser.isSet(updateGameOption);
-    options.playNow = optionParser.isSet(playNowOption);
+    if (optionParser.isSet(internalCommandOption)) {
+        QString command = optionParser.value(internalCommandOption);
+        if (command == "playnow") {
+            options.playNow = true;
+        } else if (command == "updategame") {
+            options.updateGame = true;
+        } else if (command.startsWith("updateupdater:")) {
+            options.updateUpdaterVersion = command.section(':', 1);
+        } else {
+            argParseError("Invalid --internalcommand option: " + command);
+        }
+    }
     return options;
 }
 

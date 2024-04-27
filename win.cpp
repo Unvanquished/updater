@@ -339,7 +339,7 @@ QString startGame(const QString& commandLine, bool failIfWindowsAdmin)
 
     // Relaunch the updater without elevation so that the graphics preference can be set.
     std::wstring program = QCoreApplication::applicationFilePath().toStdWString();
-    std::wstring args = L"--playnow";
+    std::wstring args = L"--internalcommand playnow";
     qDebug() << "restarting de-elevated: program =" << program << "args =" << args;
     HRESULT result = ShellExecInExplorerProcess(program.c_str(), args.c_str());
     qDebug() << "HRESULT:" << result;
@@ -355,7 +355,8 @@ QString startGame(const QString& commandLine, bool failIfWindowsAdmin)
 }
 
 // Care should be taken when using this function to avoid any possibility of an endless restart loop.
-// RelaunchElevated is skipped when --update-updater-to or --update-game is used in order to avoid this.
+// RelaunchElevated is skipped when internal commands updateupdater or updategame are used in
+// order to avoid this.
 ElevationResult RelaunchElevated(const QString& flags)
 {
     if (runningAsAdmin()) {
