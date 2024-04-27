@@ -185,17 +185,30 @@ void QmlDownloader::startGame()
     StartGame(settings_, connectUrl_, false);
 }
 
+// Does our version of daemon have -connect-trusted?
+static bool haveConnectTrusted(const QString& gameVersion)
+{
+    // Updater version up to v0.2.0 may set "unknown" as game version if versions.json request fails
+    if (gameVersion == "unknown")
+        return false;
+    // Hacky string comparision, assume we won't go down to 0.9 or up to 0.100 :)
+    return gameVersion > "0.54.1";
+}
+
 void StartGame(const Settings& settings, const QString& connectUrl, bool failIfWindowsAdmin)
 {
     QString gameCommand = Sys::getGameCommand(settings.installPath());
     QString commandLine;
-    if (!connectUrl.isEmpty()) {
+    if (!connectUrl.isEmpty() && !haveConnectTrusted(settings.currentVersion())) {
         // Behave for now as the old protocol handler which ignores the custom command
         commandLine = gameCommand + " -connect " + connectUrl;
     } else {
         commandLine = settings.commandLine().trimmed();
         if (!commandLine.contains(COMMAND_REGEX)) {
             commandLine = "%command% " + commandLine;
+        }
+        if (!connectUrl.isEmpty()) {
+            gameCommand = gameCommand + " -connect-trusted " + connectUrl;
         }
         commandLine.replace(COMMAND_REGEX, gameCommand);
     }
