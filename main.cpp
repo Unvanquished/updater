@@ -96,8 +96,8 @@ QString getURLFromPositionalOptions(const QCommandLineParser& parser)
         url.remove(passwordEnd, 1);
     }
 
-    // When connect URL + custom command are supported together, we have to consider the pessimistic case
-    // of a custom command line like   bash -c "%command%"
+    // If a custom command is used, we have to consider the pessimistic case
+    // of a command line like   bash -c "%command%"
     // so metacharacters from any common shells must be forbidden.
     // What we need to accept are domain names and IP addresses.
     // Also throw in '@' for limited support of the password feature (unv://hunter2@1.2.3.4)
