@@ -303,7 +303,7 @@ void QmlDownloader::autoLaunchOrUpdate()
         qDebug() << "Updater update to version" << latestUpdaterVersion_ << "required";
         if (!forceUpdaterUpdate_) {
             // Remember the URL if we are doing only updater update
-            QString updaterArgs = "--splashms 1 --update-updater-to " + latestUpdaterVersion_;
+            QString updaterArgs = "--splashms 1 --internalcommand updateupdater:" + latestUpdaterVersion_;
             if (!connectUrl_.isEmpty()) {
                 updaterArgs += " -- " + connectUrl_;
             }
@@ -338,7 +338,7 @@ void QmlDownloader::autoLaunchOrUpdate()
                (!latestGameVersion_.isEmpty() && settings_.currentVersion() != latestGameVersion_)) {
         qDebug() << "Game update required.";
         connectUrl_.clear();
-        switch (Sys::RelaunchElevated("--splashms 1 --update-game")) {
+        switch (Sys::RelaunchElevated("--splashms 1 --internalcommand updategame")) {
             case Sys::ElevationResult::UNNEEDED:
                 break;
             case Sys::ElevationResult::RELAUNCHED:
@@ -358,7 +358,8 @@ void QmlDownloader::autoLaunchOrUpdate()
 bool QmlDownloader::relaunchForSettings()
 {
     qDebug() << "Possibly relaunching to open settings window";
-    return Sys::RelaunchElevated("--splashms 1 --update-game") != Sys::ElevationResult::UNNEEDED;
+    return Sys::RelaunchElevated("--splashms 1 --internalcommand updategame")
+        != Sys::ElevationResult::UNNEEDED;
 }
 
 QmlDownloader::DownloadState QmlDownloader::state() const
