@@ -175,7 +175,7 @@ bool installUpdater(const QString& installPath) {
            // Yes it is really supposed to be 0x775 not 0775
 }
 
-bool updateUpdater(const QString& updaterArchive)
+bool updateUpdater(const QString& updaterArchive, const QString& connectUrl)
 {
     QString current = QCoreApplication::applicationFilePath();
     QString backup = current + ".bak";
@@ -213,7 +213,11 @@ bool updateUpdater(const QString& updaterArchive)
         }
     }
 
-    if (!QProcess::startDetached(current, QStringList())) {
+    QStringList args;
+    if (!connectUrl.isEmpty()) {
+        args << "--" << connectUrl;
+    }
+    if (!QProcess::startDetached(current, args)) {
         qDebug() << "Error starting " << current;
         return false;
     }

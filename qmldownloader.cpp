@@ -289,7 +289,12 @@ void QmlDownloader::autoLaunchOrUpdate()
                (!latestUpdaterVersion_.isEmpty() && latestUpdaterVersion_ != QString(GIT_VERSION))) {
         qDebug() << "Updater update to version" << latestUpdaterVersion_ << "required";
         if (!forceUpdaterUpdate_) {
-            switch (Sys::RelaunchElevated("--splashms 1 --update-updater-to " + latestUpdaterVersion_)) {
+            // Remember the URL if we are doing only updater update
+            QString updaterArgs = "--splashms 1 --update-updater-to " + latestUpdaterVersion_;
+            if (!connectUrl_.isEmpty()) {
+                updaterArgs += " -- " + connectUrl_;
+            }
+            switch (Sys::RelaunchElevated(updaterArgs)) {
                 case Sys::ElevationResult::UNNEEDED:
                     break;
                 case Sys::ElevationResult::RELAUNCHED:

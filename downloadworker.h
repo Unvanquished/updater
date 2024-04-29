@@ -39,6 +39,7 @@ public:
     void addUpdaterUri(const std::string& uri);
     void addTorrent(const std::string& uri);
     void setDownloadDirectory(const std::string& dir);
+    void setConnectUrl(const QString& url);
     void toggle();
     void stop();
 
@@ -75,6 +76,7 @@ private:
     AriaDownloader downloader;
     QString downloadDir;
     QString unvanquishedVersion; // determined from path names in the download
+    QString connectUrl;
 };
 
 #endif // DOWNLOADWORKER_H
