@@ -105,7 +105,7 @@ bool installUpdater(const QString& installPath) {
     return ret == 0;
 }
 
-bool updateUpdater(const QString& updaterArchive)
+bool updateUpdater(const QString& updaterArchive, const QString&)
 {
     QString currentAppPath = extractAppPath(QCoreApplication::applicationFilePath());
     if (currentAppPath.isEmpty()) return false;
@@ -153,6 +153,7 @@ bool updateUpdater(const QString& updaterArchive)
         }
     }
     // TODO: Maybe don't use system? startDetached didn't work for me...
+    // TODO: pass connectUrl
     int i = system((QString("/usr/bin/open -F -n \"%1\"").arg(currentAppPath)).toStdString().c_str());
     if (i != 0) {
         qDebug() << "Error launching new updater. Please try manually.";
