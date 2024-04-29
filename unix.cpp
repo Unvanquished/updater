@@ -124,14 +124,16 @@ bool installShortcuts()
         return false;
     }
     QString desktopStr = QString(desktopFile.readAll().data()).arg(settings.installPath());
-    QFile outputFile(desktopDir + "/" + desktopFileName);
-    if (!outputFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
-        qDebug() << "error opening" << desktopFileName;
-        return false;
-    }
-    if (outputFile.write(desktopStr.toUtf8().constData(), desktopStr.size()) != desktopStr.size()) {
-        qDebug() << "error writing" << desktopFileName;
-        return false;
+    {
+        QFile outputFile(desktopDir + "/" + desktopFileName);
+        if (!outputFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
+            qDebug() << "error opening" << desktopFileName;
+            return false;
+        }
+        if (outputFile.write(desktopStr.toUtf8().constData(), desktopStr.size()) != desktopStr.size()) {
+            qDebug() << "error writing" << desktopFileName;
+            return false;
+        }
     }
     int ret = QProcess::execute("xdg-mime",
                                 {QString("default"),
