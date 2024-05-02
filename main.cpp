@@ -30,6 +30,7 @@
 #include "iconsimageprovider.h"
 #include "iconthemeimageprovider.h"
 
+#include "gamelauncher.h"
 #include "qmldownloader.h"
 #include "settings.h"
 #include "system.h"
@@ -188,8 +189,11 @@ int main(int argc, char *argv[])
 
     app.setWindowIcon(QIcon(":resources/updater.png"));
 
+    Settings settings;
+    GameLauncher gameLauncher(options.connectUrl, settings);
+
     if (options.playNow) { // This is only used on Windows
-        StartGame(Settings(), options.connectUrl, true);
+        gameLauncher.startGame(/*useConnectUrl=*/ true, /*failIfWindowsAdmin=*/ true);
         return 0;
     }
 
@@ -201,7 +205,6 @@ int main(int argc, char *argv[])
         font.setPointSize(10);
         app.setFont(font);
     }
-    Settings settings;
     QmlDownloader downloader;
     downloader.ariaLogFilename_ = options.ariaLogFilename;
     downloader.connectUrl_ = options.connectUrl;
@@ -220,6 +223,7 @@ int main(int argc, char *argv[])
     engine.addImageProvider(QLatin1String("fluidicontheme"), new IconThemeImageProvider());
     auto* context = engine.rootContext();
     context->setContextProperty("updaterSettings", &settings);
+    context->setContextProperty("gameLauncher", &gameLauncher);
     context->setContextProperty("downloader", &downloader);
     context->setContextProperty("splashMilliseconds", options.splashMilliseconds);
     qmlRegisterType<QmlDownloader>("QmlDownloader", 1, 0, "QmlDownloader");

@@ -178,7 +178,7 @@ Item {
         onClicked: {
             if (downloader.state === QmlDownloader.COMPLETED) {
                 root.close();
-                downloader.startGame();
+                gameLauncher.startGame(/*useConnectUrl=*/ false, /*failIfWindowsAdmin=*/ false);
                 return;
             }
             downloader.toggleDownload(selectedInstallPath);

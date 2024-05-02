@@ -16,18 +16,13 @@
  */
 
 #include <QDir>
-#include <QProcess>
 #include <QApplication>
 #include <QDebug>
-#include <QMessageBox>
 
 #include "qmldownloader.h"
 #include "system.h"
 
-namespace {
-static const QRegularExpression COMMAND_REGEX("%command%");
-static QString UPDATER_BASE_URL("https://github.com/Unvanquished/updater/releases/download");
-}  // namespace
+static const QString UPDATER_BASE_URL("https://github.com/Unvanquished/updater/releases/download");
 
 QmlDownloader::QmlDownloader() : downloadSpeed_(0),
         uploadSpeed_(0),
@@ -180,50 +175,6 @@ void QmlDownloader::startUpdate(const QString& selectedInstallPath)
     thread_.start();
 }
 
-void QmlDownloader::startGame()
-{
-    StartGame(settings_, connectUrl_, false);
-}
-
-// Does our version of daemon have -connect-trusted?
-static bool haveConnectTrusted(const QString& gameVersion)
-{
-    // Updater version up to v0.2.0 may set "unknown" as game version if versions.json request fails
-    if (gameVersion == "unknown")
-        return false;
-    // Hacky string comparision, assume we won't go down to 0.9 or up to 0.100 :)
-    return gameVersion > "0.54.1";
-}
-
-void StartGame(const Settings& settings, const QString& connectUrl, bool failIfWindowsAdmin)
-{
-    QString gameCommand = Sys::getGameCommand(settings.installPath());
-    QString commandLine;
-    if (!connectUrl.isEmpty() && !haveConnectTrusted(settings.currentVersion())) {
-        // Behave for now as the old protocol handler which ignores the custom command
-        commandLine = gameCommand + " -connect " + connectUrl;
-    } else {
-        commandLine = settings.commandLine().trimmed();
-        if (!commandLine.contains(COMMAND_REGEX)) {
-            commandLine = "%command% " + commandLine;
-        }
-        if (!connectUrl.isEmpty()) {
-            gameCommand = gameCommand + " -connect-trusted " + connectUrl;
-        }
-        commandLine.replace(COMMAND_REGEX, gameCommand);
-    }
-    qDebug() << "Starting game with command line:" << commandLine;
-    QString error = Sys::startGame(commandLine, failIfWindowsAdmin);
-    if (error.isEmpty()) {
-        qDebug() << "Game started successfully";
-    } else {
-        qDebug() << "Failed to start Unvanquished process:" << error;
-        QMessageBox errorMessageBox;
-        errorMessageBox.setText("Failed to start Unvanquished process: " + error);
-        errorMessageBox.exec();
-    }
-}
-
 void QmlDownloader::toggleDownload(QString installPath)
 {
     qDebug() << "QmlDownloader::toggleDownload called";
@@ -296,8 +247,6 @@ void QmlDownloader::autoLaunchOrUpdate()
     if (forceGameUpdate_) {
         qDebug() << "Game update menu requested";
         emit updateNeeded(true);
-        // Forget about the URL if we go into the install menu
-        connectUrl_.clear();
     } else if (forceUpdaterUpdate_ ||
                (!latestUpdaterVersion_.isEmpty() && latestUpdaterVersion_ != QString(GIT_VERSION))) {
         qDebug() << "Updater update to version" << latestUpdaterVersion_ << "required";
@@ -337,7 +286,6 @@ void QmlDownloader::autoLaunchOrUpdate()
     } else if (settings_.currentVersion().isEmpty() ||
                (!latestGameVersion_.isEmpty() && settings_.currentVersion() != latestGameVersion_)) {
         qDebug() << "Game update required.";
-        connectUrl_.clear();
         switch (Sys::RelaunchElevated("--splashms 1 --internalcommand updategame")) {
             case Sys::ElevationResult::UNNEEDED:
                 break;

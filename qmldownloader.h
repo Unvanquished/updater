@@ -19,7 +19,6 @@
 #define QMLDOWNLOADER_H
 
 #include <QObject>
-#include <QRegularExpression>
 #include <QSettings>
 #include <QThread>
 #include <QUrl>
@@ -32,8 +31,6 @@
 #include "downloadworker.h"
 #include "downloadtimecalculator.h"
 #include "settings.h"
-
-void StartGame(const Settings& settings, const QString& connectUrl, bool failIfWindowsAdmin);
 
 class QmlDownloader : public QObject
 {
@@ -67,7 +64,7 @@ public:
     void forceGameUpdate();
 
     QString ariaLogFilename_;
-    QString connectUrl_;
+    QString connectUrl_; // used for updater update
 
 signals:
     void downloadSpeedChanged(int downloadSpeed);
@@ -90,7 +87,6 @@ public slots:
     void onCurrentVersions(QString updater, QString game);
 
     Q_INVOKABLE void toggleDownload(QString installPath);
-    Q_INVOKABLE void startGame();
     Q_INVOKABLE void autoLaunchOrUpdate();
     Q_INVOKABLE bool relaunchForSettings();
 
