@@ -55,7 +55,7 @@ ApplicationWindow {
                 showUpdater()
             } else {
                 splash.close();
-                downloader.startGame();
+                gameLauncher.startGame(/*useConnectUrl=*/ true, /*failIfWindowsAdmin=*/ false);
             }
         }
 
