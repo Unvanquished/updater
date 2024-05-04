@@ -30,8 +30,6 @@ QmlDownloader::QmlDownloader() : downloadSpeed_(0),
         totalSize_(0),
         completedSize_(0),
         worker_(nullptr),
-        forceUpdaterUpdate_(false),
-        forceGameUpdate_(false),
         state_(IDLE) {}
 
 QmlDownloader::~QmlDownloader()
@@ -198,116 +196,23 @@ void QmlDownloader::stopAria()
     }
 }
 
-// Initiates an asynchronous request for the latest available versions.
-void QmlDownloader::checkForUpdate()
+void QmlDownloader::startUpdaterUpdate(QString version)
 {
-    connect(&fetcher_, SIGNAL(onCurrentVersions(QString, QString)), this, SLOT(onCurrentVersions(QString, QString)));
-    fetcher_.fetchCurrentVersion("https://dl.unvanquished.net/versions.json");
-}
-
-// Initiate updater update to specified version
-void QmlDownloader::forceUpdaterUpdate(const QString& version)
-{
-    forceUpdaterUpdate_ = true;
-    latestUpdaterVersion_ = version;
-}
-
-// Launch the update window later even if the installed and current game versions match
-void QmlDownloader::forceGameUpdate()
-{
-    forceGameUpdate_ = true;
-}
-
-// Receives the results of the checkForUpdate request.
-void QmlDownloader::onCurrentVersions(QString updater, QString game)
-{
-    latestUpdaterVersion_ = updater;
-    latestGameVersion_ = game;
-}
-
-void QmlDownloader::launchGameIfInstalled()
-{
-    if (settings_.currentVersion().isEmpty()) {
-        qDebug() << "No game installed, exiting";
-        QCoreApplication::quit();
-    } else {
-        qDebug() << "Fall back to launching installed game";
-        emit updateNeeded(false);
-    }
-}
-
-// This runs after the splash screen has been displayed for the programmed amount of time (and the
-// user did not click the settings button). If the CurrentVersionFetcher didn't emit anything yet,
-// proceed as if the request for versions.json failed.
-// TODO: make a new SplashController object to handle all this logic of deciding where to go
-// from the splash screen.
-void QmlDownloader::autoLaunchOrUpdate()
-{
-    qDebug() << "Previously-installed game version:" << settings_.currentVersion();
-    if (forceGameUpdate_) {
-        qDebug() << "Game update menu requested";
-        emit updateNeeded(true);
-    } else if (forceUpdaterUpdate_ ||
-               (!latestUpdaterVersion_.isEmpty() && latestUpdaterVersion_ != QString(GIT_VERSION))) {
-        qDebug() << "Updater update to version" << latestUpdaterVersion_ << "required";
-        if (!forceUpdaterUpdate_) {
-            // Remember the URL if we are doing only updater update
-            QString updaterArgs = "--splashms 1 --internalcommand updateupdater:" + latestUpdaterVersion_;
-            if (!connectUrl_.isEmpty()) {
-                updaterArgs += " -- " + connectUrl_;
-            }
-            switch (Sys::RelaunchElevated(updaterArgs)) {
-                case Sys::ElevationResult::UNNEEDED:
-                    break;
-                case Sys::ElevationResult::RELAUNCHED:
-                    QCoreApplication::quit();
-                    return;
-                case Sys::ElevationResult::FAILED:
-                    launchGameIfInstalled();
-                    return;
-            }
-        }
-        QString url = UPDATER_BASE_URL + "/" + latestUpdaterVersion_ + "/" + Sys::updaterArchiveName();
-        temp_dir_.reset(new QTemporaryDir());
-        worker_ = new DownloadWorker(ariaLogFilename_);
-        worker_->setDownloadDirectory(QDir(temp_dir_->path()).canonicalPath().toStdString());
-        worker_->setConnectUrl(connectUrl_);
-        worker_->addUpdaterUri(url.toStdString());
-        worker_->moveToThread(&thread_);
-        connect(&thread_, SIGNAL(finished()), worker_, SLOT(deleteLater()));
-        connect(worker_, SIGNAL(onDownloadEvent(int)), this, SLOT(onDownloadEvent(int)));
-        connect(worker_, SIGNAL(downloadSpeedChanged(int)), this, SLOT(setDownloadSpeed(int)));
-        connect(worker_, SIGNAL(uploadSpeedChanged(int)), this, SLOT(setUploadSpeed(int)));
-        connect(worker_, SIGNAL(totalSizeChanged(int)), this, SLOT(setTotalSize(int)));
-        connect(worker_, SIGNAL(completedSizeChanged(int)), this, SLOT(setCompletedSize(int)));
-        connect(&thread_, SIGNAL(started()), worker_, SLOT(download()));
-        thread_.start();
-        emit updaterUpdate();
-    } else if (settings_.currentVersion().isEmpty() ||
-               (!latestGameVersion_.isEmpty() && settings_.currentVersion() != latestGameVersion_)) {
-        qDebug() << "Game update required.";
-        switch (Sys::RelaunchElevated("--splashms 1 --internalcommand updategame")) {
-            case Sys::ElevationResult::UNNEEDED:
-                break;
-            case Sys::ElevationResult::RELAUNCHED:
-                QCoreApplication::quit();
-                return;
-            case Sys::ElevationResult::FAILED:
-                launchGameIfInstalled();
-                return;
-        }
-        emit updateNeeded(true);
-    } else {
-        emit updateNeeded(false);
-    }
-}
-
-// Return value is whether the program should exit
-bool QmlDownloader::relaunchForSettings()
-{
-    qDebug() << "Possibly relaunching to open settings window";
-    return Sys::RelaunchElevated("--splashms 1 --internalcommand updategame")
-        != Sys::ElevationResult::UNNEEDED;
+    QString url = UPDATER_BASE_URL + "/" + version + "/" + Sys::updaterArchiveName();
+    temp_dir_.reset(new QTemporaryDir());
+    worker_ = new DownloadWorker(ariaLogFilename_);
+    worker_->setDownloadDirectory(QDir(temp_dir_->path()).canonicalPath().toStdString());
+    worker_->setConnectUrl(connectUrl_);
+    worker_->addUpdaterUri(url.toStdString());
+    worker_->moveToThread(&thread_);
+    connect(&thread_, SIGNAL(finished()), worker_, SLOT(deleteLater()));
+    connect(worker_, SIGNAL(onDownloadEvent(int)), this, SLOT(onDownloadEvent(int)));
+    connect(worker_, SIGNAL(downloadSpeedChanged(int)), this, SLOT(setDownloadSpeed(int)));
+    connect(worker_, SIGNAL(uploadSpeedChanged(int)), this, SLOT(setUploadSpeed(int)));
+    connect(worker_, SIGNAL(totalSizeChanged(int)), this, SLOT(setTotalSize(int)));
+    connect(worker_, SIGNAL(completedSizeChanged(int)), this, SLOT(setCompletedSize(int)));
+    connect(&thread_, SIGNAL(started()), worker_, SLOT(download()));
+    thread_.start();
 }
 
 QmlDownloader::DownloadState QmlDownloader::state() const

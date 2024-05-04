@@ -27,7 +27,6 @@
 #include <memory>
 #include <chrono>
 
-#include "currentversionfetcher.h"
 #include "downloadworker.h"
 #include "downloadtimecalculator.h"
 #include "settings.h"
@@ -59,9 +58,6 @@ public:
     int totalSize() const;
     int completedSize() const;
     DownloadState state() const;
-    void checkForUpdate();
-    void forceUpdaterUpdate(const QString& version);
-    void forceGameUpdate();
 
     QString ariaLogFilename_;
     QString connectUrl_; // used for updater update
@@ -74,9 +70,7 @@ signals:
     void completedSizeChanged(int completedSize);
     void statusMessage(QString message);
     void fatalMessage(QString message);
-    void updateNeeded(bool updateNeeded);
     void stateChanged(DownloadState state);
-    void updaterUpdate();
 
 public slots:
     void setDownloadSpeed(int speed);
@@ -84,11 +78,9 @@ public slots:
     void setTotalSize(int size);
     void setCompletedSize(int size);
     void onDownloadEvent(int event);
-    void onCurrentVersions(QString updater, QString game);
 
     Q_INVOKABLE void toggleDownload(QString installPath);
-    Q_INVOKABLE void autoLaunchOrUpdate();
-    Q_INVOKABLE bool relaunchForSettings();
+    Q_INVOKABLE void startUpdaterUpdate(QString version);
 
 private:
     void stopAria();
@@ -104,14 +96,9 @@ private:
     int totalSize_;
     int completedSize_;
 
-    CurrentVersionFetcher fetcher_;
     DownloadWorker* worker_;
     DownloadTimeCalculator downloadTime_;
     Settings settings_;
-    bool forceUpdaterUpdate_;
-    bool forceGameUpdate_;
-    QString latestGameVersion_;
-    QString latestUpdaterVersion_;
     DownloadState state_;
     std::unique_ptr<QTemporaryDir> temp_dir_;
 
