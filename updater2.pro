@@ -10,6 +10,7 @@ HEADERS += ariadownloader.h \
     gamelauncher.h \
     system.h \
     settings.h \
+    splashcontroller.h \
     qmldownloader.h \
     currentversionfetcher.h
 
@@ -21,6 +22,7 @@ SOURCES += ariadownloader.cpp \
     main.cpp \
     qmldownloader.cpp \
     settings.cpp \
+    splashcontroller.cpp \
     currentversionfetcher.cpp
 
 mac {

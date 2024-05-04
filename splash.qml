@@ -35,20 +35,18 @@ ApplicationWindow {
         running: true
         onTriggered: {
             settingsAction.enabled = false;
-            downloader.autoLaunchOrUpdate();
+            splashController.autoLaunchOrUpdate();
         }
     }
 
     function showUpdater() {
-        splashConnections.enabled = false;
+        splashDownloaderConnections.enabled = false;
         updaterWindowLoader.active = true
         splash.hide();
     }
 
     Connections {
-        id: splashConnections
-        target: downloader
-        ignoreUnknownSignals: true
+        target: splashController
 
         onUpdateNeeded: {  // game update only
             if (updateNeeded) {
@@ -60,6 +58,7 @@ ApplicationWindow {
         }
 
         onUpdaterUpdate: {
+            downloader.startUpdaterUpdate(version);
             updaterUpdateLabel.visible = true;
 
             // Now allow the window to go behind other windows in the z-order.
@@ -78,6 +77,11 @@ ApplicationWindow {
                 splash.flags &= ~Qt.WindowStaysOnTopHint;
             }
         }
+    }
+
+    Connections {
+        id: splashDownloaderConnections
+        target: downloader
 
         onFatalMessage: {
             updateFailed.errorDetail = message;
@@ -131,7 +135,7 @@ ApplicationWindow {
         onClicked: {
             timer.stop();
             settingsAction.enabled = false;
-            if (downloader.relaunchForSettings()) {
+            if (splashController.relaunchForSettings()) {
                 splash.close();
             } else {
                 showUpdater();

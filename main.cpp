@@ -33,6 +33,7 @@
 #include "gamelauncher.h"
 #include "qmldownloader.h"
 #include "settings.h"
+#include "splashcontroller.h"
 #include "system.h"
 
 namespace {
@@ -60,9 +61,8 @@ struct CommandLineOptions {
     QString logFilename;
     QString ariaLogFilename;
     int splashMilliseconds = 3000;
+    RelaunchCommand relaunchCommand = RelaunchCommand::NONE;
     QString updateUpdaterVersion;
-    bool updateGame = false;
-    bool playNow = false;
     QString connectUrl;
 };
 
@@ -141,10 +141,11 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
     if (optionParser.isSet(internalCommandOption)) {
         QString command = optionParser.value(internalCommandOption);
         if (command == "playnow") {
-            options.playNow = true;
+            options.relaunchCommand = RelaunchCommand::PLAY_NOW;
         } else if (command == "updategame") {
-            options.updateGame = true;
+            options.relaunchCommand = RelaunchCommand::UPDATE_GAME;
         } else if (command.startsWith("updateupdater:")) {
+            options.relaunchCommand = RelaunchCommand::UPDATE_UPDATER;
             options.updateUpdaterVersion = command.section(':', 1);
         } else {
             argParseError("Invalid --internalcommand option: " + command);
@@ -192,7 +193,7 @@ int main(int argc, char *argv[])
     Settings settings;
     GameLauncher gameLauncher(options.connectUrl, settings);
 
-    if (options.playNow) { // This is only used on Windows
+    if (options.relaunchCommand == RelaunchCommand::PLAY_NOW) {
         gameLauncher.startGame(/*useConnectUrl=*/ true, /*failIfWindowsAdmin=*/ true);
         return 0;
     }
@@ -205,18 +206,12 @@ int main(int argc, char *argv[])
         font.setPointSize(10);
         app.setFont(font);
     }
+    SplashController splashController(
+        options.relaunchCommand, options.updateUpdaterVersion, options.connectUrl, settings);
+    splashController.checkForUpdate();
     QmlDownloader downloader;
     downloader.ariaLogFilename_ = options.ariaLogFilename;
     downloader.connectUrl_ = options.connectUrl;
-    if (!options.updateUpdaterVersion.isEmpty()) {
-        downloader.forceUpdaterUpdate(options.updateUpdaterVersion);
-        // Don't request versions.json because it would clobber the verson
-    } else {
-        downloader.checkForUpdate();
-        if (options.updateGame) {
-            downloader.forceGameUpdate();
-        }
-    }
     QQmlApplicationEngine engine;
     engine.addImportPath(QLatin1String("qrc:/"));
     engine.addImageProvider(QLatin1String("fluidicons"), new IconsImageProvider());
@@ -224,6 +219,7 @@ int main(int argc, char *argv[])
     auto* context = engine.rootContext();
     context->setContextProperty("updaterSettings", &settings);
     context->setContextProperty("gameLauncher", &gameLauncher);
+    context->setContextProperty("splashController", &splashController);
     context->setContextProperty("downloader", &downloader);
     context->setContextProperty("splashMilliseconds", options.splashMilliseconds);
     qmlRegisterType<QmlDownloader>("QmlDownloader", 1, 0, "QmlDownloader");
