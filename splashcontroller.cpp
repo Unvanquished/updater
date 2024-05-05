@@ -58,7 +58,7 @@ bool SplashController::relaunchForSettings()
 
 void SplashController::launchGameIfInstalled()
 {
-    if (settings_.currentVersion().isEmpty()) {
+    if (settings_.installedVersion().isEmpty()) {
         qDebug() << "No game installed, exiting";
         QCoreApplication::quit();
     } else {
@@ -72,7 +72,7 @@ void SplashController::launchGameIfInstalled()
 // proceed as if the request for versions.json failed.
 void SplashController::autoLaunchOrUpdate()
 {
-    qDebug() << "Previously-installed game version:" << settings_.currentVersion();
+    qDebug() << "Previously-installed game version:" << settings_.installedVersion();
 
     switch (relaunchCommand_) {
         case RelaunchCommand::UPDATE_GAME:
@@ -113,8 +113,8 @@ void SplashController::autoLaunchOrUpdate()
                 launchGameIfInstalled();
                 return;
         }
-    } else if (settings_.currentVersion().isEmpty() ||
-               (!latestGameVersion_.isEmpty() && settings_.currentVersion() != latestGameVersion_)) {
+    } else if (settings_.installedVersion().isEmpty() ||
+               (!latestGameVersion_.isEmpty() && settings_.installedVersion() != latestGameVersion_)) {
         qDebug() << "Game update required.";
         switch (Sys::RelaunchElevated("--splashms 1 --internalcommand updategame")) {
             case Sys::ElevationResult::UNNEEDED:

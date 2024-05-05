@@ -45,7 +45,7 @@ void GameLauncher::startGame(bool useConnectUrl, bool failIfWindowsAdmin)
     useConnectUrl = useConnectUrl && !connectUrl_.isEmpty();
     QString gameCommand = Sys::getGameCommand(settings_.installPath());
     QString commandLine;
-    if (useConnectUrl && !haveConnectTrusted(settings_.currentVersion())) {
+    if (useConnectUrl && !haveConnectTrusted(settings_.installedVersion())) {
         // Behave for now as the old protocol handler which ignores the custom command
         commandLine = gameCommand + " -connect " + connectUrl_;
     } else {

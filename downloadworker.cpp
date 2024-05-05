@@ -203,7 +203,7 @@ bool DownloadWorker::extractUpdate()
 {
     qDebug() << "Clearing installed version prior to extraction";
     Settings settings;
-    settings.setCurrentVersion("");
+    settings.setInstalledVersion("");
     QString filename = Sys::archiveName();
     auto out = JlCompress::extractDir(downloadDir_ + "/" + filename, downloadDir_);
     if (out.size() < 1) {
@@ -216,7 +216,7 @@ bool DownloadWorker::extractUpdate()
         qDebug() << "Failed to determine version of downloaded game!";
     } else {
         qDebug() << "Setting installed version to" << unvanquishedVersion_;
-        settings.setCurrentVersion(unvanquishedVersion_);
+        settings.setInstalledVersion(unvanquishedVersion_);
     }
 
     return true;

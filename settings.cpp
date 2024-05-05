@@ -21,40 +21,46 @@
 
 const char kDefaultCommand[] = "%command%";
 
+// Registry/configuration file keys
+const QString INSTALL_PATH = "settings/installPath";
+const QString COMMAND_LINE = "settings/commandLineParameters";
+const QString INSTALLED_VERSION = "settings/currentVersion";
+// const QString INSTALL_FINISHED = "settings/installFinished";  // No longer used
+const QString WRITE_PROBE = "writeProbe";
+
 Settings::Settings() : QObject(nullptr), settings_(Sys::makePersistentSettings(this)) {
-    if (!settings_->contains(Settings::INSTALL_PATH)) {
+    if (!settings_->contains(INSTALL_PATH)) {
         setInstallPath(Sys::defaultInstallPath());
     }
-    if (!settings_->contains(Settings::COMMAND_LINE)) {
+    if (!settings_->contains(COMMAND_LINE)) {
         setCommandLine(kDefaultCommand);
     }
 }
 
 QString Settings::installPath() const {
-    return settings_->value(Settings::INSTALL_PATH).toString();
+    return settings_->value(INSTALL_PATH).toString();
 }
 
 QString Settings::commandLine() const {
-    return settings_->value(Settings::COMMAND_LINE).toString();
+    return settings_->value(COMMAND_LINE).toString();
 }
 
-QString Settings::currentVersion() const {
-    return settings_->value(Settings::CURRENT_VERSION).toString();
+QString Settings::installedVersion() const {
+    return settings_->value(INSTALLED_VERSION).toString();
 }
 
 void Settings::setInstallPath(const QString& installPath) {
-    settings_->setValue(Settings::INSTALL_PATH, installPath);
+    settings_->setValue(INSTALL_PATH, installPath);
     emit installPathChanged(installPath);
 }
 
 void Settings::setCommandLine(const QString& commandLine) {
-    settings_->setValue(Settings::COMMAND_LINE, commandLine);
+    settings_->setValue(COMMAND_LINE, commandLine);
     emit commandLineChanged(commandLine);
 }
 
-void Settings::setCurrentVersion(const QString& currentVersion) {
-    settings_->setValue(Settings::CURRENT_VERSION, currentVersion);
-    emit currentVersionChanged(currentVersion);
+void Settings::setInstalledVersion(const QString& installedVersion) {
+    settings_->setValue(INSTALLED_VERSION, installedVersion);
 }
 
 void Settings::sync()
