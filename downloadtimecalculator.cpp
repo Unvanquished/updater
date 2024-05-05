@@ -17,24 +17,25 @@
 
 #include "downloadtimecalculator.h"
 
-DownloadTimeCalculator::DownloadTimeCalculator() : currentIndex(0), average(0), numSpeeds(0), speeds{0}
+DownloadTimeCalculator::DownloadTimeCalculator() :
+    currentIndex_(0), average_(0), numSpeeds_(0), speeds_{0}
 {
 }
 
 void DownloadTimeCalculator::addSpeed(int speed)
 {
-    int oldSpeed = speeds[currentIndex % kMaxNumSpeeds];
-    float totalSum = average * numSpeeds;
+    int oldSpeed = speeds_[currentIndex_ % kMaxNumSpeeds];
+    float totalSum = average_ * numSpeeds_;
     totalSum -= oldSpeed;
-    if (numSpeeds < kMaxNumSpeeds) numSpeeds++;
-    speeds[currentIndex++ % kMaxNumSpeeds] = speed;
+    if (numSpeeds_ < kMaxNumSpeeds) numSpeeds_++;
+    speeds_[currentIndex_++ % kMaxNumSpeeds] = speed;
     totalSum += speed;
-    average = totalSum / numSpeeds;
+    average_ = totalSum / numSpeeds_;
 }
 
 int DownloadTimeCalculator::getTime(int remainingSize)
 {
-    if (numSpeeds == 0) return 0;
+    if (numSpeeds_ == 0) return 0;
     if (remainingSize <= 0) return 0;
-    return remainingSize / average;
+    return remainingSize / average_;
 }

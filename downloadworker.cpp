@@ -25,35 +25,35 @@
 #include <QDir>
 
 DownloadWorker::DownloadWorker(QString ariaLogFilename, QObject *parent) :
-    QObject(parent), downloadSpeed(0), uploadSpeed(0),
-    totalSize(0), completedSize(0), paused(true), state(IDLE), running(false),
-    renameRegex(".*unvanquished_([0-9.]+)/"), downloader(ariaLogFilename.toStdString())
+    QObject(parent), downloadSpeed_(0), uploadSpeed_(0),
+    totalSize_(0), completedSize_(0), state_(IDLE), running_(false),
+    renameRegex_(".*unvanquished_([0-9.]+)/"), downloader_(ariaLogFilename.toStdString())
 {
-    downloader.registerCallback(this);
+    downloader_.registerCallback(this);
 }
 
 DownloadWorker::~DownloadWorker()
 {
-    downloader.unregisterCallback(this);
+    downloader_.unregisterCallback(this);
 }
 
 void DownloadWorker::addUpdaterUri(const std::string& uri)
 {
-    downloader.addUri(uri);
-    state = DOWNLOADING_UPDATER;
+    downloader_.addUri(uri);
+    state_ = DOWNLOADING_UPDATER;
 }
 
 void DownloadWorker::addTorrent(const std::string& uri)
 {
     // Delete the old .zip for the system. aria2c has issues truncating files on the first try.
-    QString archivePath = downloadDir + "/" + Sys::archiveName();
+    QString archivePath = downloadDir_ + "/" + Sys::archiveName();
     if (QFile::exists(archivePath)) {
         if (!QFile::remove(archivePath)) {
             qDebug() << "Error deleting old updater. There might be corruption...";
         }
     }
-    downloader.addUri(uri);
-    state = DOWNLOADING_TORRENT;
+    downloader_.addUri(uri);
+    state_ = DOWNLOADING_TORRENT;
 }
 
 void DownloadWorker::onDownloadCallback(aria2::Session* session, aria2::DownloadEvent event,
@@ -67,14 +67,14 @@ void DownloadWorker::onDownloadCallback(aria2::Session* session, aria2::Download
 
         case aria2::EVENT_ON_DOWNLOAD_COMPLETE:
             qDebug() << "onDownloadCallback event DOWNLOAD_COMPLETE";
-            if (state == DOWNLOADING_TORRENT) {
+            if (state_ == DOWNLOADING_TORRENT) {
                 qDebug() << "DownloadWorker.state changed from DOWNLOADING_TORRENT to DOWNLOADING_UNVANQUISHED";
-                state = DOWNLOADING_UNVANQUISHED;
+                state_ = DOWNLOADING_UNVANQUISHED;
                 aria2::DownloadHandle* handle = aria2::getDownloadHandle(session, gid);
                 aria2::A2Gid torrentGid = handle->getFollowedBy()[0];
                 setDownloadPathAndFiles(session, torrentGid);
                 aria2::deleteDownloadHandle(handle);
-            } else if (state == DOWNLOADING_UPDATER) {
+            } else if (state_ == DOWNLOADING_UPDATER) {
                 qDebug() << "Updater download complete";
                 aria2::DownloadHandle* handle = aria2::getDownloadHandle(session, gid);
                 qDebug() << "Number of files in updater download:" << handle->getNumFiles();
@@ -83,7 +83,7 @@ void DownloadWorker::onDownloadCallback(aria2::Session* session, aria2::Download
                 }
                 auto files = handle->getFiles();
                 qDebug() << "Downloaded updater at" << files[0].path.c_str();
-                Sys::updateUpdater(QString(files[0].path.c_str()), connectUrl);
+                Sys::updateUpdater(QString(files[0].path.c_str()), connectUrl_);
                 return;
             } else {
                 // For a torrent, happens when aria2 is stopped
@@ -126,16 +126,16 @@ void DownloadWorker::setDownloadPathAndFiles(aria2::Session* session, aria2::A2G
 std::string DownloadWorker::getAriaIndexOut(size_t index, std::string path)
 {
     QString oldPath(path.c_str());
-    QRegularExpressionMatch match = renameRegex.match(oldPath);
+    QRegularExpressionMatch match = renameRegex_.match(oldPath);
     if (!match.hasMatch()) {
         qDebug() << "Path in download does not have expected format:" << oldPath;
     } else {
         QString version = match.captured(1);
-        if (unvanquishedVersion.isEmpty()) {
+        if (unvanquishedVersion_.isEmpty()) {
             qDebug() << "Detected Unvanquished version from download:" << version;
-            unvanquishedVersion = version;
-        } else if (unvanquishedVersion != version) {
-            qDebug() << "Different versions detected from download paths" << unvanquishedVersion << "and" << version;
+            unvanquishedVersion_ = version;
+        } else if (unvanquishedVersion_ != version) {
+            qDebug() << "Different versions detected from download paths" << unvanquishedVersion_ << "and" << version;
         }
         oldPath.remove(0, match.capturedLength(0)); // delete the matching prefix
     }
@@ -148,32 +148,31 @@ void DownloadWorker::download()
 {
     auto start = std::chrono::steady_clock::now();
     bool ret = true;
-    paused = false;
-    running = true;
-    while (ret && running) {
-        ret = downloader.run();
+    running_ = true;
+    while (ret && running_) {
+        ret = downloader_.run();
         auto now = std::chrono::steady_clock::now();
 
         // Print progress information once per 500ms
         if(now - start > std::chrono::milliseconds(500)) {
             start = now;
-            downloader.updateStats();
+            downloader_.updateStats();
 
-            if (totalSize != downloader.totalSize()) {
-                totalSize = downloader.totalSize();
-                emit totalSizeChanged(totalSize);
+            if (totalSize_ != downloader_.totalSize()) {
+                totalSize_ = downloader_.totalSize();
+                emit totalSizeChanged(totalSize_);
             }
-            if (downloadSpeed != downloader.downloadSpeed()) {
-                downloadSpeed = downloader.downloadSpeed();
-                emit downloadSpeedChanged(downloadSpeed);
+            if (downloadSpeed_ != downloader_.downloadSpeed()) {
+                downloadSpeed_ = downloader_.downloadSpeed();
+                emit downloadSpeedChanged(downloadSpeed_);
             }
-            if (uploadSpeed != downloader.uploadSpeed()) {
-                uploadSpeed = downloader.uploadSpeed();
-                emit uploadSpeedChanged(uploadSpeed);
+            if (uploadSpeed_ != downloader_.uploadSpeed()) {
+                uploadSpeed_ = downloader_.uploadSpeed();
+                emit uploadSpeedChanged(uploadSpeed_);
             }
-            if (completedSize != downloader.completedSize()) {
-                completedSize = downloader.completedSize();
-                emit completedSizeChanged(completedSize);
+            if (completedSize_ != downloader_.completedSize()) {
+                completedSize_ = downloader_.completedSize();
+                emit completedSizeChanged(completedSize_);
             }
         }
     }
@@ -181,23 +180,23 @@ void DownloadWorker::download()
 
 void DownloadWorker::toggle()
 {
-    downloader.toggleDownloads();
+    downloader_.toggleDownloads();
 }
 
 void DownloadWorker::setDownloadDirectory(const std::string& dir)
 {
-    downloadDir = dir.c_str();
-    downloader.setDownloadDirectory(dir);
+    downloadDir_ = dir.c_str();
+    downloader_.setDownloadDirectory(dir);
 }
 
 void DownloadWorker::setConnectUrl(const QString& url)
 {
-    connectUrl = url;
+    connectUrl_ = url;
 }
 
 void DownloadWorker::stop()
 {
-    running = false;
+    running_ = false;
 }
 
 bool DownloadWorker::extractUpdate()
@@ -206,18 +205,18 @@ bool DownloadWorker::extractUpdate()
     Settings settings;
     settings.setCurrentVersion("");
     QString filename = Sys::archiveName();
-    auto out = JlCompress::extractDir(downloadDir + "/" + filename, downloadDir);
+    auto out = JlCompress::extractDir(downloadDir_ + "/" + filename, downloadDir_);
     if (out.size() < 1) {
         emit onDownloadEvent(ERROR_EXTRACTING);
         return false;
     }
 
     // Game should be playable at this point - set the installed version
-    if (unvanquishedVersion.isEmpty()) {
+    if (unvanquishedVersion_.isEmpty()) {
         qDebug() << "Failed to determine version of downloaded game!";
     } else {
-        qDebug() << "Setting installed version to" << unvanquishedVersion;
-        settings.setCurrentVersion(unvanquishedVersion);
+        qDebug() << "Setting installed version to" << unvanquishedVersion_;
+        settings.setCurrentVersion(unvanquishedVersion_);
     }
 
     return true;
