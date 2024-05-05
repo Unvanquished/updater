@@ -65,18 +65,17 @@ private:
         DOWNLOADING_UNVANQUISHED
     };
 
-    int downloadSpeed;
-    int uploadSpeed;
-    int totalSize;
-    int completedSize;
-    bool paused;
-    State state;
-    std::atomic_bool running;
-    QRegularExpression renameRegex;
-    AriaDownloader downloader;
-    QString downloadDir;
-    QString unvanquishedVersion; // determined from path names in the download
-    QString connectUrl;
+    int downloadSpeed_;
+    int uploadSpeed_;
+    int totalSize_;
+    int completedSize_;
+    State state_;
+    std::atomic_bool running_;
+    QRegularExpression renameRegex_;
+    AriaDownloader downloader_;
+    QString downloadDir_;
+    QString unvanquishedVersion_; // determined from path names in the download
+    QString connectUrl_;
 };
 
 #endif // DOWNLOADWORKER_H

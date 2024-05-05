@@ -27,9 +27,10 @@ public:
 
 private:
     static const int kMaxNumSpeeds = 100;
-    int currentIndex;
-    float average;
-    int numSpeeds;
-    int speeds[kMaxNumSpeeds];
+
+    int currentIndex_;
+    float average_;
+    int numSpeeds_;
+    int speeds_[kMaxNumSpeeds];
 };
 #endif
