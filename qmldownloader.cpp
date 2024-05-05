@@ -154,7 +154,7 @@ void QmlDownloader::startUpdate(const QString& selectedInstallPath)
     emit statusMessage("Installing to " + dir.canonicalPath());
     if (settings_.installPath() != selectedInstallPath) {
         qDebug() << "Clearing installed version because path was changed";
-        settings_.setCurrentVersion("");
+        settings_.setInstalledVersion("");
     }
     settings_.setInstallPath(selectedInstallPath);
 
