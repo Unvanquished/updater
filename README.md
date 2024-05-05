@@ -27,8 +27,8 @@ make -j4
 
 ## Build Linux version in docker
 ```
-docker build -t updater2 .
-docker run -v `pwd`/build-docker:/build-docker -u `id -u $USER` updater2
+docker build -t unvlauncher-linux .
+docker run -v `pwd`/build-docker:/build-docker -u `id -u $USER` unvlauncher-linux
 ```
 Search for **updater2** (or **updater2-nonstripped**) in build-docker directory.
 
@@ -45,10 +45,10 @@ git rm -r --cached . && git reset --hard
 The first line below runs the Docker build for Windows. The last 3 lines are to copy the result out of the container.
 
 ```
-docker build -t updater2-win -f Dockerfile.win .
-docker create --name updater2-win updater2-win
-docker cp updater2-win:/build/release/updater2.exe ./build-docker
-docker rm updater2-win
+docker build -t unvlauncher-win -f Dockerfile.win .
+docker create --name unvlauncher-win unvlauncher-win
+docker cp unvlauncher-win:/build/release/updater2.exe ./build-docker
+docker rm unvlauncher-win
 
 ```
 Search for **updater2.exe** in build-docker directory.
