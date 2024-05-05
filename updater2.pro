@@ -28,7 +28,7 @@ SOURCES += ariadownloader.cpp \
 mac {
   SOURCES += osx.cpp
 } linux {
-  SOURCES += unix.cpp
+  SOURCES += linux.cpp
 } win32 {
   SOURCES += win.cpp ExecInExplorer.cpp
 }
