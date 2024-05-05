@@ -91,7 +91,7 @@ repository are licensed as GPL version 3 or greater, unless the file specifies
 otherwise.
 
 Dependencies have the following licenses:
-- Qt: GPLv2 or GPLv3 or GPLv3
+- Qt: GPLv2 or GPLv3 or LGPLv3
 - Quazip: LGPL version 2.1 or greater
 - Fluid: Mozilla Public License 2.0
 - ExecInExplorer.cpp: MIT License
