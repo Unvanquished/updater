@@ -165,6 +165,16 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
 
+    // The font is already needed to display our arg parsing error on Linux
+    int fontId = QFontDatabase::addApplicationFont(":resources/Roboto-Regular.ttf");
+    if (fontId == -1) {
+        qDebug() << "Failed to register Roboto font";
+    } else {
+        QFont font("Roboto");
+        font.setPointSize(10);
+        app.setFont(font);
+    }
+
     CommandLineOptions options = getCommandLineOptions(app);
     if (!options.logFilename.isEmpty()) {
         logFile.setFileName(options.logFilename);
@@ -198,14 +208,6 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    int fontId = QFontDatabase::addApplicationFont(":resources/Roboto-Regular.ttf");
-    if (fontId == -1) {
-        qDebug() << "Failed to register Roboto font";
-    } else {
-        QFont font("Roboto");
-        font.setPointSize(10);
-        app.setFont(font);
-    }
     SplashController splashController(
         options.relaunchCommand, options.updateUpdaterVersion, options.connectUrl, settings);
     splashController.checkForUpdate();
