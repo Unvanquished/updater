@@ -47,6 +47,31 @@ QStringList splitArgs(const QString& command) {
     return list;
 }
 
+// 'p' because of custom command lines
+QString DoExecvp(const QStringList& args)
+{
+    if (args.empty()) return "missing command line";
+
+    Settings settings;
+    settings.sync(); // since normal shutdown will be skipped
+
+    std::vector<std::string> argsUtf8;
+    for (const QString& arg : args) {
+        argsUtf8.push_back(arg.toStdString());
+    }
+    std::vector<const char*> argv;
+    for (const std::string& arg : argsUtf8) {
+        argv.push_back(arg.c_str());
+    }
+    argv.push_back(nullptr);
+
+    qDebug() << "execvp with command line:" << args;
+    execvp(argv[0], const_cast<char* const*>(argv.data()));
+
+    QString msg = QString("error %1 (%2)").arg(errno).arg(strerror(errno));
+    return msg;
+}
+
 } // namespace
 
 QString archiveName()
@@ -213,15 +238,13 @@ bool updateUpdater(const QString& updaterArchive, const QString& connectUrl)
     }
 
     QStringList args;
+    args << current;
     if (!connectUrl.isEmpty()) {
         args << "--" << connectUrl;
     }
-    if (!QProcess::startDetached(current, args)) {
-        qDebug() << "Error starting " << current;
-        return false;
-    }
-    QCoreApplication::quit();
-    return true;
+    QString error = DoExecvp(args);
+    qDebug() << "updater update exec failed:" << error;
+    return false;
 }
 
 QString updaterArchiveName()
@@ -260,22 +283,9 @@ QString getGameCommand(const QString& installPath)
 
 QString startGame(const QString& commandLine, bool)
 {
-    Settings settings;
-    settings.sync(); // since normal shutdown will be skipped
-    std::vector<std::string> args;
-    for (const QString& arg : splitArgs(commandLine)) {
-        args.push_back(arg.toStdString());
-    }
-    if (args.empty()) return "missing command line";
-    std::vector<const char*> argv;
-    for (const std::string& arg : args) {
-        argv.push_back(arg.c_str());
-    }
-    argv.push_back(nullptr);
-    execvp(argv[0], const_cast<char* const*>(argv.data()));
-
+    QString error = DoExecvp(splitArgs(commandLine));
     QString msg = QString("error %1 (%2)").arg(errno).arg(strerror(errno));
-    qDebug() << "execvp failed:" << msg;
+    qDebug() << "game exec failed:" << msg;
     return msg;
 }
 
