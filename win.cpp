@@ -324,7 +324,7 @@ static void setGraphicsPreference()
     setRegistryKey(HKEY_CURRENT_USER, key, path, "GpuPreference=2;");
 }
 
-QString startGame(const QString& commandLine, bool failIfWindowsAdmin)
+QString startGame(const QString& commandLine, bool failIfWindowsAdmin, const QString& connectUrlForRestart)
 {
     if (!runningAsAdmin()) {
         qDebug() << "not admin, start game normally";
@@ -338,9 +338,11 @@ QString startGame(const QString& commandLine, bool failIfWindowsAdmin)
     }
 
     // Relaunch the updater without elevation so that the graphics preference can be set.
-    // TODO: propagate connect URL in this case
     std::wstring program = QCoreApplication::applicationFilePath().toStdWString();
     std::wstring args = L"--internalcommand playnow";
+    if (!connectUrlForRestart.isEmpty()) {
+        args += L" -- " + connectUrlForRestart.toStdWString();
+    }
     qDebug() << "restarting de-elevated: program =" << program << "args =" << args;
     HRESULT result = ShellExecInExplorerProcess(program.c_str(), args.c_str());
     qDebug() << "HRESULT:" << result;

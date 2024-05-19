@@ -34,7 +34,9 @@ QString updaterArchiveName();
 std::string getCertStore();
 QSettings* makePersistentSettings(QObject* parent);
 QString getGameCommand(const QString& installPath); // Substitution for %command%
-QString startGame(const QString& commandLine, bool failIfWindowsAdmin);
+// A connect URL is already included in command line but on Windows if the updater has to restart to
+// lose admin elevation, it uses connectUrlForRestart
+QString startGame(const QString& commandLine, bool failIfWindowsAdmin, const QString& connectUrlForRestart);
 
 // Windows: relaunch with UAC elevation if necessary
 // Other platforms always return UNNEEDED
