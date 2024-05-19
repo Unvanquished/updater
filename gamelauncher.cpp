@@ -59,7 +59,7 @@ void GameLauncher::startGame(bool useConnectUrl, bool failIfWindowsAdmin)
         commandLine.replace(COMMAND_REGEX, gameCommand);
     }
     qDebug() << "Starting game with command line:" << commandLine;
-    QString error = Sys::startGame(commandLine, failIfWindowsAdmin);
+    QString error = Sys::startGame(commandLine, failIfWindowsAdmin, connectUrl_);
     if (error.isEmpty()) {
         qDebug() << "Game started successfully";
     } else {

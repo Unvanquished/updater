@@ -281,7 +281,7 @@ QString getGameCommand(const QString& installPath)
     return QuoteQProcessCommandArgument(installPath + QDir::separator() + "daemon");
 }
 
-QString startGame(const QString& commandLine, bool)
+QString startGame(const QString& commandLine, bool, const QString&)
 {
     QString error = DoExecvp(splitArgs(commandLine));
     QString msg = QString("error %1 (%2)").arg(errno).arg(strerror(errno));
