@@ -158,9 +158,8 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setApplicationName("Unvanquished Updater");
+    Sys::initApplicationName();
     QCoreApplication::setApplicationVersion(GIT_VERSION);
-    QCoreApplication::setOrganizationName("Unvanquished Development");
     QCoreApplication::setOrganizationDomain("unvanquished.net");
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);

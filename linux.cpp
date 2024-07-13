@@ -270,10 +270,16 @@ std::string getCertStore()
     return "";
 }
 
+void initApplicationName()
+{
+    QCoreApplication::setOrganizationName("unvanquished");
+    QCoreApplication::setApplicationName("updater");
+}
+
 // Settings are stored in ~/.config/unvanquished/updater.conf
 QSettings* makePersistentSettings(QObject* parent)
 {
-    return new QSettings("unvanquished", "updater", parent);
+    return new QSettings(parent);
 }
 
 QString getGameCommand(const QString& installPath)

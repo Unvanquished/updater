@@ -173,6 +173,12 @@ std::string getCertStore()
     return "";  // Not used on OSX.
 }
 
+void initApplicationName()
+{
+    QCoreApplication::setOrganizationName("Unvanquished Development");
+    QCoreApplication::setApplicationName("Unvanquished Updater");
+}
+
 // Settings are stored in "~/Library/Preferences/net.unvanquished.Unvanquished Updater.plist"
 // After deleting/changing the file, you must run `sudo killall cfprefsd` for it to take effect
 QSettings* makePersistentSettings(QObject* parent)
