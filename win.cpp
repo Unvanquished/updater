@@ -295,11 +295,20 @@ std::string getCertStore()
     return "";  // Not used on Windows.
 }
 
+void initApplicationName()
+{
+    QCoreApplication::setOrganizationName("Unvanquished Development");
+    QCoreApplication::setApplicationName("Unvanquished Updater");
+}
+
 // Settings are stored in the registry at (on 64-bit Windows)
 // HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Unvanquished Development\Unvanquished Updater
 // ≤v0.0.5 used HKEY_CURRENT_USER\Software\Unvanquished Development\Unvanquished Updater
+// Note: a class that we use, QQControlsFileDialog, creates some of its own registry entries
+// at HKEY_CURRENT_USER\SOFTWARE\Unvanquished Development\Unvanquished Updater
 QSettings* makePersistentSettings(QObject* parent)
 {
+    // We install to Program Files by default, so use global rather than per-user settings.
     return new QSettings(QSettings::SystemScope, parent);
 }
 
