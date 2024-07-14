@@ -50,7 +50,7 @@ public:
     };
     Q_ENUM(DownloadState)
 
-    QmlDownloader();
+    QmlDownloader(QString ariaLogFilename, QString connectUrl, Settings& settings);
     ~QmlDownloader();
     int downloadSpeed() const;
     int uploadSpeed() const;
@@ -58,9 +58,6 @@ public:
     int totalSize() const;
     int completedSize() const;
     DownloadState state() const;
-
-    QString ariaLogFilename_;
-    QString connectUrl_; // used for updater update
 
 signals:
     void downloadSpeedChanged(int downloadSpeed);
@@ -89,6 +86,10 @@ private:
     void startUpdate(const QString& selectedInstallPath);
     void launchGameIfInstalled();
 
+    QString ariaLogFilename_;
+    QString connectUrl_; // used for updater update
+    Settings& settings_;
+
     QThread thread_;
     int downloadSpeed_;
     int uploadSpeed_;
@@ -98,7 +99,6 @@ private:
 
     DownloadWorker* worker_;
     DownloadTimeCalculator downloadTime_;
-    Settings settings_;
     DownloadState state_;
     std::unique_ptr<QTemporaryDir> temp_dir_;
 

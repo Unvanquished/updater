@@ -211,9 +211,7 @@ int main(int argc, char *argv[])
     SplashController splashController(
         options.relaunchCommand, options.updateUpdaterVersion, options.connectUrl, settings);
     splashController.checkForUpdate();
-    QmlDownloader downloader;
-    downloader.ariaLogFilename_ = options.ariaLogFilename;
-    downloader.connectUrl_ = options.connectUrl;
+    QmlDownloader downloader(options.ariaLogFilename, options.connectUrl, settings);
     QQmlApplicationEngine engine;
     engine.addImportPath(QLatin1String("qrc:/"));
     engine.addImageProvider(QLatin1String("fluidicons"), new IconsImageProvider());
@@ -224,7 +222,10 @@ int main(int argc, char *argv[])
     context->setContextProperty("splashController", &splashController);
     context->setContextProperty("downloader", &downloader);
     context->setContextProperty("splashMilliseconds", options.splashMilliseconds);
-    qmlRegisterType<QmlDownloader>("QmlDownloader", 1, 0, "QmlDownloader");
+
+    // This is done in order to use the DownloadState enum
+    qmlRegisterUncreatableType<QmlDownloader>(
+        "QmlDownloader", 1, 0, "QmlDownloader", "QmlDownloader not constructible");
 
     engine.load(QUrl(QLatin1String("qrc:/splash.qml")));
     return app.exec();
