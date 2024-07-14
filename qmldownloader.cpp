@@ -25,7 +25,11 @@
 
 static const QString UPDATER_BASE_URL("https://github.com/Unvanquished/updater/releases/download");
 
-QmlDownloader::QmlDownloader() : downloadSpeed_(0),
+QmlDownloader::QmlDownloader(QString ariaLogFilename, QString connectUrl, Settings& settings) :
+        ariaLogFilename_(ariaLogFilename),
+        connectUrl_(connectUrl),
+        settings_(settings),
+        downloadSpeed_(0),
         uploadSpeed_(0),
         eta_(0),
         totalSize_(0),
