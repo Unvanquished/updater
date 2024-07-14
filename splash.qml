@@ -28,6 +28,18 @@ ApplicationWindow {
     height: 228
     flags: Qt.SplashScreen | Qt.WindowStaysOnTopHint
 
+    Item {
+        focus: true
+        Keys.onSpacePressed: {
+            // Do the same as if timer runs out, but immediately
+            if (timer.running) {
+                timer.stop();
+                settingsAction.enabled = false;
+                splashController.autoLaunchOrUpdate();
+            }
+        }
+    }
+
     Timer {
         id: timer
         interval: splashMilliseconds
