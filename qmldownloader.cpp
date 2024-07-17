@@ -18,6 +18,7 @@
 #include <QDir>
 #include <QApplication>
 #include <QDebug>
+#include <QMetaObject>
 
 #include "qmldownloader.h"
 #include "system.h"
@@ -181,7 +182,7 @@ void QmlDownloader::toggleDownload(QString installPath)
         startUpdate(installPath);
         return;
     }
-    worker_->toggle();
+    QMetaObject::invokeMethod(worker_, "toggle");
     setState(state() == DOWNLOADING ? PAUSED : DOWNLOADING);
 }
 
@@ -189,7 +190,7 @@ void QmlDownloader::stopAria()
 {
     if (worker_) {
         qDebug() << "Stopping downloader thread";
-        worker_->stop();
+        QMetaObject::invokeMethod(worker_, "stop");
         thread_.quit();
         thread_.wait();
         worker_ = nullptr;

@@ -21,6 +21,7 @@
 #include "quazip/quazip/JlCompress.h"
 #include "settings.h"
 #include "system.h"
+#include <QApplication>
 #include <QDebug>
 #include <QDir>
 
@@ -149,6 +150,8 @@ void DownloadWorker::download()
     auto start = std::chrono::steady_clock::now();
     bool ret = true;
     running_ = true;
+    // If the download is not making any progress, aria sleeps for 1 second each time it is called
+    // with RUN_ONCE. So this will not spin the CPU.
     while (ret && running_) {
         ret = downloader_.run();
         auto now = std::chrono::steady_clock::now();
@@ -175,7 +178,12 @@ void DownloadWorker::download()
                 emit completedSizeChanged(completedSize_);
             }
         }
+
+        // Respond to Qt signals sent to the downloader thread, namely toggle or stop
+        QApplication::processEvents();
     }
+
+    qDebug() << "Download loop exiting";
 }
 
 void DownloadWorker::toggle()
