@@ -20,6 +20,12 @@
 #include "ariadownloader.h"
 #include "system.h"
 
+// libaria2 thread safety note:
+// "Please keep in mind that only one Session object can be allowed per process due to the heavy use
+// of static objects in aria2 code base. Session object is not safe for concurrent accesses from
+// multiple threads. It must be used from one thread at a time. In general, libaria2 is not entirely
+// thread-safe."
+
 int downloadEventCallback(aria2::Session* session, aria2::DownloadEvent event,
                           aria2::A2Gid gid, void* userData)
 {

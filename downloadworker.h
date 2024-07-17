@@ -40,11 +40,11 @@ public:
     void addTorrent(const std::string& uri);
     void setDownloadDirectory(const std::string& dir);
     void setConnectUrl(const QString& url);
-    void toggle();
-    void stop();
 
 public slots:
     void download();
+    void toggle();
+    void stop();
 
 signals:
     void downloadSpeedChanged(int speed);
