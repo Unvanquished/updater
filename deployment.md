@@ -20,18 +20,18 @@
     ### Linux
     1. Build with Docker and extract files:
         ```
-        docker build -t updater2 . --build-arg=release=1
-        docker run -v `pwd`/build-docker:/build-docker -u `id -u $USER` updater2
+        docker build -t unvlauncher-linux . --build-arg=release=1
+        docker run -v `pwd`/build-docker:/build-docker -u `id -u $USER` unvlauncher-linux
         ```
     2. Upload `UnvUpdaterLinux.zip` from `build-docker/`.
 
     ### Windows
     1. Build with Docker and extract files:
         ```
-        docker build -t updater2-win -f Dockerfile.win . --build-arg=release=1
-        docker create --name updater2-win updater2-win
-        docker cp updater2-win:/release-win ./build-docker
-        docker rm updater2-win
+        docker build -t unvlauncher-win -f Dockerfile.win . --build-arg=release=1
+        docker create --name unvlauncher-win unvlauncher-win
+        docker cp unvlauncher-win:/release-win ./build-docker
+        docker rm unvlauncher-win
         ```
     2. Upload `UnvUpdaterWin.zip` and `UnvanquishedUpdater.exe` from `build-docker/release-win/`.
 
