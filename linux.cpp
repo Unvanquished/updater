@@ -162,7 +162,7 @@ bool installShortcuts()
     }
     int ret = QProcess::execute("xdg-mime",
                                 {QString("default"),
-                                 desktopDir + "/net.unvanquished.UnvanquishedProtocolHandler.desktop",
+                                 desktopDir + "/" + desktopFileName,
                                  QString("x-scheme-handler/unv")});
     qDebug() << "xdg-mime returned" << ret;
     ret = QProcess::execute("update-desktop-database", {desktopDir});
