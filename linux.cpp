@@ -138,9 +138,22 @@ bool installShortcuts()
 {
     // Set up menu and protocol handler
     Settings settings;
-    QString desktopDir = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation);
-    QFile::remove(desktopDir + "/unvanquished.desktop"); // updater v0.0.5 and before
-    QFile::remove(desktopDir + "/net.unvanquished.UnvanquishedProtocolHandler.desktop"); // up to v0.2.0
+    QString desktopDirString = QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation);
+    if (desktopDirString.isEmpty()) {
+        qDebug() << "ApplicationsLocation for desktop files not provided";
+        return false;
+    }
+    QDir desktopDir(desktopDirString);
+    if (desktopDir.exists()) {
+        desktopDir.remove("unvanquished.desktop"); // updater v0.0.5 and before
+        desktopDir.remove("net.unvanquished.UnvanquishedProtocolHandler.desktop"); // up to v0.2.0
+    } else {
+        if (!desktopDir.mkpath(".")) {
+            qDebug() << "Could not create directory for desktop files" << desktopDirString;
+            return false;
+        }
+        qDebug() << "Created directory for desktop files" << desktopDirString;
+    }
 
     QString desktopFileName = "net.unvanquished.Unvanquished.desktop";
     QFile desktopFile(":resources/" + desktopFileName);
@@ -150,22 +163,24 @@ bool installShortcuts()
     }
     QString desktopStr = QString(desktopFile.readAll().data()).arg(settings.installPath());
     {
-        QFile outputFile(desktopDir + "/" + desktopFileName);
+        QFile outputFile(desktopDir.filePath(desktopFileName));
         if (!outputFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
-            qDebug() << "error opening" << desktopFileName;
+            qDebug() << "error opening" << outputFile.fileName();
             return false;
         }
         if (outputFile.write(desktopStr.toUtf8().constData(), desktopStr.size()) != desktopStr.size()) {
-            qDebug() << "error writing" << desktopFileName;
+            qDebug() << "error writing" << outputFile.fileName();
             return false;
         }
+        qDebug() << "Created desktop file" << outputFile.fileName();
     }
+
     int ret = QProcess::execute("xdg-mime",
                                 {QString("default"),
-                                 desktopDir + "/" + desktopFileName,
+                                 desktopDir.filePath(desktopFileName),
                                  QString("x-scheme-handler/unv")});
     qDebug() << "xdg-mime returned" << ret;
-    ret = QProcess::execute("update-desktop-database", {desktopDir});
+    ret = QProcess::execute("update-desktop-database", {desktopDirString});
     qDebug() << "update-desktop-database returned" << ret;
 
     // install icon
