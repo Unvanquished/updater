@@ -172,6 +172,11 @@ QString archiveName()
     }
 }
 
+QString updaterSystem()
+{
+    return "windows-i686";
+}
+
 QString defaultInstallPath()
 {
     static const char* PROGRAM_FILES_VAR = "programfiles";
@@ -283,11 +288,6 @@ bool updateUpdater(const QString& updaterArchive, const QString& connectUrl)
     }
     QCoreApplication::quit();
     return true;
-}
-
-QString updaterArchiveName()
-{
-    return "UnvUpdaterWin.zip";
 }
 
 std::string getCertStore()

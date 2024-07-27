@@ -31,7 +31,7 @@ GameLauncher::GameLauncher(const QString& connectUrl, const Settings& settings)
 // Does our version of daemon have -connect-trusted?
 static bool haveConnectTrusted(const QString& gameVersion)
 {
-    // Updater version up to v0.2.0 may set "unknown" as game version if versions.json request fails
+    // Updater version up to v0.2.0 may set "unknown" as game version if current.json request fails
     if (gameVersion == "unknown")
         return false;
     // Hacky string comparison, assume we won't go down to 0.9 or up to 0.100 :)

@@ -23,11 +23,11 @@
 #include "qmldownloader.h"
 #include "system.h"
 
-static const QString UPDATER_BASE_URL("https://github.com/Unvanquished/updater/releases/download");
 
-QmlDownloader::QmlDownloader(QString ariaLogFilename, QString connectUrl, Settings& settings) :
+QmlDownloader::QmlDownloader(QString ariaLogFilename, QString connectUrl, SplashController& splashController, Settings& settings) :
         ariaLogFilename_(ariaLogFilename),
         connectUrl_(connectUrl),
+        splashController_(splashController),
         settings_(settings),
         downloadSpeed_(0),
         uploadSpeed_(0),
@@ -40,6 +40,14 @@ QmlDownloader::QmlDownloader(QString ariaLogFilename, QString connectUrl, Settin
 QmlDownloader::~QmlDownloader()
 {
     stopAria();
+}
+
+QString QmlDownloader::newsFallbackUrl() const {
+	return "qrc:/resources/disconnected_posts.json";
+}
+
+QString QmlDownloader::newsUrl() const {
+	return splashController_.newsUrl();
 }
 
 int QmlDownloader::downloadSpeed() const {
@@ -155,6 +163,9 @@ void QmlDownloader::startUpdate(const QString& selectedInstallPath)
         emit fatalMessage("Install dir not writable. Please select another");
         return;
     }
+
+	QString gameUrl = splashController_.gameUrl();
+    qDebug()  << "Using torrent file:" << gameUrl;
     // Persist the install path only now that download has been initiated and we know the path is good
     emit statusMessage("Installing to " + dir.canonicalPath());
     if (settings_.installPath() != selectedInstallPath) {
@@ -166,7 +177,7 @@ void QmlDownloader::startUpdate(const QString& selectedInstallPath)
     setState(DOWNLOADING);
     worker_ = new DownloadWorker(ariaLogFilename_);
     worker_->setDownloadDirectory(dir.canonicalPath().toStdString());
-    worker_->addTorrent("https://cdn.unvanquished.net/current.torrent");
+    worker_->addTorrent(gameUrl.toStdString());
     worker_->moveToThread(&thread_);
     connect(&thread_, SIGNAL(finished()), worker_, SLOT(deleteLater()));
     connect(worker_, SIGNAL(onDownloadEvent(int)), this, SLOT(onDownloadEvent(int)));
@@ -201,14 +212,13 @@ void QmlDownloader::stopAria()
     }
 }
 
-void QmlDownloader::startUpdaterUpdate(QString version)
+void QmlDownloader::startUpdaterUpdate(QString updaterUrl)
 {
-    QString url = UPDATER_BASE_URL + "/" + version + "/" + Sys::updaterArchiveName();
     temp_dir_.reset(new QTemporaryDir());
     worker_ = new DownloadWorker(ariaLogFilename_);
     worker_->setDownloadDirectory(QDir(temp_dir_->path()).canonicalPath().toStdString());
     worker_->setConnectUrl(connectUrl_);
-    worker_->addUpdaterUri(url.toStdString());
+    worker_->addUpdaterUri(updaterUrl.toStdString());
     worker_->moveToThread(&thread_);
     connect(&thread_, SIGNAL(finished()), worker_, SLOT(deleteLater()));
     connect(worker_, SIGNAL(onDownloadEvent(int)), this, SLOT(onDownloadEvent(int)));

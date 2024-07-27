@@ -1,6 +1,6 @@
 ## Network resources used by the updater
 - News REST endpoint which returns links to Wordpress articles on unvanquished.net. The featured image in each news article must be a type which is supported by the updater (see issue #51). Currently PNG and JPEG are known to work.
-- versions.json file on unvanquished.net, used to determine whether update is needed
+- current.json file on unvanquished.net, used to determine whether update is needed
 - Github releases. These are targeted by download links on unvanquished.net and by the updater's self-update process.
 - Torrent URL used to download the latest game version
 
@@ -35,4 +35,4 @@
         ```
     2. Upload `UnvUpdaterWin.zip` and `UnvanquishedUpdater.exe` from `build-docker/release-win/`.
 
-4. Bump the updater version on unvanquished.net to the new tag, so that it is reflected in versions.json and the download links.
+4. Bump the updater version on unvanquished.net to the new tag, so that it is reflected in current.json and the download links.
