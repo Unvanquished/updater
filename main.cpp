@@ -162,6 +162,11 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationVersion(GIT_VERSION);
     QCoreApplication::setOrganizationDomain("unvanquished.net");
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+
+    /* Set the WMCLASS, similar to the --name=WMCLASS command line option.
+    See: https://github.com/Unvanquished/updater/pull/142 */
+    qputenv("RESOURCE_NAME", "net.unvanquished.Unvanquished");
+
     QApplication app(argc, argv);
 
     // The font is already needed to display our arg parsing error on Linux
