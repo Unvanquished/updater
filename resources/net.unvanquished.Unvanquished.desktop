@@ -10,5 +10,6 @@ TryExec=%1/updater
 MimeType=x-scheme-handler/unv
 Categories=Game;ActionGame;StrategyGame;
 StartupWMClass=net.unvanquished.Unvanquished
+SingleMainWindow=true
 # Probably doesn't work since the updater is initially launched, not daemon
 PrefersNonDefaultGPU=true
