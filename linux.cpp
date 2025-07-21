@@ -292,7 +292,9 @@ void initApplicationName()
     QCoreApplication::setOrganizationName("unvanquished");
     QCoreApplication::setApplicationName("updater");
 
-    // for Wayland backend
+    // WM_CLASS for X backend
+    qputenv("RESOURCE_NAME", "net.unvanquished.Unvanquished");
+    // equivalent for Wayland backend
     QGuiApplication::setDesktopFileName(DESKTOP_FILE_NAME);
 }
 
