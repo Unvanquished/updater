@@ -1,5 +1,5 @@
 # See Dockerfile.win for an explanation of some aspects of this file.
-FROM debian:buster-slim
+FROM docker.io/debian/eol:buster-slim
 # OpenSSL build requires perl
 # Qt tarball requires xz-utils
 # Qt build requires libgl1-mesa-dev, libxkbcommon-dev, python, zlib1g-dev
