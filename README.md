@@ -3,8 +3,10 @@ Autoupdates Unvanquished using Unvanquished's CDN
 
 ## Initializing submodules
 ```
-git submodule init && git submodule update
+git submodule update --init
 ```
+
+Note: Fluid has submodules of its own, but they are not used, so the above command is intentionally not recursive.
 
 ## Build for Linux (without Docker)
 
