@@ -75,13 +75,7 @@ jobs:
         sudo apt-get update
         sudo apt-get -y -q --no-install-recommends install qtbase5-dev qtdeclarative5-dev libqt5qml5 libqt5quick5-gles libqt5svg5-dev autoconf autopoint gettext
         export MAKEFLAGS="-j$(($(nproc) + 1))"
-        git submodule update --init aria2
-        git submodule update --init fluid
-        git -C fluid submodule set-url features https://github.com/lirios/qmake-features.git
-        git -C fluid submodule update --init features
-        git -C fluid submodule set-url qbs-shared https://github.com/lirios/qbs-shared.git
-        git -C fluid submodule update --init qbs-shared
-        git submodule update --init quazip
+        git submodule update --init
         cd aria2
         autoreconf -i
         ./configure --without-libxml2 --without-libexpat --without-sqlite3 --enable-libaria2 --without-zlib --without-libcares --enable-static=no ARIA2_STATIC=no --without-libssh2 --disable-websocket --disable-nls --with-openssl
