@@ -33,10 +33,10 @@ RUN apt-get update && apt-get install -y \
 # Build OpenSSL #
 #################
 WORKDIR /build-ssl
-RUN curl -LO https://www.openssl.org/source/openssl-1.1.1i.tar.gz && \
-    echo $(curl -L https://www.openssl.org/source/openssl-1.1.1i.tar.gz.sha1) openssl-1.1.1i.tar.gz | sha1sum --check
-RUN tar -xzf openssl-1.1.1i.tar.gz
-WORKDIR /build-ssl/openssl-1.1.1i
+RUN curl -LO https://github.com/openssl/openssl/releases/download/openssl-3.6.0/openssl-3.6.0.tar.gz && \
+    curl -L https://github.com/openssl/openssl/releases/download/openssl-3.6.0/openssl-3.6.0.tar.gz.sha256 | sha256sum --check
+RUN tar -xzf openssl-3.6.0.tar.gz
+WORKDIR /build-ssl/openssl-3.6.0
 RUN ./config no-shared --prefix=/openssl
 RUN make -j`nproc` && make install_sw && rm -rf /build-ssl
 
@@ -49,7 +49,7 @@ RUN curl -LO https://download.qt.io/archive/qt/5.14/5.14.2/single/qt-everywhere-
     curl -L https://download.qt.io/archive/qt/5.14/5.14.2/single/md5sums.txt | md5sum --check --ignore-missing && \
     tar -xJf qt-everywhere-src-5.14.2.tar.xz && \
     cd qt-everywhere-src-5.14.2 && \
-    OPENSSL_LIBS='-L/openssl/lib -lssl -lcrypto -lpthread -ldl' ./configure -opensource -confirm-license -release -optimize-size -no-shared -static --c++std=14 -nomake tests -nomake tools -nomake examples -no-gif -no-icu -no-glib -no-qml-debug -opengl desktop -no-eglfs -no-opengles3 -no-angle -no-egl -qt-xcb -xkbcommon -dbus-runtime -qt-freetype -qt-pcre -qt-harfbuzz -qt-libpng -qt-libjpeg -system-zlib -I /openssl/include -openssl-linked -prefix /qt && \
+    OPENSSL_LIBS='-L/openssl/lib64 -lssl -lcrypto -lpthread -ldl' ./configure -opensource -confirm-license -release -optimize-size -no-shared -static --c++std=14 -nomake tests -nomake tools -nomake examples -no-gif -no-icu -no-glib -no-qml-debug -opengl desktop -no-eglfs -no-opengles3 -no-angle -no-egl -qt-xcb -xkbcommon -dbus-runtime -qt-freetype -qt-pcre -qt-harfbuzz -qt-libpng -qt-libjpeg -system-zlib -I /openssl/include -openssl-linked -prefix /qt && \
     bash -c "make -j`nproc` module-{$UPDATER_MODULES} && make module-{$UPDATER_MODULES}-install_subtargets" && \
     rm -rf /build-qt
 
@@ -60,7 +60,7 @@ COPY aria2 /updater2/aria2
 COPY .git/modules/aria2 /updater2/.git/modules/aria2
 WORKDIR /updater2/aria2
 RUN git clean -dXff
-RUN autoreconf -i && PKG_CONFIG_PATH=/openssl/lib/pkgconfig ./configure --without-libxml2 --without-libexpat --without-sqlite3 --enable-libaria2 --without-zlib --without-libcares --enable-static=yes ARIA2_STATIC=yes --without-libssh2 --disable-websocket --disable-nls --with-openssl && make -j`nproc`
+RUN autoreconf -i && PKG_CONFIG_PATH=/openssl/lib64/pkgconfig ./configure --without-libxml2 --without-libexpat --without-sqlite3 --enable-libaria2 --without-zlib --without-libcares --enable-static=yes ARIA2_STATIC=yes --without-libssh2 --disable-websocket --disable-nls --with-openssl && make -j`nproc`
 
 #################
 # Build updater #
