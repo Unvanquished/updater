@@ -84,7 +84,7 @@ jobs:
         git submodule update --init quazip
         cd aria2
         autoreconf -i
-        ./configure --without-libxml2 --without-libexpat --without-sqlite3 --enable-libaria2 --without-zlib --without-libcares --enable-static=no ARIA2_STATIC=no --without-libssh2 --disable-websocket --disable-nls --with-openssl
+        ./configure --without-libxml2 --without-libexpat --without-sqlite3 --enable-libaria2 --without-zlib --without-libcares --enable-static=no ARIA2_STATIC=no --without-libssh2 --disable-metalink --disable-websocket --disable-nls --with-openssl
         make
         cd ..
         qmake -config release
