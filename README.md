@@ -94,4 +94,6 @@ Dependencies have the following licenses:
 - Qt: GPLv2 or GPLv3 or LGPLv3
 - Quazip: LGPL version 2.1 or greater
 - Fluid: Mozilla Public License 2.0
+- Aria2: GPL version 2 or greater
+- OpenSSL 3.x (Linux build only): Apache License 2.0
 - ExecInExplorer.cpp: MIT License
