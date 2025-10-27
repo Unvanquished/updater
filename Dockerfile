@@ -56,19 +56,19 @@ RUN curl -LO https://download.qt.io/archive/qt/5.14/5.14.2/single/qt-everywhere-
 ###############
 # Build aria2 #
 ###############
-COPY aria2 /updater2/aria2
-COPY .git/modules/aria2 /updater2/.git/modules/aria2
-WORKDIR /updater2/aria2
+COPY aria2 /updater/aria2
+COPY .git/modules/aria2 /updater/.git/modules/aria2
+WORKDIR /updater/aria2
 RUN git clean -dXff
 RUN autoreconf -i && OPENSSL_LIBS='-L/openssl/lib64 -lssl -lcrypto -lpthread -ldl' OPENSSL_CFLAGS='-I /openssl/include' ./configure --without-libxml2 --without-libexpat --without-sqlite3 --enable-libaria2 --without-zlib --without-libcares --enable-static --disable-shared --without-libssh2 --disable-metalink --disable-websocket --disable-nls --with-openssl && make -j`nproc`
 
 #################
 # Build updater #
 #################
-COPY . /updater2
-RUN set -e; for D in . quazip fluid; do cd /updater2/$D && git clean -dXff; done
+COPY . /updater
+RUN set -e; for D in . quazip fluid; do cd /updater/$D && git clean -dXff; done
 WORKDIR /build
-RUN /qt/bin/qmake -config release QMAKE_LFLAGS+="-no-pie" /updater2 && make -j`nproc`
+RUN /qt/bin/qmake -config release QMAKE_LFLAGS+="-no-pie" /updater && make -j`nproc`
 RUN mv updater2 updater2-nonstripped && strip updater2-nonstripped -o updater2
 # Version check: do not depend on glibc > 2.31
 RUN echo GLIBC_2.31 > target_version && \
