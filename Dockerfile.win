@@ -61,4 +61,4 @@ WORKDIR /build
 RUN /qt/bin/qmake -config release QMAKE_LFLAGS+="-static" INCLUDEPATH+=/qt/include/QtZlib /updater && make -j`nproc`
 WORKDIR /release-win
 ARG release
-RUN if [ -n "$release" ]; then cp /build/release/updater2.exe UnvanquishedUpdater.exe && 7z -tzip -mx=9 a UnvUpdaterWin.zip UnvanquishedUpdater.exe; fi
+RUN if [ -n "$release" ]; then cp /build/release/updater.exe UnvanquishedUpdater.exe && 7z -tzip -mx=9 a UnvUpdaterWin.zip UnvanquishedUpdater.exe; fi

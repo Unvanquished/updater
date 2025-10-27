@@ -12,7 +12,7 @@
     2. Follow the __Build Mac version natively__ instructions in the README.
     3. Zip
         ```
-        mv updater2.app 'Unvanquished Updater.app'
+        mv updater.app 'Unvanquished Updater.app'
         zip -r UnvUpdaterOSX.zip 'Unvanquished Updater.app'
         ```
     4. Upload `UnvUpdaterOSX.zip`.
