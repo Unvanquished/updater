@@ -4,11 +4,11 @@
 #
 # Hence the aria2 build should be cached since it rarely changes and takes about 5 times as long to
 # build as the updater. To permit caching, the aria2 directory needs to be copied separately before
-# the rest of updater2.
+# the rest of /updater.
 #
 # git clean -dXff is used to delete all the files specified by .gitignore. This requires the data
 # from .git since a checked-in file will not be ignored. For aria2 it is assumed that the data
-# is stored in the updater2/.git/modules directory.
+# is stored in the updater/.git/modules directory.
 
 FROM docker.io/debian:bullseye-slim
 RUN apt-get update && apt-get install -y \
@@ -46,19 +46,19 @@ RUN curl -LO https://download.qt.io/archive/qt/5.14/5.14.2/single/qt-everywhere-
 ###############
 # Build aria2 #
 ###############
-COPY aria2 /updater2/aria2
-COPY .git/modules/aria2 /updater2/.git/modules/aria2
-WORKDIR /updater2/aria2
+COPY aria2 /updater/aria2
+COPY .git/modules/aria2 /updater/.git/modules/aria2
+WORKDIR /updater/aria2
 RUN git clean -dXff
 RUN autoreconf -i && ./configure --without-libxml2 --without-libexpat --without-sqlite3 --enable-libaria2 --without-libz --without-libcares --enable-static --disable-shared ARIA2_STATIC=yes --without-libssh2 --disable-metalink --disable-websocket --disable-nls --host i686-w64-mingw32 && make -j`nproc`
 
 #################
 # Build updater #
 #################
-COPY . /updater2
-RUN set -e; for D in . quazip fluid; do cd /updater2/$D && git clean -dXff; done
+COPY . /updater
+RUN set -e; for D in . quazip fluid; do cd /updater/$D && git clean -dXff; done
 WORKDIR /build
-RUN /qt/bin/qmake -config release QMAKE_LFLAGS+="-static" INCLUDEPATH+=/qt/include/QtZlib /updater2 && make -j`nproc`
+RUN /qt/bin/qmake -config release QMAKE_LFLAGS+="-static" INCLUDEPATH+=/qt/include/QtZlib /updater && make -j`nproc`
 WORKDIR /release-win
 ARG release
 RUN if [ -n "$release" ]; then cp /build/release/updater2.exe UnvanquishedUpdater.exe && 7z -tzip -mx=9 a UnvUpdaterWin.zip UnvanquishedUpdater.exe; fi
