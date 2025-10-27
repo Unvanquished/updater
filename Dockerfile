@@ -60,7 +60,7 @@ COPY aria2 /updater2/aria2
 COPY .git/modules/aria2 /updater2/.git/modules/aria2
 WORKDIR /updater2/aria2
 RUN git clean -dXff
-RUN autoreconf -i && PKG_CONFIG_PATH=/openssl/lib64/pkgconfig ./configure --without-libxml2 --without-libexpat --without-sqlite3 --enable-libaria2 --without-zlib --without-libcares --enable-static --disable-shared ARIA2_STATIC=yes --without-libssh2 --disable-metalink --disable-websocket --disable-nls --with-openssl && make -j`nproc`
+RUN autoreconf -i && OPENSSL_LIBS='-L/openssl/lib64 -lssl -lcrypto -lpthread -ldl' OPENSSL_CFLAGS='-I /openssl/include' ./configure --without-libxml2 --without-libexpat --without-sqlite3 --enable-libaria2 --without-zlib --without-libcares --enable-static --disable-shared --without-libssh2 --disable-metalink --disable-websocket --disable-nls --with-openssl && make -j`nproc`
 
 #################
 # Build updater #
