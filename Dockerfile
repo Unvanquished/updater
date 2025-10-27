@@ -69,13 +69,13 @@ COPY . /updater
 RUN set -e; for D in . quazip fluid; do cd /updater/$D && git clean -dXff; done
 WORKDIR /build
 RUN /qt/bin/qmake -config release QMAKE_LFLAGS+="-no-pie" /updater && make -j`nproc`
-RUN mv updater2 updater2-nonstripped && strip updater2-nonstripped -o updater2
+RUN mv updater updater-nonstripped && strip updater-nonstripped -o updater
 # Version check: do not depend on glibc > 2.31
 RUN echo GLIBC_2.31 > target_version && \
-    grep -aoE 'GLIBC_[0-9.]+' updater2 > symbol_versions && \
+    grep -aoE 'GLIBC_[0-9.]+' updater > symbol_versions && \
     cat target_version symbol_versions | sort -V | tail -1 > max_version && \
     diff -q target_version max_version
 ARG release
-RUN if [ -n "$release" ]; then cp updater2 UnvanquishedUpdater && 7z -tzip -mx=9 a UnvUpdaterLinux.zip UnvanquishedUpdater; fi
+RUN if [ -n "$release" ]; then cp updater UnvanquishedUpdater && 7z -tzip -mx=9 a UnvUpdaterLinux.zip UnvanquishedUpdater; fi
 ENV zipfile=${release:+UnvUpdaterLinux.zip}
-CMD cp updater2 updater2-nonstripped $zipfile /build-docker
+CMD cp updater updater-nonstripped $zipfile /build-docker
