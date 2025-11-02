@@ -112,6 +112,16 @@ void migrateHomePath()
     }
 }
 
+QString relativeInstallPath()
+{
+    QFileInfo applicationFileInfo(QCoreApplication::applicationFilePath());
+    if (applicationFileInfo.fileName().toLower().startsWith("relative"))
+    {
+        return applicationFileInfo.absolutePath();
+    }
+    return QString();
+}
+
 QString defaultInstallPath()
 {
     // if needed, migrate legacy homepath to prevent the updater
@@ -119,10 +129,17 @@ QString defaultInstallPath()
     // it itself
     migrateHomePath();
 
-    // Does not use QStandardPaths::AppDataLocation because
-    // it returns "~/.local/share/unvanquished/updater"
-    // and we want "~/.local/share/unvanquished/base"
-    // game itself puts stuff in "~/.local/share/unvanquished"
+    // Relative installation, install next to the updater
+    // if there is an updater.conf file in the same directory.
+    QString relative = relativeInstallPath();
+    if (!relative.isNull()) {
+        return relative;
+    }
+
+    // Standard installation, do not use QStandardPaths::AppDataLocation
+    // because it returns: ~/.local/share/unvanquished/updater
+    // and we want: ~/.local/share/unvanquished/base
+    // The game itself stores its own files in: ~/.local/share/unvanquished
     return QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) + "/unvanquished/base";
 }
 
@@ -161,7 +178,17 @@ bool installShortcuts()
         qDebug() << "missing resource" << desktopFileName;
         return false;
     }
-    QString desktopStr = QString(desktopFile.readAll().data()).arg(settings.installPath());
+
+    QString name = "updater";
+
+    if (!relativeInstallPath().isNull()) {
+        QFileInfo applicationFileInfo(QCoreApplication::applicationFilePath());
+        name = applicationFileInfo.fileName();
+    }
+
+    QString path = settings.installPath() + QDir::separator() + name;
+
+    QString desktopStr = QString(desktopFile.readAll().data()).arg(path);
     {
         QFile outputFile(desktopDir.filePath(desktopFileName));
         if (!outputFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
@@ -197,7 +224,15 @@ bool installShortcuts()
 
 bool installUpdater(const QString& installPath) {
     QFileInfo src(QCoreApplication::applicationFilePath());
+
+    if (!relativeInstallPath().isNull())
+    {
+        qDebug() << "Updater is in relative install location";
+        return true;
+    }
+
     QFileInfo dest(installPath + QDir::separator() + "updater");
+
     if (src == dest) {
         qDebug() << "Updater already in install location";
         return true;
@@ -291,9 +326,18 @@ void initApplicationName()
     QCoreApplication::setApplicationName("updater");
 }
 
-// Settings are stored in ~/.config/unvanquished/updater.conf
 QSettings* makePersistentSettings(QObject* parent)
 {
+    // Relative installation, store the configuration file next to
+    // the updater if there is already one there.
+    QString relative = relativeInstallPath();
+    if (!relative.isNull()) {
+        qDebug() << "Updater is relative";
+        return new QSettings(relative + QDir::separator() + "updater.conf", QSettings::NativeFormat, parent);
+    }
+
+    // Standard installation, settings are stored
+    // in: ~/.config/unvanquished/updater.conf
     return new QSettings(parent);
 }
 
