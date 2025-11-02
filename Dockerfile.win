@@ -10,7 +10,9 @@
 # from .git since a checked-in file will not be ignored. For aria2 it is assumed that the data
 # is stored in the updater2/.git/modules directory.
 
-FROM debian:buster-slim
+FROM docker.io/debian:buster-slim
+RUN sed -e 's/deb.debian.org/archive.debian.org/' -i /etc/apt/sources.list
+
 RUN apt-get update && apt-get install -y \
     autoconf \
     autopoint \

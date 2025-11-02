@@ -1,5 +1,7 @@
 # See Dockerfile.win for an explanation of some aspects of this file.
-FROM debian:buster-slim
+FROM docker.io/debian:buster-slim
+RUN sed -e 's/deb.debian.org/archive.debian.org/' -i /etc/apt/sources.list
+
 # OpenSSL build requires perl
 # Qt tarball requires xz-utils
 # Qt build requires libgl1-mesa-dev, libxkbcommon-dev, python, zlib1g-dev
@@ -72,7 +74,7 @@ RUN mv updater2 updater2-nonstripped && strip updater2-nonstripped -o updater2
 # Version check: do not depend on glibc > 2.26
 RUN echo GLIBC_2.26 > target_version && \
     grep -aoE 'GLIBC_[0-9.]+' updater2 > symbol_versions && \
-    cat target_version symbol_versions | sort -V | tail -1 > max_version && \
+    cat target_version symbol_versions | sort -V | tail -1 | tee max_version && \
     diff -q target_version max_version
 ARG release
 RUN if [ -n "$release" ]; then cp updater2 UnvanquishedUpdater && 7z -tzip -mx=9 a UnvUpdaterLinux.zip UnvanquishedUpdater; fi
