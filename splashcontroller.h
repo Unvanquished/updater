@@ -24,6 +24,11 @@
 #include "currentversionfetcher.h"
 #include "settings.h"
 
+inline QString updaterAppVersion()
+{
+    return "v0.2.1";
+}
+
 // These are used only on Windows where relaunching is needed for admin (de)elevation.
 enum class RelaunchCommand
 {
