@@ -33,8 +33,9 @@ RUN apt-get update && apt-get install -y \
 # Build OpenSSL #
 #################
 WORKDIR /build-ssl
-RUN curl -LO https://github.com/openssl/openssl/releases/download/openssl-3.6.0/openssl-3.6.0.tar.gz && \
-    curl -L https://github.com/openssl/openssl/releases/download/openssl-3.6.0/openssl-3.6.0.tar.gz.sha256 | sha256sum --check
+COPY sha256sums-openssl.txt /build-ssl/
+RUN curl -LO http://github.com/openssl/openssl/releases/download/openssl-3.6.0/openssl-3.6.0.tar.gz && \
+    sha256sum --check sha256sums-openssl.txt
 RUN tar -xzf openssl-3.6.0.tar.gz
 WORKDIR /build-ssl/openssl-3.6.0
 RUN ./config --prefix=/openssl --openssldir=/dev/null no-shared no-apps no-autoload-config no-capieng no-dso no-dynamic-engine no-engine no-loadereng no-module -Os
@@ -44,9 +45,10 @@ RUN make -j`nproc` && make install_sw && rm -rf /build-ssl
 # Build Qt #
 ############
 WORKDIR /build-qt
+COPY md5sums-qt.txt /build-qt/
 ENV UPDATER_MODULES=qtbase,qtquickcontrols,qtquickcontrols2,qtsvg,qtgraphicaleffects
 RUN curl -LO https://download.qt.io/archive/qt/5.14/5.14.2/single/qt-everywhere-src-5.14.2.tar.xz && \
-    curl -L https://download.qt.io/archive/qt/5.14/5.14.2/single/md5sums.txt | md5sum --check --ignore-missing && \
+    md5sum --check --ignore-missing md5sums-qt.txt && \
     tar -xJf qt-everywhere-src-5.14.2.tar.xz && \
     cd qt-everywhere-src-5.14.2 && \
     OPENSSL_LIBS='-L/openssl/lib64 -lssl -lcrypto -lpthread -ldl' ./configure -opensource -confirm-license -release -optimize-size -no-shared -static --c++std=14 -nomake tests -nomake tools -nomake examples -no-gif -no-icu -no-glib -no-qml-debug -opengl desktop -no-eglfs -no-opengles3 -no-angle -no-egl -qt-xcb -xkbcommon -dbus-runtime -qt-freetype -qt-pcre -qt-harfbuzz -qt-libpng -qt-libjpeg -system-zlib -I /openssl/include -openssl-linked -prefix /qt && \
