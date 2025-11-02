@@ -73,7 +73,7 @@ jobs:
       run: |
         set -x
         sudo apt-get update
-        sudo apt-get -y -q --no-install-recommends install qtbase5-dev qtdeclarative5-dev libqt5qml5 libqt5quick5-gles libqt5svg5-dev autoconf autopoint gettext
+        sudo apt-get -y -q --no-install-recommends install qtbase5-dev qtdeclarative5-dev libqt5qml5 libqt5quick5 libqt5svg5-dev autoconf autopoint gettext
         export MAKEFLAGS="-j$(($(nproc) + 1))"
         git submodule update --init
         cd aria2
