@@ -22,7 +22,6 @@
 #include <atomic>
 #include <QObject>
 #include <QRegularExpression>
-#include <QStandardItemModel>
 
 class DownloadWorker : public QObject, public AriaDownloader::DownloadCallback
 {
