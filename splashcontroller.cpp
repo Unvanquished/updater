@@ -95,7 +95,7 @@ void SplashController::autoLaunchOrUpdate()
     }
 
     // If no relaunch action, detect update needed based on versions.json
-    if (!latestUpdaterVersion_.isEmpty() && latestUpdaterVersion_ != QString(GIT_VERSION)) {
+    if (!latestUpdaterVersion_.isEmpty() && latestUpdaterVersion_ != updaterAppVersion()) {
         qDebug() << "Updater update to version" << latestUpdaterVersion_ << "required";
         // Remember the URL if we are doing updater update
         QString updaterArgs = "--splashms 1 --internalcommand updateupdater:" + latestUpdaterVersion_;

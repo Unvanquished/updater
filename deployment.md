@@ -5,8 +5,9 @@
 - Torrent URL used to download the latest game version
 
 ## Release process
-1. Create a new Git tag.
-2. Make a Github release with the same name as the tag. Build and upload the files for each platform:
+1. Make a commit updating the version string in `updaterAppVersion()` in `splashcontroller.h`.
+2. Create a new Git tag matching the version string.
+3. Make a Github release with the same name as the tag/version string. Build and upload the files for each platform:
     ### Mac
     1. `rm -rf build/`
     2. Follow the __Build Mac version natively__ instructions in the README.

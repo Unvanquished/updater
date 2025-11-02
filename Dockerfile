@@ -7,7 +7,7 @@ FROM docker.io/debian:bullseye-slim
 # updater builds but icons (gear, download, etc.) are mysteriously missing, when built in the
 # Bullseye environment. It may be that not all are necessary.
 # aria2 build requires autoconf, autopoint, gettext
-# updater build requires git
+# git is used for cleaning unwanted files
 RUN apt-get update && apt-get install -y \
     autoconf \
     autopoint \

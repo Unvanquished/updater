@@ -159,7 +159,7 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
 int main(int argc, char *argv[])
 {
     Sys::initApplicationName();
-    QCoreApplication::setApplicationVersion(GIT_VERSION);
+    QCoreApplication::setApplicationVersion(updaterAppVersion());
     QCoreApplication::setOrganizationDomain("unvanquished.net");
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
@@ -188,7 +188,7 @@ int main(int argc, char *argv[])
         qDebug() << "Will connect to URL:" << options.connectUrl;
     }
 
-    qDebug() << "Git version:" << GIT_VERSION;
+    qDebug() << "Git version:" << updaterAppVersion();
     LogSettings();
     try {
         qDebug() << "Testing exception handling...";
