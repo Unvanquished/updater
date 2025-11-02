@@ -73,7 +73,7 @@ RUN mv updater updater-nonstripped && strip updater-nonstripped -o updater
 # Version check: do not depend on glibc > 2.31
 RUN echo GLIBC_2.31 > target_version && \
     grep -aoE 'GLIBC_[0-9.]+' updater > symbol_versions && \
-    cat target_version symbol_versions | sort -V | tail -1 > max_version && \
+    cat target_version symbol_versions | sort -V | tail -1 | tee max_version && \
     diff -q target_version max_version
 ARG release
 RUN if [ -n "$release" ]; then cp updater UnvanquishedUpdater && 7z -tzip -mx=9 a UnvUpdaterLinux.zip UnvanquishedUpdater; fi
