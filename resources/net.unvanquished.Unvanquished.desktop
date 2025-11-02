@@ -8,7 +8,7 @@ Type=Application
 Exec="%1/updater" -- %u
 TryExec=%1/updater
 MimeType=x-scheme-handler/unv
-Categories=Game;ActionGame;StrategyGame;
+Categories=Game;ActionGame;StrategyGame;Shooter;
 StartupWMClass=net.unvanquished.Unvanquished
 SingleMainWindow=true
 # Probably doesn't work since the updater is initially launched, not daemon
