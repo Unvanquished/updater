@@ -84,7 +84,7 @@ void DownloadWorker::onDownloadCallback(aria2::Session* session, aria2::Download
                 }
                 auto files = handle->getFiles();
                 qDebug() << "Downloaded updater at" << files[0].path.c_str();
-                Sys::updateUpdater(QString(files[0].path.c_str()), connectUrl_);
+                Sys::updateUpdater(QString(files[0].path.c_str()), connectUrl_, updateGame_);
                 return;
             } else {
                 // For a torrent, happens when aria2 is stopped
@@ -200,6 +200,11 @@ void DownloadWorker::setDownloadDirectory(const std::string& dir)
 void DownloadWorker::setConnectUrl(const QString& url)
 {
     connectUrl_ = url;
+}
+
+void DownloadWorker::setGameUpdate(bool updateGame)
+{
+    updateGame_ = updateGame;
 }
 
 void DownloadWorker::stop()

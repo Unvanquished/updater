@@ -142,6 +142,8 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
         QString command = optionParser.value(internalCommandOption);
         if (command == "playnow") {
             options.relaunchCommand = RelaunchCommand::PLAY_NOW;
+        } else if (command == "update") {
+            options.relaunchCommand = RelaunchCommand::UPDATE_ALL;
         } else if (command == "updategame") {
             options.relaunchCommand = RelaunchCommand::UPDATE_GAME;
         } else if (command.startsWith("updateupdater:")) {

@@ -74,7 +74,13 @@ void SplashController::autoLaunchOrUpdate()
 {
     qDebug() << "Previously-installed game version:" << settings_.installedVersion();
 
+    QString withGame = relaunchCommand_ == RelaunchCommand::UPDATE_ALL ? ":withgame" : "";
+
     switch (relaunchCommand_) {
+        case RelaunchCommand::UPDATE_ALL:
+            // Done below.
+            break;
+
         case RelaunchCommand::UPDATE_GAME:
             qDebug() << "Game update menu requested as relaunch action";
             // It is assumed the process is already elevated
@@ -84,7 +90,7 @@ void SplashController::autoLaunchOrUpdate()
         case RelaunchCommand::UPDATE_UPDATER:
             qDebug() << "Updater update to" << updateUpdaterVersion_ << "requested as relaunch action";
             // It is assumed the process is already elevated
-            emit updaterUpdate(updateUpdaterVersion_);
+            emit updaterUpdate(updateUpdaterVersion_ + withGame);
             return;
 
         case RelaunchCommand::PLAY_NOW:
@@ -98,16 +104,16 @@ void SplashController::autoLaunchOrUpdate()
     if (!latestUpdaterVersion_.isEmpty() && latestUpdaterVersion_ != QString(GIT_VERSION)) {
         qDebug() << "Updater update to version" << latestUpdaterVersion_ << "required";
         // Remember the URL if we are doing updater update
-        QString updaterArgs = "--splashms 1 --internalcommand updateupdater:" + latestUpdaterVersion_;
+        QString updaterArgs = "--splashms 1 --internalcommand updateupdater:" + latestUpdaterVersion_ + withGame;
         if (!connectUrl_.isEmpty()) {
             updaterArgs += " -- " + connectUrl_;
         }
         switch (Sys::RelaunchElevated(updaterArgs)) {
             case Sys::ElevationResult::UNNEEDED:
-                emit updaterUpdate(latestUpdaterVersion_);
+                emit updaterUpdate(latestUpdaterVersion_ + withGame);
                 return;
             case Sys::ElevationResult::RELAUNCHED:
-                QCoreApplication::quit();
+            QCoreApplication::quit();
                 return;
             case Sys::ElevationResult::FAILED:
                 launchGameIfInstalled();
@@ -127,6 +133,8 @@ void SplashController::autoLaunchOrUpdate()
                 launchGameIfInstalled();
                 return;
         }
+    } else if (relaunchCommand_ == RelaunchCommand::UPDATE_ALL) {
+        emit updateNeeded(true);
     } else {
         emit updateNeeded(false);
     }

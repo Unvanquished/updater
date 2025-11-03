@@ -40,6 +40,7 @@ public:
     void addTorrent(const std::string& uri);
     void setDownloadDirectory(const std::string& dir);
     void setConnectUrl(const QString& url);
+    void setGameUpdate(bool);
 
 public slots:
     void download();
@@ -76,6 +77,7 @@ private:
     QString downloadDir_;
     QString unvanquishedVersion_; // determined from path names in the download
     QString connectUrl_;
+    bool updateGame_;
 };
 
 #endif // DOWNLOADWORKER_H
