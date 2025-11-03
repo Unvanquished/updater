@@ -44,7 +44,7 @@ RESOURCES += qml.qrc
 
 win32:LIBS += $$PWD/aria2/src/.libs/libaria2.a
 win32:LIBS += -lcrypt32 -lsecur32 -lole32
-unix:LIBS += -lz "-L$$PWD/aria2/src/.libs" -laria2
+unix:LIBS += -lz "-L$$PWD/aria2/src/.libs" -laria2 -lssl -lcrypto
 
 win32:RC_FILE = updater.rc
 
