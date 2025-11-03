@@ -77,9 +77,7 @@ jobs:
         export MAKEFLAGS="-j$(($(nproc) + 1))"
         git submodule update --init
         cd aria2
-        autoreconf -i
-        ./configure --without-libxml2 --without-libexpat --without-sqlite3 --enable-libaria2 --without-zlib --without-libcares --enable-static=no ARIA2_STATIC=no --without-libssh2 --disable-metalink --disable-websocket --disable-nls --with-openssl
-        make
+        ../build-aria.sh --enable-shared --disable-static
         cd ..
         qmake -config release
         make

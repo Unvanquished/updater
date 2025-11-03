@@ -14,9 +14,7 @@ Note: Fluid has submodules of its own, but they are not used, so the above comma
 Before building the updater itself you need to build aria2 library
 ```
 cd aria2
-autoreconf -i
-./configure --without-libxml2 --without-libexpat --without-sqlite3 --enable-libaria2 --without-zlib --without-libcares --enable-static --disable-shared --without-libssh2 --disable-metalink --disable-websocket --disable-nls --with-openssl
-make -j4
+../build-aria.sh
 cd ..
 ```
 
@@ -74,9 +72,11 @@ eval sudo make module-{$MODULES}-install_subtargets
 ### Build aria2
 ```
 brew install autoconf automake libtool pkg-config gettext
-# If building on M1, target x86 by running in Rosetta: arch -x86_64 ./mac-build-aria.sh
+cd aria2
+# If building on M1, target x86 by running in Rosetta: arch -x86_64 ../build-aria.sh
 # (the --target option to configure doesn't seem to have any effect)
-./mac-build-aria.sh
+../build-aria.sh
+cd ..
 ```
 
 ### Build updater

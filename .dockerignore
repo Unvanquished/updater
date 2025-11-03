@@ -5,3 +5,5 @@ aria2/src/.libs
 # Just add stuff that is particularly large or changes often (thus breaking the cache).
 build*
 Dockerfile*
+!build-aria.sh
+
