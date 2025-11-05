@@ -26,6 +26,7 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QRegularExpression>
+#include <QNetworkRequest>
 
 #include "iconsimageprovider.h"
 #include "iconthemeimageprovider.h"
@@ -156,6 +157,13 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
 
 } // namespace
 
+void InitQtSSL()
+{
+    // Doesn't do any request, but forces Qt to initialize OpenSSL.
+    // Aria is known to crash with OpenSSL 3 when Qt hasn't initialized OpenSSL first.
+    QNetworkRequest(QUrl()).sslConfiguration();
+}
+
 int main(int argc, char *argv[])
 {
     Sys::initApplicationName();
@@ -163,6 +171,9 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationDomain("unvanquished.net");
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
+
+    // Workaround: Aria crashes with OpenSSL 3 when Qt hasn't initialized OpenSSL first.
+    InitQtSSL();
 
     // The font is already needed to display our arg parsing error on Linux
     int fontId = QFontDatabase::addApplicationFont(":resources/Roboto-Regular.ttf");
