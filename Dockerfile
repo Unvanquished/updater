@@ -37,7 +37,7 @@ RUN curl -LO https://github.com/openssl/openssl/releases/download/openssl-3.6.0/
     curl -L https://github.com/openssl/openssl/releases/download/openssl-3.6.0/openssl-3.6.0.tar.gz.sha256 | sha256sum --check
 RUN tar -xzf openssl-3.6.0.tar.gz
 WORKDIR /build-ssl/openssl-3.6.0
-RUN ./config no-shared --prefix=/openssl
+RUN ./config --prefix=/openssl --openssldir=/dev/null no-shared no-apps no-autoload-config no-capieng no-dso no-dynamic-engine no-engine no-loadereng no-module
 RUN make -j`nproc` && make install_sw && rm -rf /build-ssl
 
 ############
