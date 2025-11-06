@@ -6,8 +6,6 @@ Autoupdates Unvanquished using Unvanquished's CDN
 git submodule update --init
 ```
 
-Note: Fluid has submodules of its own, but they are not used, so the above command is intentionally not recursive.
-
 ## Build for Linux (without Docker)
 
 ### Build aria2
@@ -19,10 +17,12 @@ cd ..
 ```
 
 ### Build updater
-Note: you need Qt 5.8 at least.
+You need at least Qt 6.8.
+
 ```
-QT_SELECT=5 qmake -config release
-make -j4
+mkdir build; cd build
+cmake -GNinja .. -DCMAKE_BUILD_TYPE=Release
+ninja
 ```
 
 ## Build Linux version in docker
@@ -47,7 +47,7 @@ The first line below runs the Docker build for Windows. The last 3 lines are to 
 ```
 docker build -t unvlauncher-win -f Dockerfile.win .
 docker create --name unvlauncher-win unvlauncher-win
-docker cp unvlauncher-win:/build/release/updater.exe ./build-docker
+docker cp unvlauncher-win:/build/updater.exe ./build-docker
 docker rm unvlauncher-win
 
 ```
@@ -57,16 +57,9 @@ Search for **updater.exe** in build-docker directory.
 
 ### Build Qt
 ```
-curl -LO https://download.qt.io/archive/qt/5.14/5.14.2/single/qt-everywhere-src-5.14.2.tar.xz
-tar -xzf qt-everywhere-src-5.14.2.tar.xz
-cd qt-everywhere-src-5.14.2
-MODULES=qtbase,qtquickcontrols,qtquickcontrols2,qtsvg,qtgraphicaleffects
-# Default install location (--prefix): /usr/local/Qt-5.14.2
-./configure -opensource -confirm-license -release -optimize-size -no-shared -no-framework -static --c++std=14 -nomake tests -nomake tools -nomake examples
-cat <(echo '#include <CoreGraphics/CGColorSpace.h>') qtbase/src/plugins/platforms/cocoa/qiosurfacegraphicsbuffer.h > tmp && mv tmp qtbase/src/plugins/platforms/cocoa/qiosurfacegraphicsbuffer.h
-eval make -j`sysctl -n hw.logicalcpu` module-{$MODULES}
-echo $?  # If nonzero, repeat previous command
-eval sudo make module-{$MODULES}-install_subtargets
+updaterdir=$PWD
+cd ~/buildqt
+$updaterdir/build-qt.sh macos
 ```
 
 ### Build aria2
@@ -82,8 +75,8 @@ cd ..
 ### Build updater
 ```
 mkdir build; cd build
-/usr/local/Qt-5.14.2/bin/qmake -config release ..
-make
+cmake .. -G Ninja -DCMAKE_FIND_ROOT_PATH=$HOME/buildqt/qt_macos
+ninja
 ```
 
 ## License

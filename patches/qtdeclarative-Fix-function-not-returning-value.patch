@@ -1,0 +1,12 @@
+diff -u -r qtdeclarative.new/src/quickwidgets/qquickwidget.cpp qtdeclarative.old/src/quickwidgets/qquickwidget.cpp
+--- qtdeclarative.new/src/quickwidgets/qquickwidget.cpp	2025-11-27 06:29:17.530381710 -0600
++++ qtdeclarative.old/src/quickwidgets/qquickwidget.cpp	2025-12-17 21:46:02.255693445 -0600
+@@ -106,6 +106,8 @@
+         }
+ 
+         return m_quickWidget->window()->windowHandle() == w;
++#else
++	return false;
+ #endif
+     }
+     QQuickWidget *m_quickWidget;

@@ -6,4 +6,5 @@ aria2/src/.libs
 build*
 Dockerfile*
 !build-aria.sh
+!build-qt.sh
 
