@@ -37,11 +37,11 @@ ApplicationWindow {
     Connections {
         target: downloader
         ignoreUnknownSignals: true
-        onStatusMessage: {
+        function onStatusMessage(message) {
             console.log("Download status: " + message);
             infoBar.open(message);
         }
-        onFatalMessage: {
+        function onFatalMessage(message) {
             console.log("Installation failed: " + message);
             errorPopup.errorDetail = message;
             errorPopup.open();
