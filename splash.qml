@@ -19,7 +19,7 @@ import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtQuick.Controls.Material 2.0
 import Fluid.Controls 1.0 as FluidControls
-import Fluid.Material 1.0
+import Fluid.Material 1.0 as FluidMaterial
 
 ApplicationWindow {
     visible: true
@@ -120,7 +120,7 @@ ApplicationWindow {
         font.pixelSize: 17
     }
 
-    ActionButton {
+    FluidMaterial.ActionButton {
         id: settingsAction
 
         anchors {

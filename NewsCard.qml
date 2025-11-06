@@ -18,8 +18,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
 import QtQuick.Controls.Material 2.0
-import Fluid.Controls 1.0
-import Fluid.Effects 1.0
+import Fluid.Controls 1.0 as FluidControls
 import QtQuick.Layouts 1.3
 
 Flickable {
@@ -111,7 +110,7 @@ Flickable {
         }
     }
 
-    Card {
+    FluidControls.Card {
         anchors {
             right: parent.right
             top: parent.top
@@ -141,9 +140,9 @@ Flickable {
 
                 width: parent.width
                 height: parent.height
-                spacing: Units.smallSpacing * 2
+                spacing: FluidControls.Units.smallSpacing * 2
 
-                TitleLabel {
+                FluidControls.TitleLabel {
                     id: title
 
                     width: parent.width
@@ -156,7 +155,7 @@ Flickable {
                     font.bold: true
                 }
 
-                BodyLabel {
+                FluidControls.BodyLabel {
                     id: summary
 
                     width: parent.width
@@ -189,9 +188,9 @@ Flickable {
 
                 width: parent.width
                 height: parent.height
-                spacing: Units.smallSpacing * 2
+                spacing: FluidControls.Units.smallSpacing * 2
 
-                BodyLabel {
+                FluidControls.BodyLabel {
                     id: link
 
                     width: parent.width

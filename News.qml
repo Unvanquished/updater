@@ -18,8 +18,8 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.1
 import QtQuick.Controls.Material 2.0
-import Fluid.Controls 1.0
-import Fluid.Material 1.0
+import Fluid.Controls 1.0 as FluidControls
+import Fluid.Material 1.0 as FluidMaterial
 
 Item {
     width: parent.width
@@ -142,7 +142,7 @@ Item {
         }
     }
 
-    ActionButton {
+    FluidMaterial.ActionButton {
         id: leftButton
 
         anchors.left: parent.left
@@ -157,7 +157,7 @@ Item {
         opacity: enabled ? 1 : 0.38
     }
 
-    ActionButton {
+    FluidMaterial.ActionButton {
         id: rightButton
 
         anchors.right: parent.right
