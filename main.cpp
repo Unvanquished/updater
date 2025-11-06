@@ -28,14 +28,16 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 
-#include "iconsimageprovider.h"
-#include "iconthemeimageprovider.h"
-
 #include "gamelauncher.h"
 #include "qmldownloader.h"
 #include "settings.h"
 #include "splashcontroller.h"
 #include "system.h"
+
+#if 0
+#include <QtQml/QQmlExtensionPlugin>
+Q_IMPORT_QML_PLUGIN(Fluid)
+#endif
 
 namespace {
 
@@ -164,7 +166,6 @@ int main(int argc, char *argv[])
     Sys::initApplicationName();
     QCoreApplication::setApplicationVersion(updaterAppVersion());
     QCoreApplication::setOrganizationDomain("unvanquished.net");
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
 
     // The font is already needed to display our arg parsing error on Linux
@@ -215,9 +216,12 @@ int main(int argc, char *argv[])
     splashController.checkForUpdate();
     QmlDownloader downloader(options.ariaLogFilename, options.connectUrl, settings);
     QQmlApplicationEngine engine;
+
+    // HACK: Q_IMPORT_QML_PLUGIN(Fluid) gives a linker error
+    void qml_register_types_Fluid();
+    qml_register_types_Fluid();
+
     engine.addImportPath(QLatin1String("qrc:/"));
-    engine.addImageProvider(QLatin1String("fluidicons"), new IconsImageProvider());
-    engine.addImageProvider(QLatin1String("fluidicontheme"), new IconThemeImageProvider());
     auto* context = engine.rootContext();
     context->setContextProperty("updaterSettings", &settings);
     context->setContextProperty("gameLauncher", &gameLauncher);
@@ -234,6 +238,9 @@ QDirIterator it(":", QDirIterator::Subdirectories);
     // This is done in order to use the DownloadState enum
     qmlRegisterUncreatableType<QmlDownloader>(
         "QmlDownloader", 1, 0, "QmlDownloader", "QmlDownloader not constructible");
+
+    // LOAD-BEARING POSTER - DO NOT TOUCH
+    qDebug() << engine.singletonInstance<QObject*>("Fluid", "Device");
 
     engine.load(QUrl(QLatin1String("qrc:/splash.qml")));
     return app.exec();

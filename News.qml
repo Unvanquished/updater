@@ -15,8 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Fluid.Controls 1.0 as FluidControls
-import Fluid.Material 1.0 as FluidMaterial
+import Fluid 2.0 as Fluid
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Material
@@ -112,6 +111,10 @@ Item {
 
         Component.onCompleted: {
             fetchNews('https://unvanquished.net/api/get_recent_posts/');
+
+            // the button becomes invisible when disabled otherwise
+            leftButton.background.color = leftButton.Material.background;
+            rightButton.background.color = rightButton.Material.background;
         }
     }
 
@@ -142,7 +145,7 @@ Item {
         }
     }
 
-    FluidMaterial.ActionButton {
+    Fluid.FloatingActionButton {
         id: leftButton
 
         anchors.left: parent.left
@@ -151,13 +154,14 @@ Item {
 
         Material.background: Material.Teal
 
-        iconName: "navigation/chevron_left"
+        icon.source: Fluid.Utils.iconUrl("navigation/chevron_left")
+            icon.color: "white"
         onClicked: swipe.decrementCurrentIndex()
         enabled: swipe.currentIndex > 0
         opacity: enabled ? 1 : 0.38
     }
 
-    FluidMaterial.ActionButton {
+    Fluid.FloatingActionButton {
         id: rightButton
 
         anchors.right: parent.right
@@ -166,7 +170,8 @@ Item {
 
         Material.background: Material.Teal
 
-        iconName: "navigation/chevron_right"
+        icon.source: Fluid.Utils.iconUrl("navigation/chevron_right")
+        icon.color: "white"
         onClicked: swipe.incrementCurrentIndex()
         enabled: swipe.currentIndex + 1 < swipe.count
         opacity: enabled ? 1 : 0.38
