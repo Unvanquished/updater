@@ -26,7 +26,8 @@ ApplicationWindow {
     id: splash
     width: 745
     height: 228
-    flags: Qt.SplashScreen | Qt.WindowStaysOnTopHint
+    flags: Qt.SplashScreen | Qt.WindowStaysOnTopHint | Qt.FramelessWindowHint
+
 
     Item {
         focus: true
