@@ -201,9 +201,7 @@ Flickable {
                     font.pixelSize: 21
                     lineHeight: 24
 
-                    onLinkActivated: {
-                        Qt.openUrlExternally(link);
-                    }
+                    onLinkActivated: (link) => Qt.openUrlExternally(link);
 
                     MouseArea {
                         anchors.fill: parent
