@@ -1,0 +1,253 @@
+From b60cfd52ddc3892a3af860425ee9858598e668d7 Mon Sep 17 00:00:00 2001
+From: Santhosh Kumar <santhosh.kumar.selvaraj@qt.io>
+Date: Wed, 21 Aug 2024 18:42:55 +0200
+Subject: [PATCH] Propagate modality to the non-native quick dialogs
+
+[slipher: rebased it to 6.8.3 and removed tests/ changes]
+
+The non-native quick dialogs don't block input to the windows even after
+setting the modality as ApplicationModal/WindowModal. This is because
+non-native platform dialogs (QuickPlaform*Dialogs) didn't set modal to
+its respective window (QQuickPopupWindow).
+
+This patch fixes that issue by setting the modality to the non-native
+platform dialogs.
+
+Task-number: QTBUG-127605
+Pick-to: 6.10 6.9 6.8
+Change-Id: Idb3374e881766ae92adc0360c9b9af5c498dd6df
+Reviewed-by: Oliver Eftevaag <oliver.eftevaag@qt.io>
+---
+ .../qquickplatformcolordialog.cpp             |  3 ++-
+ .../qquickplatformfiledialog.cpp              |  3 ++-
+ .../qquickplatformfolderdialog.cpp            |  3 ++-
+ .../qquickplatformfontdialog.cpp              |  3 ++-
+ .../qquickplatformmessagedialog.cpp           |  3 ++-
+ src/quicktemplates/qquickdialog.cpp           |  2 ++
+ src/quicktemplates/qquickpopup.cpp            | 19 ++++++++++++++++---
+ src/quicktemplates/qquickpopup_p.h            |  2 ++
+ src/quicktemplates/qquickpopup_p_p.h          |  1 +
+ src/quicktemplates/qquickpopupwindow.cpp      |  7 +++++--
+ 10 files changed, 36 insertions(+), 10 deletions(-)
+
+diff --git a/src/quickdialogs/quickdialogsquickimpl/qquickplatformcolordialog.cpp b/src/quickdialogs/quickdialogsquickimpl/qquickplatformcolordialog.cpp
+index 205b4e0b1b..a7f2fdab73 100644
+--- a/src/quickdialogs/quickdialogsquickimpl/qquickplatformcolordialog.cpp
++++ b/src/quickdialogs/quickdialogsquickimpl/qquickplatformcolordialog.cpp
+@@ -9,6 +9,7 @@
+ #include <QtQml/qqmlinfo.h>
+ #include <QtQuick/qquickwindow.h>
+ #include <QtQuickTemplates2/private/qquickdialog_p.h>
++#include <QtQuickTemplates2/private/qquickdialog_p_p.h>
+ #include <QtQuickTemplates2/private/qquickpopup_p_p.h>
+ #include <QtQuickTemplates2/private/qquickpopupanchors_p.h>
+ 
+@@ -108,7 +109,7 @@ bool QQuickPlatformColorDialog::show(Qt::WindowFlags flags, Qt::WindowModality m
+ 
+     m_dialog->setTitle(options->windowTitle());
+     m_dialog->setOptions(options);
+-
++    m_dialog->setWindowModality(modality);
+     m_dialog->open();
+     return true;
+ }
+diff --git a/src/quickdialogs/quickdialogsquickimpl/qquickplatformfiledialog.cpp b/src/quickdialogs/quickdialogsquickimpl/qquickplatformfiledialog.cpp
+index 1c9174a8e4..367f229414 100644
+--- a/src/quickdialogs/quickdialogsquickimpl/qquickplatformfiledialog.cpp
++++ b/src/quickdialogs/quickdialogsquickimpl/qquickplatformfiledialog.cpp
+@@ -10,6 +10,7 @@
+ #include <QtQuick/qquickwindow.h>
+ #include <QtQuickDialogs2Utils/private/qquickfilenamefilter_p.h>
+ #include <QtQuickTemplates2/private/qquickdialog_p.h>
++#include <QtQuickTemplates2/private/qquickdialog_p_p.h>
+ #include <QtQuickTemplates2/private/qquickpopup_p_p.h>
+ #include <QtQuickTemplates2/private/qquickpopupanchors_p.h>
+ 
+@@ -194,7 +195,7 @@ bool QQuickPlatformFileDialog::show(Qt::WindowFlags flags, Qt::WindowModality mo
+             m_dialog->setCurrentFolder(QUrl::fromLocalFile(QDir().absolutePath()));
+         }
+     }
+-
++    m_dialog->setWindowModality(modality);
+     m_dialog->open();
+     return true;
+ }
+diff --git a/src/quickdialogs/quickdialogsquickimpl/qquickplatformfolderdialog.cpp b/src/quickdialogs/quickdialogsquickimpl/qquickplatformfolderdialog.cpp
+index d0ccea353e..dd41ed1ce3 100644
+--- a/src/quickdialogs/quickdialogsquickimpl/qquickplatformfolderdialog.cpp
++++ b/src/quickdialogs/quickdialogsquickimpl/qquickplatformfolderdialog.cpp
+@@ -9,6 +9,7 @@
+ #include <QtQml/qqmlinfo.h>
+ #include <QtQuick/qquickwindow.h>
+ #include <QtQuickTemplates2/private/qquickdialog_p.h>
++#include <QtQuickTemplates2/private/qquickdialog_p_p.h>
+ #include <QtQuickTemplates2/private/qquickpopup_p_p.h>
+ #include <QtQuickTemplates2/private/qquickpopupanchors_p.h>
+ 
+@@ -153,7 +154,7 @@ bool QQuickPlatformFolderDialog::show(Qt::WindowFlags flags, Qt::WindowModality
+         ? options->labelText(QFileDialogOptions::Accept) : QString());
+     m_dialog->setRejectLabel(options->isLabelExplicitlySet(QFileDialogOptions::Reject)
+         ? options->labelText(QFileDialogOptions::Reject) : QString());
+-
++    m_dialog->setWindowModality(modality);
+     m_dialog->open();
+     return true;
+ }
+diff --git a/src/quickdialogs/quickdialogsquickimpl/qquickplatformfontdialog.cpp b/src/quickdialogs/quickdialogsquickimpl/qquickplatformfontdialog.cpp
+index 4ef0b1bec6..e5a8c2ed78 100644
+--- a/src/quickdialogs/quickdialogsquickimpl/qquickplatformfontdialog.cpp
++++ b/src/quickdialogs/quickdialogsquickimpl/qquickplatformfontdialog.cpp
+@@ -9,6 +9,7 @@
+ #include <QtQml/qqmlinfo.h>
+ #include <QtQuick/qquickwindow.h>
+ #include <QtQuickTemplates2/private/qquickdialog_p.h>
++#include <QtQuickTemplates2/private/qquickdialog_p_p.h>
+ #include <QtQuickTemplates2/private/qquickpopup_p_p.h>
+ #include <QtQuickTemplates2/private/qquickpopupanchors_p.h>
+ 
+@@ -124,7 +125,7 @@ bool QQuickPlatformFontDialog::show(Qt::WindowFlags flags, Qt::WindowModality mo
+     m_dialog->setOptions(options);
+ 
+     m_dialog->init();
+-
++    m_dialog->setWindowModality(modality);
+     m_dialog->open();
+     return true;
+ }
+diff --git a/src/quickdialogs/quickdialogsquickimpl/qquickplatformmessagedialog.cpp b/src/quickdialogs/quickdialogsquickimpl/qquickplatformmessagedialog.cpp
+index a9f1e858ed..4f2d4df7d4 100644
+--- a/src/quickdialogs/quickdialogsquickimpl/qquickplatformmessagedialog.cpp
++++ b/src/quickdialogs/quickdialogsquickimpl/qquickplatformmessagedialog.cpp
+@@ -3,6 +3,7 @@
+ 
+ #include "qquickplatformmessagedialog_p.h"
+ 
++#include <QtQuickTemplates2/private/qquickdialog_p_p.h>
+ #include <QtQuickTemplates2/private/qquickpopup_p_p.h>
+ #include <QtQuickTemplates2/private/qquickpopupanchors_p.h>
+ 
+@@ -86,7 +87,7 @@ bool QQuickPlatformMessageDialog::show(Qt::WindowFlags flags, Qt::WindowModality
+     QSharedPointer<QMessageDialogOptions> options = QPlatformMessageDialogHelper::options();
+     m_dialog->setTitle(options->windowTitle());
+     m_dialog->setOptions(options);
+-
++    m_dialog->setWindowModality(modality);
+     m_dialog->open();
+     return true;
+ }
+diff --git a/src/quicktemplates/qquickdialog.cpp b/src/quicktemplates/qquickdialog.cpp
+index 458c3e6ba3..4bb1c3f0d6 100644
+--- a/src/quicktemplates/qquickdialog.cpp
++++ b/src/quicktemplates/qquickdialog.cpp
+@@ -7,6 +7,8 @@
+ #include "qquickabstractbutton_p.h"
+ #include "qquickpopupitem_p_p.h"
+ #include "qquickpopupwindow_p_p.h"
++#include <qpa/qplatformintegration.h>
++#include <private/qguiapplication_p.h>
+ 
+ QT_BEGIN_NAMESPACE
+ 
+diff --git a/src/quicktemplates/qquickpopup.cpp b/src/quicktemplates/qquickpopup.cpp
+index 60806701d4..4c1faf5a45 100644
+--- a/src/quicktemplates/qquickpopup.cpp
++++ b/src/quicktemplates/qquickpopup.cpp
+@@ -1098,15 +1098,21 @@ void QQuickPopupPrivate::adjustPopupItemParentAndWindow()
+                 popupWindow = new QQuickPopupWindow(q, window);
+                 popupWindow->setWidth(popupItem->width() + windowInsets().left() + windowInsets().right());
+                 popupWindow->setHeight(popupItem->height() + windowInsets().top() + windowInsets().bottom());
+-                popupWindow->setModality(modal ? Qt::ApplicationModal : Qt::NonModal);
++                if (popupWndModality != Qt::NonModal)
++                    popupWindow->setModality(popupWndModality);
++                else
++                    popupWindow->setModality(modal ? Qt::ApplicationModal : Qt::NonModal);
+                 popupItem->resetTitle();
+                 popupWindow->setTitle(m_title);
+             }
+             popupItem->setParentItem(popupWindow->contentItem());
+             popupItem->forceActiveFocus(Qt::PopupFocusReason);
+         }
+-        if (popupWindow)
+-            popupWindow->setVisible(visible);
++        if (popupWindow && popupWindow->transientParent()) {
++            auto *transientParentPriv = QQuickWindowPrivate::get(qobject_cast<QQuickWindow *>(popupWindow->transientParent()));
++            if (!transientParentPriv->inDestructor)
++                popupWindow->setVisible(visible);
++        }
+     } else {
+         if (visible) {
+             popupItem->setParentItem(overlay);
+@@ -1129,6 +1135,7 @@ void QQuickPopupPrivate::adjustPopupItemParentAndWindow()
+                 if (!hasZ)
+                     popupItem->setZ(qMax(topPopupItem->z(), popupItem->z()));
+             }
++            q->setModal((popupWndModality != Qt::NonModal) || modal);
+         }
+ 
+         popupItem->setTitle(m_title);
+@@ -3378,6 +3385,12 @@ bool QQuickPopup::setAccessibleProperty(const char *propertyName, const QVariant
+     return d->popupItem->setAccessibleProperty(propertyName, value);
+ }
+ 
++void QQuickPopup::setWindowModality(const Qt::WindowModality modality)
++{
++    Q_D(QQuickPopup);
++    d->popupWndModality = modality;
++}
++
+ QT_END_NAMESPACE
+ 
+ #include "moc_qquickpopup_p.cpp"
+diff --git a/src/quicktemplates/qquickpopup_p.h b/src/quicktemplates/qquickpopup_p.h
+index 089d86ba29..5909ef36e4 100644
+--- a/src/quicktemplates/qquickpopup_p.h
++++ b/src/quicktemplates/qquickpopup_p.h
+@@ -312,6 +312,8 @@ public:
+     void setBottomInset(qreal inset);
+     void resetBottomInset();
+ 
++    void setWindowModality(const Qt::WindowModality modality);
++
+     enum PopupType {
+         Item,
+         Window,
+diff --git a/src/quicktemplates/qquickpopup_p_p.h b/src/quicktemplates/qquickpopup_p_p.h
+index a8cc14ee33..88ebb7d9f4 100644
+--- a/src/quicktemplates/qquickpopup_p_p.h
++++ b/src/quicktemplates/qquickpopup_p_p.h
+@@ -202,6 +202,7 @@ public:
+     qreal prevScale = 0;
+     QString m_title;
+     QQuickPopup::PopupType m_popupType = QQuickPopup::Item;
++    Qt::WindowModality popupWndModality = Qt::NonModal;
+ 
+     friend class QQuickPopupTransitionManager;
+ };
+diff --git a/src/quicktemplates/qquickpopupwindow.cpp b/src/quicktemplates/qquickpopupwindow.cpp
+index 890c609684..e1e763908d 100644
+--- a/src/quicktemplates/qquickpopupwindow.cpp
++++ b/src/quicktemplates/qquickpopupwindow.cpp
+@@ -23,7 +23,7 @@ QT_BEGIN_NAMESPACE
+ Q_LOGGING_CATEGORY(lcPopupWindow, "qt.quick.controls.popup.window")
+ 
+ static bool s_popupGrabOk = false;
+-static QWindow *s_grabbedWindow = nullptr;
++static QPointer<QWindow> s_grabbedWindow;
+ 
+ class QQuickPopupWindowPrivate : public QQuickWindowQmlImplPrivate
+ {
+@@ -132,7 +132,10 @@ void QQuickPopupWindow::resizeEvent(QResizeEvent *e)
+ 
+ void QQuickPopupWindowPrivate::setVisible(bool visible)
+ {
+-    if (m_inHideEvent)
++    Q_Q(QQuickPopupWindow);
++    const bool isTransientParentDestroyed = !q->transientParent() ? true :
++          QQuickWindowPrivate::get(qobject_cast<QQuickWindow *>(q->transientParent()))->inDestructor;
++    if (m_inHideEvent || isTransientParentDestroyed)
+         return;
+ 
+     const bool visibleChanged = QWindowPrivate::visible != visible;
+-- 
+2.47.3
+

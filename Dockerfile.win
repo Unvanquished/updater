@@ -10,7 +10,7 @@
 # from .git since a checked-in file will not be ignored. For aria2 it is assumed that the data
 # is stored in the updater/.git/modules directory.
 
-FROM docker.io/debian:bullseye-slim
+FROM docker.io/debian:trixie-slim
 
 # Prevents warning spam from Qt 6's rcc
 ENV LANG=C.UTF-8
@@ -18,35 +18,33 @@ ENV LANG=C.UTF-8
 RUN apt-get update && apt-get install -y \
     autoconf \
     autopoint \
+    cmake \
     curl \
     gettext \
     g++ \
-    g++-mingw-w64-i686 \
+    g++-mingw-w64-i686-posix \
     git \
     libtool \
     make \
+    ninja-build \
     p7zip-full \
     pkg-config \
-    python \
+    python3 \
     xz-utils
-
-# The Schannel dependencies are spelled with capital letters which causes them not to be found
-RUN ln -s libsecur32.a /usr/i686-w64-mingw32/lib/libSecur32.a && \
-    ln -s libcrypt32.a /usr/i686-w64-mingw32/lib/libCrypt32.a
 
 ############
 # Build Qt #
 ############
 WORKDIR /build-qt
-COPY md5sums-qt.txt /build-qt/
-ENV UPDATER_MODULES=qtbase,qtquickcontrols,qtquickcontrols2,qtsvg,qtgraphicaleffects
-RUN curl -LO https://download.qt.io/archive/qt/5.14/5.14.2/single/qt-everywhere-src-5.14.2.tar.xz && \
-    md5sum --check --ignore-missing md5sums-qt.txt && \
-    tar -xJf qt-everywhere-src-5.14.2.tar.xz && \
-    cd qt-everywhere-src-5.14.2 && \
-    ./configure -release -static -prefix /qt -qt-zlib -qt-libjpeg -qt-libpng -qt-freetype -qt-pcre -qt-harfbuzz -opengl desktop -opensource -confirm-license -no-qml-debug -no-icu -xplatform win32-g++ -device-option CROSS_COMPILE=i686-w64-mingw32- -optimize-size --c++std=14 -nomake tests -nomake tools -nomake examples -schannel -no-feature-d3d12 && \
-    bash -c "make -j`nproc` module-{$UPDATER_MODULES} && make module-{$UPDATER_MODULES}-install_subtargets" && \
-    rm -rf /build-qt
+
+# Build host-mode tools and remove everything apart from the installed bin/ and lib/cmake/
+COPY md5sums-qt.txt build-qt.sh cross-toolchain-mingw32.cmake /build-qt/
+COPY patches /build-qt/patches
+RUN ./build-qt.sh tools qtbase qtdeclarative qtshadertools && \
+    rm -r build_tools && \
+    find qt_tools -mindepth 1 -maxdepth 1 ! -name bin ! -name lib ! -name libexec -exec rm -r {} + && \
+    find qt_tools/lib -mindepth 1 -maxdepth 1 ! -name cmake -exec rm -r {} +
+RUN ./build-qt.sh windows && rm -r build_windows
 
 ###############
 # Build aria2 #
@@ -64,7 +62,8 @@ RUN CFLAGS=-Os CXXFLAGS=-Os ../build-aria.sh ARIA2_STATIC=yes --host i686-w64-mi
 COPY . /updater
 RUN set -e; for D in . quazip fluid; do cd /updater/$D && git clean -dXff; done
 WORKDIR /build
-RUN /qt/bin/qmake -config release QMAKE_LFLAGS+="-static" INCLUDEPATH+=/qt/include/QtZlib /updater && make -j`nproc`
+RUN cmake -G Ninja -DCMAKE_TOOLCHAIN_FILE=/build-qt/cross-toolchain-mingw32.cmake -DCMAKE_FIND_ROOT_PATH=/build-qt/qt_windows -DCMAKE_BUILD_TYPE=MinSizeRel ${IPO_ARG} /updater && ninja
+RUN mv updater.exe updater-nonstripped.exe && i686-w64-mingw32-strip updater-nonstripped.exe -o updater.exe
 WORKDIR /release-win
 ARG release
-RUN if [ -n "$release" ]; then cp /build/release/updater.exe UnvanquishedUpdater.exe && 7z -tzip -mx=9 a UnvUpdaterWin.zip UnvanquishedUpdater.exe; fi
+RUN if [ -n "$release" ]; then cp /build/updater.exe UnvanquishedUpdater.exe && 7z -tzip -mx=9 a UnvUpdaterWin.zip UnvanquishedUpdater.exe; fi

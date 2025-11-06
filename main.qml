@@ -15,11 +15,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.7
-import QtQuick.Controls 2.0
-import QtQuick.Controls.Material 2.0
-import Fluid.Controls 1.0 as FluidControls
-import Fluid.Material 1.0 as FluidMaterial
+import Fluid 2.0 as Fluid
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Controls.Material
 import "utils.js" as Utils
 
 ApplicationWindow {
@@ -103,12 +102,13 @@ ApplicationWindow {
         source: "qrc:/resources/logo.png"
     }
 
-    FluidMaterial.ActionButton {
+    Fluid.FloatingActionButton {
         id: settingsAction
         scale: 0.55
         anchors.top: parent.top
         anchors.right: parent.right
-        iconName: "action/settings"
+        icon.source: Fluid.Utils.iconUrl("action/settings")
+        icon.color: "white"
         Material.elevation: 1
         Material.background: Material.Teal
         onClicked: settingsBottomSheet.open()
@@ -119,23 +119,24 @@ ApplicationWindow {
     DownloadInfo {
         id: downloadInfo
     }
-    FluidMaterial.BottomSheet {
+    Fluid.BottomSheet {
         id: settingsBottomSheet
         width: parent.width
         maxHeight: parent.height * 0.30
         height: maxHeight
         Settings {}
-        FluidMaterial.ActionButton {
+        Fluid.FloatingActionButton {
             scale: 0.55
             anchors.top: parent.top
             anchors.right: parent.right
-            iconName: "navigation/cancel"
+            icon.source: Fluid.Utils.iconUrl("navigation/cancel")
+            icon.color: "white"
             Material.elevation: 1
             Material.background: Material.Red
             onClicked: settingsBottomSheet.close()
         }
     }
-    FluidControls.InfoBar {
+    Fluid.SnackBar {
         id: infoBar
         duration: 3000
         onClicked: {

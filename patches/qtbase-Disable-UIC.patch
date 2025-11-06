@@ -1,0 +1,11 @@
+diff -u -r a/src/tools/uic/CMakeLists.txt b/src/tools/uic/CMakeLists.txt
+--- a/src/tools/uic/CMakeLists.txt	2025-02-13 11:45:28.000000000 -0600
++++ b/src/tools/uic/CMakeLists.txt	2025-11-23 02:24:23.896939637 -0600
+@@ -4,6 +4,7 @@
+ #####################################################################
+ ## uic Tool:
+ #####################################################################
++return() # prevent build error
+ 
+ qt_get_tool_target_name(target_name uic)
+ qt_internal_add_tool(${target_name}

@@ -15,12 +15,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import QtQuick.Controls 2.1
-import QtQuick.Controls.Material 2.0
-import Fluid.Controls 1.0 as FluidControls
-import Fluid.Material 1.0 as FluidMaterial
-import QmlDownloader 1.0
+import Fluid 2.0 as Fluid
+import QmlDownloader
+import QtQuick 
+import QtQuick.Controls
+import QtQuick.Controls.Material
 import "utils.js" as Utils
 
 Item {
@@ -33,7 +32,7 @@ Item {
         bottomMargin: 60
     }
 
-    FluidControls.Card {
+    Fluid.Card {
         anchors {
             right: parent.right
         }
@@ -50,7 +49,7 @@ Item {
             width: parent.width
             height: parent.height
 
-            FluidControls.BodyLabel {
+            Fluid.BodyLabel {
                 id: instruction
 
                 anchors {
@@ -85,70 +84,70 @@ Item {
 
                 visible: false
 
-                FluidControls.BodyLabel {
+                Fluid.BodyLabel {
                     width: 5
                 }
 
-                FluidControls.BodyLabel {
+                Fluid.BodyLabel {
                     id: completedDownload
                     text: Utils.humanSize(downloader.completedSize)
                     font.pixelSize: 17
                 }
 
-                FluidControls.BodyLabel {
+                Fluid.BodyLabel {
                     text: " / "
                     font.pixelSize: 17
                 }
 
-                FluidControls.BodyLabel {
+                Fluid.BodyLabel {
                     id: totalDownload
                     text: Utils.humanSize(downloader.totalSize)
                     font.pixelSize: 17
                 }
 
-                FluidControls.BodyLabel {
+                Fluid.BodyLabel {
                     width: 20
                 }
 
-                FluidControls.BodyLabel {
+                Fluid.BodyLabel {
                     id: eta
                     text: Utils.humanTime(downloader.eta)
                     font.pixelSize: 17
                 }
 
-                FluidControls.BodyLabel {
+                Fluid.BodyLabel {
                     width: 20
                 }
 
-                FluidControls.BodyLabel {
+                Fluid.BodyLabel {
                     text: "DL: "
                     font.pixelSize: 17
                 }
 
-                FluidControls.BodyLabel {
+                Fluid.BodyLabel {
                     id: downloadSpeed
                     text: Utils.humanSize(downloader.downloadSpeed)
                     font.pixelSize: 17
                 }
 
-                FluidControls.BodyLabel {
+                Fluid.BodyLabel {
                     width: 20
                     text: "/s"
                     font.pixelSize: 17
                 }
 
-                FluidControls.BodyLabel {
+                Fluid.BodyLabel {
                     text: "UL: "
                     font.pixelSize: 17
                 }
 
-                FluidControls.BodyLabel {
+                Fluid.BodyLabel {
                     id: uploadSpeed
                     text: Utils.humanSize(downloader.uploadSpeed)
                     font.pixelSize: 17
                 }
 
-                FluidControls.BodyLabel {
+                Fluid.BodyLabel {
                     text: "/s"
                     font.pixelSize: 17
                 }
@@ -156,7 +155,7 @@ Item {
         }
     }
 
-    FluidMaterial.ActionButton {
+    Fluid.FloatingActionButton {
         id: downloadAction
 
         anchors {
@@ -169,7 +168,8 @@ Item {
         height: 70
         width: 70
 
-        iconName: "file/file_download"
+        icon.source: Fluid.Utils.iconUrl("file/file_download")
+        icon.color: "white"
         scale: 1.2
 
         Material.elevation: 1
@@ -192,13 +192,13 @@ Item {
         function onStateChanged(state) {
             downloadInfo.visible = state !== QmlDownloader.COMPLETED;
             if (state === QmlDownloader.DOWNLOADING) {
-                downloadAction.iconName = "av/pause";
+                downloadAction.icon.source = Fluid.Utils.iconUrl("av/pause");
                 instruction.visible = false;
             } else if (state === QmlDownloader.PAUSED) {
-                downloadAction.iconName = "file/file_download";
+                downloadAction.icon.source = Fluid.Utils.iconUrl("file/file_download");
                 instruction.visible = false;
             } else if (state === QmlDownloader.COMPLETED) {
-                downloadAction.iconName = "av/play_arrow";
+                downloadAction.icon.source = Fluid.Utils.iconUrl("av/play_arrow");
                 instruction.visible = true;
                 instruction.text = "Press the button to play the game";
                 root.alert(0);

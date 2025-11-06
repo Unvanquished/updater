@@ -1,17 +1,9 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
         <file>qtquickcontrols2.conf</file>
         <file>resources/Roboto-Regular.ttf</file>
         <file>resources/updater.png</file>
-        <file>News.qml</file>
-        <file>NewsCard.qml</file>
-        <file>DownloadInfo.qml</file>
-        <file>UpdateFailed.qml</file>
         <file>resources/splash.jpg</file>
-        <file>splash.qml</file>
-        <file>Settings.qml</file>
-        <file>utils.js</file>
         <file>resources/unvanquished.png</file>
         <file>resources/background.jpg</file>
         <file>resources/header.jpg</file>
