@@ -219,8 +219,6 @@ int main(int argc, char *argv[])
     void qml_register_types_Fluid();
     qml_register_types_Fluid();
 
-    engine.addImportPath(QLatin1String("qrc:/"));
-
     // Top-level windows can be attached to this so that they aren't QObject-children of the
     // splash screen. Must destruct before engine.
     QObject motherOfWindows;
@@ -238,8 +236,8 @@ int main(int argc, char *argv[])
         "QmlDownloader", 1, 0, "QmlDownloader", "QmlDownloader not constructible");
 
     // LOAD-BEARING POSTER - DO NOT TOUCH
-    qDebug() << engine.singletonInstance<QObject*>("Fluid", "Device");
+    engine.singletonInstance<QObject*>("Fluid", "foo");
 
-    engine.load(QUrl(QLatin1String("qrc:/splash.qml")));
+    engine.load(QUrl(QLatin1String("qrc:/UnvUpdater/splash.qml")));
     return app.exec();
 }
