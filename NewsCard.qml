@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Fluid.Controls 1.0 as FluidControls
+import Fluid 2.0 as Fluid
 import QtQuick.Layouts
 import QtQuick
 import QtQuick.Controls
@@ -110,7 +110,7 @@ Flickable {
         }
     }
 
-    FluidControls.Card {
+    Fluid.Card {
         anchors {
             right: parent.right
             top: parent.top
@@ -140,9 +140,9 @@ Flickable {
 
                 width: parent.width
                 height: parent.height
-                spacing: FluidControls.Units.smallSpacing * 2
+                spacing: Fluid.Units.smallSpacing * 2
 
-                FluidControls.TitleLabel {
+                Fluid.TitleLabel {
                     id: title
 
                     width: parent.width
@@ -155,7 +155,7 @@ Flickable {
                     font.bold: true
                 }
 
-                FluidControls.BodyLabel {
+                Fluid.BodyLabel {
                     id: summary
 
                     width: parent.width
@@ -188,9 +188,9 @@ Flickable {
 
                 width: parent.width
                 height: parent.height
-                spacing: FluidControls.Units.smallSpacing * 2
+                spacing: Fluid.Units.smallSpacing * 2
 
-                FluidControls.BodyLabel {
+                Fluid.BodyLabel {
                     id: link
 
                     width: parent.width

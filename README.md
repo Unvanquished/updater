@@ -6,8 +6,6 @@ Autoupdates Unvanquished using Unvanquished's CDN
 git submodule update --init
 ```
 
-Note: Fluid has submodules of its own, but they are not used, so the above command is intentionally not recursive.
-
 ## Build for Linux (without Docker)
 
 ### Build aria2
@@ -19,10 +17,12 @@ cd ..
 ```
 
 ### Build updater
-Note: you need Qt 5.8 at least.
+You need at least Qt 6.8.
+
 ```
-QT_SELECT=5 qmake -config release
-make -j4
+mkdir build; cd build
+cmake -GNinja .. -DCMAKE_BUILD_TYPE=Release
+ninja
 ```
 
 ## Build Linux version in docker

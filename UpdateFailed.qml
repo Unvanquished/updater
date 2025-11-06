@@ -15,7 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Fluid.Controls 1.0 as FluidControls
+import Fluid 2.0 as Fluid
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Material
@@ -32,7 +32,7 @@ Popup {
     property string errorDetail
     property string failedOperation
 
-    FluidControls.BodyLabel {
+    Fluid.BodyLabel {
         id: errorPopupBody
         width: parent.width
         text: ('<h2> ' + failedOperation + ' failed. </h2> ' +
@@ -55,7 +55,7 @@ Popup {
         }
     }
 
-    FluidControls.BodyLabel {
+    Fluid.BodyLabel {
         text: errorPopupBody.hoveredLink
         anchors.bottom: parent.bottom
     }

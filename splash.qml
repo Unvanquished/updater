@@ -15,8 +15,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import Fluid.Controls 1.0 as FluidControls
-import Fluid.Material 1.0 as FluidMaterial
+import Fluid 2.0 as Fluid
 import QtQuick
 import QtQuick.Controls
 import QtQuick.Controls.Material
@@ -108,7 +107,7 @@ ApplicationWindow {
         source: "qrc:/resources/splash.jpg"
     }
 
-    FluidControls.BodyLabel {
+    Fluid.BodyLabel {
         id: updaterUpdateLabel
         Material.theme: Material.Dark
         text: "Updating launcher..."
@@ -119,7 +118,7 @@ ApplicationWindow {
         font.pixelSize: 17
     }
 
-    FluidMaterial.ActionButton {
+    Fluid.FloatingActionButton {
         id: settingsAction
 
         anchors {
@@ -135,13 +134,16 @@ ApplicationWindow {
         height: 48
         width: 48
 
-        iconName: "action/settings"
+        icon.source: Fluid.Utils.iconUrl("action/settings")
+        icon.color: "white"
+
         scale: 1.35
 
         opacity: enabled ? 1 : 0.38
 
         Material.elevation: 0
         Material.background: Material.Teal
+        Material.theme: Material.Light
 
         onClicked: {
             timer.stop();
