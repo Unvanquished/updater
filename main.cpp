@@ -157,6 +157,8 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
 
 } // namespace
 
+#include <QDirIterator>
+
 int main(int argc, char *argv[])
 {
     Sys::initApplicationName();
@@ -222,6 +224,12 @@ int main(int argc, char *argv[])
     context->setContextProperty("splashController", &splashController);
     context->setContextProperty("downloader", &downloader);
     context->setContextProperty("splashMilliseconds", options.splashMilliseconds);
+
+QDirIterator it(":", QDirIterator::Subdirectories);
+ while (it.hasNext()) {
+     QFileInfo info = it.nextFileInfo();
+     qDebug() << info.size() << info.filePath();
+ }
 
     // This is done in order to use the DownloadState enum
     qmlRegisterUncreatableType<QmlDownloader>(
