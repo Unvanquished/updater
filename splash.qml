@@ -172,7 +172,7 @@ ApplicationWindow {
     Loader {
         id: updaterWindowLoader
         active: false
-        source: "qrc:/main.qml"
+        source: "qrc:/UnvUpdater/main.qml"
     }
 
     ApplicationWindow {

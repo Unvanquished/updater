@@ -221,7 +221,6 @@ int main(int argc, char *argv[])
     void qml_register_types_Fluid();
     qml_register_types_Fluid();
 
-    engine.addImportPath(QLatin1String("qrc:/"));
     auto* context = engine.rootContext();
     context->setContextProperty("updaterSettings", &settings);
     context->setContextProperty("gameLauncher", &gameLauncher);
@@ -240,8 +239,8 @@ QDirIterator it(":", QDirIterator::Subdirectories);
         "QmlDownloader", 1, 0, "QmlDownloader", "QmlDownloader not constructible");
 
     // LOAD-BEARING POSTER - DO NOT TOUCH
-    qDebug() << engine.singletonInstance<QObject*>("Fluid", "Device");
+    engine.singletonInstance<QObject*>("Fluid", "foo");
 
-    engine.load(QUrl(QLatin1String("qrc:/splash.qml")));
+    engine.load(QUrl(QLatin1String("qrc:/UnvUpdater/splash.qml")));
     return app.exec();
 }

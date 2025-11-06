@@ -63,7 +63,7 @@ Item {
                     }
                 }
 
-                var component = Qt.createComponent("qrc:/NewsCard.qml");
+                var component = Qt.createComponent("qrc:/UnvUpdater/NewsCard.qml");
 
                 for (var i = 0; i < newsObj['posts'].length; ++i) {
                     var object = component.createObject(swipe);
