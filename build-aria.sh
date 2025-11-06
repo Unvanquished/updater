@@ -10,7 +10,7 @@ if [ ! -f src/aria2api.cc ]; then
 fi
 
 case "$(uname)" in
-	Darwin*)
+        Darwin*)
         export MACOSX_DEPLOYMENT_TARGET=10.13  # To match Qt's target
         export AUTOPOINT=$(brew --prefix gettext)/bin/autopoint
     ;;
