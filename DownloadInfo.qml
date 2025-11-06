@@ -15,12 +15,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import QtQuick.Controls 2.1
-import QtQuick.Controls.Material 2.0
 import Fluid.Controls 1.0 as FluidControls
 import Fluid.Material 1.0 as FluidMaterial
 import QmlDownloader 1.0
+import QtQuick 
+import QtQuick.Controls
+import QtQuick.Controls.Material
 import "utils.js" as Utils
 
 Item {
