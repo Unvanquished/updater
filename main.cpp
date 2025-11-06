@@ -22,6 +22,7 @@
 #include <QQmlApplicationEngine>
 #include <QFile>
 #include <QFontDatabase>
+#include <QIcon>
 #include <QQmlContext>
 #include <QDebug>
 #include <QMessageBox>
