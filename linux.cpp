@@ -32,7 +32,7 @@ namespace Sys {
 
 namespace {
 
-const QString DESKTOP_FILE_NAME = "net.unvanquished.Unvanquished.desktop";
+const char DESKTOP_URI[] = "net.unvanquished.Unvanquished";
 
 // Use QProcess::splitCommand in Qt 5.15+
 QStringList splitArgs(const QString& command) {
@@ -158,14 +158,15 @@ bool installShortcuts()
         qDebug() << "Created directory for desktop files" << desktopDirString;
     }
 
-    QFile desktopFile(":resources/" + DESKTOP_FILE_NAME);
+    QString desktopFileName = QString(DESKTOP_URI) + ".desktop";
+    QFile desktopFile(":resources/" + desktopFileName);
     if (!desktopFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        qDebug() << "missing resource" << DESKTOP_FILE_NAME;
+        qDebug() << "missing resource" << desktopFileName;
         return false;
     }
     QString desktopStr = QString(desktopFile.readAll().data()).arg(settings.installPath());
     {
-        QFile outputFile(desktopDir.filePath(DESKTOP_FILE_NAME));
+        QFile outputFile(desktopDir.filePath(desktopFileName));
         if (!outputFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate)) {
             qDebug() << "error opening" << outputFile.fileName();
             return false;
@@ -179,7 +180,7 @@ bool installShortcuts()
 
     int ret = QProcess::execute("xdg-mime",
                                 {QString("default"),
-                                 desktopDir.filePath(DESKTOP_FILE_NAME),
+                                 desktopDir.filePath(desktopFileName),
                                  QString("x-scheme-handler/unv")});
     qDebug() << "xdg-mime returned" << ret;
     ret = QProcess::execute("update-desktop-database", {desktopDirString});
@@ -293,9 +294,9 @@ void initApplicationName()
     QCoreApplication::setApplicationName("updater");
 
     // WM_CLASS for X backend
-    qputenv("RESOURCE_NAME", "net.unvanquished.Unvanquished");
+    qputenv("RESOURCE_NAME", DESKTOP_URI);
     // equivalent for Wayland backend
-    QGuiApplication::setDesktopFileName(DESKTOP_FILE_NAME);
+    QGuiApplication::setDesktopFileName(DESKTOP_URI);
 }
 
 // Settings are stored in ~/.config/unvanquished/updater.conf
