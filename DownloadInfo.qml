@@ -18,8 +18,8 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.1
 import QtQuick.Controls.Material 2.0
-import Fluid.Controls 1.0
-import Fluid.Material 1.0
+import Fluid.Controls 1.0 as FluidControls
+import Fluid.Material 1.0 as FluidMaterial
 import QmlDownloader 1.0
 import "utils.js" as Utils
 
@@ -33,7 +33,7 @@ Item {
         bottomMargin: 60
     }
 
-    Card {
+    FluidControls.Card {
         anchors {
             right: parent.right
         }
@@ -50,7 +50,7 @@ Item {
             width: parent.width
             height: parent.height
 
-            BodyLabel {
+            FluidControls.BodyLabel {
                 id: instruction
 
                 anchors {
@@ -85,70 +85,70 @@ Item {
 
                 visible: false
 
-                BodyLabel {
+                FluidControls.BodyLabel {
                     width: 5
                 }
 
-                BodyLabel {
+                FluidControls.BodyLabel {
                     id: completedDownload
                     text: Utils.humanSize(downloader.completedSize)
                     font.pixelSize: 17
                 }
 
-                BodyLabel {
+                FluidControls.BodyLabel {
                     text: " / "
                     font.pixelSize: 17
                 }
 
-                BodyLabel {
+                FluidControls.BodyLabel {
                     id: totalDownload
                     text: Utils.humanSize(downloader.totalSize)
                     font.pixelSize: 17
                 }
 
-                BodyLabel {
+                FluidControls.BodyLabel {
                     width: 20
                 }
 
-                BodyLabel {
+                FluidControls.BodyLabel {
                     id: eta
                     text: Utils.humanTime(downloader.eta)
                     font.pixelSize: 17
                 }
 
-                BodyLabel {
+                FluidControls.BodyLabel {
                     width: 20
                 }
 
-                BodyLabel {
+                FluidControls.BodyLabel {
                     text: "DL: "
                     font.pixelSize: 17
                 }
 
-                BodyLabel {
+                FluidControls.BodyLabel {
                     id: downloadSpeed
                     text: Utils.humanSize(downloader.downloadSpeed)
                     font.pixelSize: 17
                 }
 
-                BodyLabel {
+                FluidControls.BodyLabel {
                     width: 20
                     text: "/s"
                     font.pixelSize: 17
                 }
 
-                BodyLabel {
+                FluidControls.BodyLabel {
                     text: "UL: "
                     font.pixelSize: 17
                 }
 
-                BodyLabel {
+                FluidControls.BodyLabel {
                     id: uploadSpeed
                     text: Utils.humanSize(downloader.uploadSpeed)
                     font.pixelSize: 17
                 }
 
-                BodyLabel {
+                FluidControls.BodyLabel {
                     text: "/s"
                     font.pixelSize: 17
                 }
@@ -156,7 +156,7 @@ Item {
         }
     }
 
-    ActionButton {
+    FluidMaterial.ActionButton {
         id: downloadAction
 
         anchors {
