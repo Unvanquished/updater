@@ -60,7 +60,7 @@ ApplicationWindow {
     Connections {
         target: splashController
 
-        onUpdateNeeded: {  // game update only
+        function onUpdateNeeded(updateNeeded) {  // game update only
             if (updateNeeded) {
                 showUpdater()
             } else {
@@ -69,7 +69,7 @@ ApplicationWindow {
             }
         }
 
-        onUpdaterUpdate: {
+        function onUpdaterUpdate(version) {
             downloader.startUpdaterUpdate(version);
             updaterUpdateLabel.visible = true;
 
@@ -95,7 +95,7 @@ ApplicationWindow {
         id: splashDownloaderConnections
         target: downloader
 
-        onFatalMessage: {
+        function onFatalMessage(message) {
             updateFailed.errorDetail = message;
             updateFailedWindow.show();
             updateFailed.open();

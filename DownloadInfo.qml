@@ -189,7 +189,7 @@ Item {
         target: downloader
         ignoreUnknownSignals: true
 
-        onStateChanged: {
+        function onStateChanged(state) {
             downloadInfo.visible = state !== QmlDownloader.COMPLETED;
             if (state === QmlDownloader.DOWNLOADING) {
                 downloadAction.iconName = "av/pause";
