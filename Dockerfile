@@ -12,6 +12,20 @@ ENV LANG=C.UTF-8
 # Bullseye environment. It may be that not all are necessary.
 # aria2 build requires autoconf, autopoint, gettext
 # git is used for cleaning unwanted files
+ENV XCB_MINIMUM_PACKAGES=' \
+    libxcb-cursor-dev \
+    libxcb-icccm4-dev \
+    libxcb-image0-dev \
+    libxcb-keysyms1-dev \
+    libxcb-randr0-dev \
+    libxcb-render0-dev \
+    libxcb-render-util0-dev \
+    libxcb-shape0-dev \
+    libxcb-shm0-dev \
+    libxcb-sync-dev \
+    libxcb-xfixes0-dev \
+    libxcb-xkb-dev \
+'
 RUN apt-get update && apt-get install -y \
     autoconf \
     autopoint \
@@ -23,15 +37,18 @@ RUN apt-get update && apt-get install -y \
     libtool \
     libx11-xcb-dev \
     libxcb-glx0-dev \
-    libxext-dev \
-    libxkbcommon-dev \
+    libxkbcommon-x11-dev \
     make \
+    ninja-build \
     perl \
     p7zip-full \
     pkg-config \
     python \
     xz-utils \
-    zlib1g-dev
+    zlib1g-dev \
+    $XCB_MINIMUM_PACKAGES && \
+    echo 'deb https://archive.debian.org/debian-archive/debian bullseye-backports main' > /etc/apt/sources.list.d/backports.list && \
+    apt-get update && apt-get install -y cmake/bullseye-backports
 
 #################
 # Build OpenSSL #
@@ -49,15 +66,8 @@ RUN make -j`nproc` && make install_sw && rm -rf /build-ssl
 # Build Qt #
 ############
 WORKDIR /build-qt
-COPY md5sums-qt.txt /build-qt/
-ENV UPDATER_MODULES=qtbase,qtquickcontrols,qtquickcontrols2,qtsvg,qtgraphicaleffects
-RUN curl -LO https://download.qt.io/archive/qt/5.14/5.14.2/single/qt-everywhere-src-5.14.2.tar.xz && \
-    md5sum --check --ignore-missing md5sums-qt.txt && \
-    tar -xJf qt-everywhere-src-5.14.2.tar.xz && \
-    cd qt-everywhere-src-5.14.2 && \
-    OPENSSL_LIBS='-L/openssl/lib64 -lssl -lcrypto -lpthread -ldl' ./configure -opensource -confirm-license -release -optimize-size -no-shared -static --c++std=14 -nomake tests -nomake tools -nomake examples -no-gif -no-icu -no-glib -no-qml-debug -opengl desktop -no-eglfs -no-opengles3 -no-angle -no-egl -qt-xcb -xkbcommon -dbus-runtime -qt-freetype -qt-pcre -qt-harfbuzz -qt-libpng -qt-libjpeg -system-zlib -I /openssl/include -openssl-linked -prefix /qt && \
-    bash -c "make -j`nproc` module-{$UPDATER_MODULES} && make module-{$UPDATER_MODULES}-install_subtargets" && \
-    rm -rf /build-qt
+COPY md5sums-qt.txt build-qt.sh /build-qt/
+RUN PKG_CONFIG_PATH=/openssl/lib64/pkgconfig ./build-qt.sh && mv qt /qt && rm -rf /build-qt
 
 ###############
 # Build aria2 #
@@ -75,7 +85,8 @@ RUN OPENSSL_LIBS='-L/openssl/lib64 -lssl -lcrypto -lpthread -ldl' OPENSSL_CFLAGS
 COPY . /updater
 RUN set -e; for D in . quazip fluid; do cd /updater/$D && git clean -dXff; done
 WORKDIR /build
-RUN /qt/bin/qmake -config release QMAKE_LFLAGS+="-no-pie" /updater && make -j`nproc`
+# TODO no-pie?
+RUN PKG_CONFIG_PATH=/openssl/lib64/pkgconfig cmake -DCMAKE_FIND_ROOT_PATH=/qt -DCMAKE_BUILD_TYPE=MinSizeRel /updater && make -j`nproc`
 RUN mv updater updater-nonstripped && strip updater-nonstripped -o updater
 # Version check: do not depend on glibc > 2.31
 RUN echo GLIBC_2.31 > target_version && \
