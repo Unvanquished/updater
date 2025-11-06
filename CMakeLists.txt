@@ -5,6 +5,9 @@ project(updater LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# important for quazip
+set(BUILD_SHARED_LIBS OFF)
+
 set(CMAKE_AUTORCC ON)
 
 set(ARIA2_LIBS "${CMAKE_CURRENT_SOURCE_DIR}/aria2/src/.libs/libaria2.a" CACHE STRING "aria2 libraries")
