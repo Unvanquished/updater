@@ -114,7 +114,8 @@ void SplashController::autoLaunchOrUpdate()
                 return;
         }
     } else if (settings_.installedVersion().isEmpty() ||
-               (!latestGameVersion_.isEmpty() && settings_.installedVersion() != latestGameVersion_)) {
+               (!latestGameVersion_.isEmpty() && settings_.installedVersion() != latestGameVersion_) ||
+               connectUrl_ == "unv://:mainWindow") {
         qDebug() << "Game update required.";
         switch (Sys::RelaunchElevated("--splashms 1 --internalcommand updategame")) {
             case Sys::ElevationResult::UNNEEDED:
