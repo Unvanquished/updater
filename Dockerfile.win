@@ -34,9 +34,10 @@ RUN ln -s libsecur32.a /usr/i686-w64-mingw32/lib/libSecur32.a && \
 # Build Qt #
 ############
 WORKDIR /build-qt
+COPY md5sums-qt.txt /build-qt/
 ENV UPDATER_MODULES=qtbase,qtquickcontrols,qtquickcontrols2,qtsvg,qtgraphicaleffects
-RUN curl -LO https://download.qt.io/archive/qt/5.14/5.14.2/single/qt-everywhere-src-5.14.2.tar.xz && \
-    curl -L https://download.qt.io/archive/qt/5.14/5.14.2/single/md5sums.txt | md5sum --check --ignore-missing && \
+RUN curl -LO http://download.qt.io/archive/qt/5.14/5.14.2/single/qt-everywhere-src-5.14.2.tar.xz && \
+    md5sum --check --ignore-missing md5sums-qt.txt && \
     tar -xJf qt-everywhere-src-5.14.2.tar.xz && \
     cd qt-everywhere-src-5.14.2 && \
     ./configure -release -static -prefix /qt -qt-zlib -qt-libjpeg -qt-libpng -qt-freetype -qt-pcre -qt-harfbuzz -opengl desktop -opensource -confirm-license -no-qml-debug -no-icu -xplatform win32-g++ -device-option CROSS_COMPILE=i686-w64-mingw32- -optimize-size --c++std=14 -nomake tests -nomake tools -nomake examples -schannel -no-feature-d3d12 && \
