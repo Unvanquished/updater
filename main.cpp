@@ -162,13 +162,20 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     // The font is already needed to display our arg parsing error on Linux
-    int fontId = QFontDatabase::addApplicationFont(":resources/Roboto-Regular.ttf");
-    if (fontId == -1) {
-        qDebug() << "Failed to register Roboto font";
-    } else {
-        QFont font("Roboto");
-        font.setPointSize(10);
-        app.setFont(font);
+    QString fontNames[] = {
+        "Roboto",
+    };
+
+    for (auto& fontName : fontNames)
+    {
+        int fontId = QFontDatabase::addApplicationFont(":resources/" + fontName + "-Regular.ttf");
+        if (fontId == -1) {
+            qDebug() << "Failed to register" << fontName << "font";
+        } else {
+            QFont font(fontName);
+            font.setPointSize(10);
+            app.setFont(font);
+        }
     }
 
     CommandLineOptions options = getCommandLineOptions(app);
