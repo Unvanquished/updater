@@ -26,6 +26,9 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QRegularExpression>
+#include <QByteArray>
+#include <QtEndian>
+#include <zlib.h>
 
 #include "iconsimageprovider.h"
 #include "iconthemeimageprovider.h"
@@ -156,6 +159,43 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
 
 } // namespace
 
+QByteArray gunzip(const QByteArray &compressed)
+{
+	// Smallest gzip file is 19 bytes:
+	// 10 headers, 0+ optional fields, 1+ deflate byte, 8 trailer (CRC32 + ISIZE).
+    if (compressed.size() < 19) {
+        return {};
+    }
+
+    // Read uncompressed size from last 4 bytes (little-endian).
+    quint32 size = qFromLittleEndian<quint32>(reinterpret_cast<const uchar*>(
+        compressed.constData() + compressed.size() - 4));
+
+    QByteArray decompressed;
+    decompressed.resize(size);
+
+    z_stream stream{};
+    stream.next_in = reinterpret_cast<Bytef*>(const_cast<char*>(compressed.data()));
+    stream.avail_in = compressed.size();
+    stream.next_out = reinterpret_cast<Bytef*>(decompressed.data());
+    stream.avail_out = decompressed.size();
+
+    if (inflateInit2(&stream, 16 + MAX_WBITS) != Z_OK) {
+        return {};
+    }
+
+    int ret = inflate(&stream, Z_FINISH);
+    inflateEnd(&stream);
+
+    if (ret != Z_STREAM_END) {
+        return {};
+    }
+
+	Q_ASSERT(stream.total_out == decompressed.size());
+
+    return decompressed;
+}
+
 int main(int argc, char *argv[])
 {
     Sys::initApplicationName();
@@ -164,7 +204,6 @@ int main(int argc, char *argv[])
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
 
-    // The font is already needed to display our arg parsing error on Linux
     QString fontNames[] = {
         "Roboto",
         "NotoSansSymbols",
@@ -172,13 +211,24 @@ int main(int argc, char *argv[])
 
     for ( auto& fontName : fontNames )
     {
-        int fontId = QFontDatabase::addApplicationFont(":resources/" + fontName + "-Regular.ttf");
-        if (fontId == -1) {
-            qDebug() << "Failed to register" << fontName << "font";
-        } else {
-            QFont font(fontName);
-            font.setPointSize(10);
-            app.setFont(font);
+        QFile compressedFile(":/resources/" + fontName + "-Regular.ttf.gz");
+
+        compressedFile.open(QIODevice::ReadOnly);
+        QByteArray compressed = compressedFile.readAll();
+        QByteArray decompressed = gunzip(compressed);
+
+
+        if (!decompressed.isEmpty()) {
+            if (QFontDatabase::addApplicationFontFromData(decompressed) == -1) {
+                qDebug() << "Failed to register" << fontName << "font";
+            } else {
+                QFont font(fontName);
+                font.setPointSize(10);
+                app.setFont(font);
+            }
+        }
+        else {
+            qDebug() << "Failed to decompress" << fontName << "font";
         }
     }
 

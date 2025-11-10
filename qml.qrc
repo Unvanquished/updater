@@ -2,8 +2,8 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>qtquickcontrols2.conf</file>
-        <file>resources/Roboto-Regular.ttf</file>
-        <file>resources/NotoSansSymbols-Regular.ttf</file>
+        <file>resources/Roboto-Regular.ttf.gz</file>
+        <file>resources/NotoSansSymbols-Regular.ttf.gz</file>
         <file>resources/updater.png</file>
         <file>News.qml</file>
         <file>NewsCard.qml</file>
