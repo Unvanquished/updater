@@ -1,0 +1,11 @@
+diff -u -r a/cmake/QtBuildHelpers.cmake b/cmake/QtBuildHelpers.cmake
+--- a/cmake/QtBuildHelpers.cmake	2025-02-13 11:45:28.000000000 -0600
++++ b/cmake/QtBuildHelpers.cmake	2025-11-15 00:50:19.933641770 -0600
+@@ -414,7 +414,6 @@
+     # Depends on qt_internal_set_cmake_build_type
+     qt_internal_setup_cmake_config_postfix()
+ 
+-    qt_internal_setup_position_independent_code()
+     qt_internal_set_link_depends_no_shared()
+     qt_internal_setup_default_install_prefix()
+     qt_internal_set_qt_source_tree_var()

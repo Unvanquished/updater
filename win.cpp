@@ -337,6 +337,8 @@ QString startGame(const QString& commandLine, bool failIfWindowsAdmin, const QSt
     if (!runningAsAdmin()) {
         qDebug() << "not admin, start game normally";
         setGraphicsPreference();
+        // In Qt 5.15+ a single argument to startDetached is ostensibly interpreted as an executable
+        // name rather than a whole command line, but on Windows a command line still works.
         return QProcess::startDetached(commandLine) ? "" : "startDetached failed";
     }
 

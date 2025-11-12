@@ -15,14 +15,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.0
-import QtQuick.Controls 2.1
-import QtQuick.Controls.Material 2.0
-import QtQuick.Dialogs 1.2
-import QtQuick.Layouts 1.3
-import Fluid.Controls 1.0 as FluidControls
-import Fluid.Material 1.0 as FluidMaterial
-import QmlDownloader 1.0
+import Fluid 2.0 as Fluid
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Controls.Material
+import QtQuick.Dialogs
+import QtQuick.Layouts
+import QmlDownloader
 
 Item {
     id: settingsItem
@@ -32,29 +31,29 @@ Item {
         Pane {
             width: parent.width
             padding: 16
-            FluidControls.DisplayLabel {
+            Fluid.DisplayLabel {
                 text: "Settings"
             }
         }
-        FluidControls.ThinDivider {}
+        Fluid.ThinDivider {}
         GridLayout {
             columns: 3
             rows: 2
-            FluidControls.TitleLabel {
+            Fluid.TitleLabel {
                 text: "Installation Directory:"
                 padding: 16
             }
-            FluidControls.Subheader {
+            Fluid.Subheader {
                 text: selectedInstallPath
             }
-            FluidMaterial.ActionButton {
+            Fluid.FloatingActionButton {
                 Material.elevation: 1
-                iconName: "file/folder"
+                icon.source: Fluid.Utils.iconUrl("file/folder")
                 onClicked: fileDialog.open()
                 enabled: downloader.state === QmlDownloader.IDLE
                 opacity: enabled ? 1 : 0.38
             }
-            FluidControls.TitleLabel {
+            Fluid.TitleLabel {
                 text: "Command Line:"
                 padding: 16
             }
@@ -66,7 +65,7 @@ Item {
         }
     }
 
-    FileDialog {
+    FolderDialog {
         id: fileDialog
         title: "Please choose a folder"
         onAccepted: {
@@ -75,7 +74,7 @@ Item {
             if (Qt.platform.os === "windows") {
                 clipRegex = /^file:(\/\/\/)?/;
             }
-            var url = fileDialog.fileUrl.toString();
+            var url = fileDialog.selectedFolder.toString();
             console.log("file URL from dialog: " + url);
             var path = url + '/Unvanquished';
             path = path.replace(clipRegex, '').replace(/\/\/Unvanquished$/, '/Unvanquished');
@@ -84,7 +83,6 @@ Item {
             }
             selectedInstallPath = path;
         }
-        selectFolder: true
     }
 }
 

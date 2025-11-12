@@ -28,9 +28,6 @@
 #include <QMessageBox>
 #include <QRegularExpression>
 
-#include "iconsimageprovider.h"
-#include "iconthemeimageprovider.h"
-
 #include "gamelauncher.h"
 #include "qmldownloader.h"
 #include "settings.h"
@@ -157,12 +154,13 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
 
 } // namespace
 
+#include <QDirIterator>
+
 int main(int argc, char *argv[])
 {
     Sys::initApplicationName();
     QCoreApplication::setApplicationVersion(updaterAppVersion());
     QCoreApplication::setOrganizationDomain("unvanquished.net");
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication app(argc, argv);
 
     // The font is already needed to display our arg parsing error on Linux
@@ -208,14 +206,14 @@ int main(int argc, char *argv[])
         return 0;
     }
 
+    // Needed to fetch disconnect_posts.json
+    qputenv("QML_XHR_ALLOW_FILE_READ", "1");
+
     SplashController splashController(
         options.relaunchCommand, options.updateUpdaterVersion, options.connectUrl, settings);
     splashController.checkForUpdate();
     QmlDownloader downloader(options.ariaLogFilename, options.connectUrl, settings);
     QQmlApplicationEngine engine;
-    engine.addImportPath(QLatin1String("qrc:/"));
-    engine.addImageProvider(QLatin1String("fluidicons"), new IconsImageProvider());
-    engine.addImageProvider(QLatin1String("fluidicontheme"), new IconThemeImageProvider());
 
     // Top-level windows can be attached to this so that they aren't QObject-children of the
     // splash screen. Must destruct before engine.
@@ -229,10 +227,16 @@ int main(int argc, char *argv[])
     context->setContextProperty("downloader", &downloader);
     context->setContextProperty("splashMilliseconds", options.splashMilliseconds);
 
+QDirIterator it(":", QDirIterator::Subdirectories);
+ while (it.hasNext()) {
+     QFileInfo info = it.nextFileInfo();
+     qDebug() << info.size() << info.filePath();
+ }
+
     // This is done in order to use the DownloadState enum
     qmlRegisterUncreatableType<QmlDownloader>(
         "QmlDownloader", 1, 0, "QmlDownloader", "QmlDownloader not constructible");
 
-    engine.load(QUrl(QLatin1String("qrc:/splash.qml")));
+    engine.load(QUrl(QLatin1String("qrc:/UnvUpdater/splash.qml")));
     return app.exec();
 }

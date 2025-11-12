@@ -1,0 +1,12 @@
+diff -u -r a/src/tools/rcc/rcc.cpp b/src/tools/rcc/rcc.cpp
+--- a/src/tools/rcc/rcc.cpp	2025-02-13 11:45:28.000000000 -0600
++++ b/src/tools/rcc/rcc.cpp	2025-11-23 02:47:34.103288435 -0600
+@@ -32,7 +32,7 @@
+     CONSTANT_COMPRESSLEVEL_DEFAULT = -1,
+     CONSTANT_ZSTDCOMPRESSLEVEL_CHECK = 1,   // Zstd level to check if compressing is a good idea
+     CONSTANT_ZSTDCOMPRESSLEVEL_STORE = 14,  // Zstd level to actually store the data
+-    CONSTANT_COMPRESSTHRESHOLD_DEFAULT = 70
++    CONSTANT_COMPRESSTHRESHOLD_DEFAULT = 1 // compress if savings are at least 1%
+ };
+ 
+ void RCCResourceLibrary::write(const char *str, int len)

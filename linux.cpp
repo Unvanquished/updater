@@ -34,22 +34,6 @@ namespace {
 
 const char DESKTOP_URI[] = "net.unvanquished.Unvanquished";
 
-// Use QProcess::splitCommand in Qt 5.15+
-QStringList splitArgs(const QString& command) {
-    QRegularExpression argPart(R"regex((")""|"([^\"]*)"?|([^ ]))regex");
-    QRegularExpression arg("(" + argPart.pattern() + ")+");
-    QStringList list;
-    for (QRegularExpressionMatchIterator i = arg.globalMatch(command); i.hasNext(); ) {
-        QString str;
-        for (QRegularExpressionMatchIterator j = argPart.globalMatch(i.next().captured()); j.hasNext(); ) {
-            QRegularExpressionMatch match = j.next();
-            str += match.captured(match.lastCapturedIndex());
-        }
-        list.append(str);
-    }
-    return list;
-}
-
 // 'p' because of custom command lines
 QString DoExecvp(const QStringList& args)
 {
@@ -312,7 +296,7 @@ QString getGameCommand(const QString& installPath)
 
 QString startGame(const QString& commandLine, bool, const QString&)
 {
-    QString error = DoExecvp(splitArgs(commandLine));
+    QString error = DoExecvp(QProcess::splitCommand(commandLine));
     QString msg = QString("error %1 (%2)").arg(errno).arg(strerror(errno));
     qDebug() << "game exec failed:" << msg;
     return msg;
