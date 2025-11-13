@@ -1,5 +1,9 @@
 # See Dockerfile.win for an explanation of some aspects of this file.
 FROM docker.io/debian:bullseye-slim
+
+# Prevents warning spam from Qt 6's rcc
+ENV LANG=C.UTF-8
+
 # OpenSSL build requires perl
 # Qt tarball requires xz-utils
 # Qt build requires libgl1-mesa-dev, libxkbcommon-dev, python, zlib1g-dev
