@@ -24,6 +24,7 @@ build_module() {
     truncate_var="truncate_${module}"
     echo ${!truncate_var:-} | xargs --no-run-if-empty truncate -s 0
     if [[ "${module}" = qtbase ]]; then
+        patch -p1 < "${SCRIPT_DIR}/qtbase.patch"
         ./configure ${!options_var} ${common_options_cmake}
     else
         "${INSTALL_DIR}/bin/qt-configure-module" . ${!options_var} ${common_options_cmake}
@@ -33,7 +34,7 @@ build_module() {
 }
 
 WORK_DIR="${PWD}"
-SCRIPT_DIR=$(dirname "$0")
+SCRIPT_DIR=$(realpath "$(dirname "$0")")
 INSTALL_DIR="${WORK_DIR}/qt"
 
 #FIXME bad warning in qtdeclarative-everywhere-src-6.8.3/src/quickwidgets/qquickwidget.cpp
@@ -85,6 +86,7 @@ options_qtbase="
     -DFEATURE_concurrent=OFF
     -DFEATURE_contextmenu=OFF
     -DFEATURE_cssparser=OFF
+    -DFEATURE_cursor=ON
     -DFEATURE_datawidgetmapper=OFF
     -DFEATURE_datetimeedit=OFF
     -DFEATURE_dial=OFF

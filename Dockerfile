@@ -25,6 +25,7 @@ ENV XCB_MINIMUM_PACKAGES=' \
     libxcb-sync-dev \
     libxcb-xfixes0-dev \
     libxcb-xkb-dev \
+    libxcb-util-dev \
 '
 RUN apt-get update && apt-get install -y \
     autoconf \
@@ -49,6 +50,7 @@ RUN apt-get update && apt-get install -y \
     $XCB_MINIMUM_PACKAGES && \
     echo 'deb https://archive.debian.org/debian-archive/debian bullseye-backports main' > /etc/apt/sources.list.d/backports.list && \
     apt-get update && apt-get install -y cmake/bullseye-backports
+RUN rm /usr/lib/x86_64-linux-gnu/libxcb-*.so
 
 #################
 # Build OpenSSL #
@@ -66,7 +68,7 @@ RUN make -j`nproc` && make install_sw && rm -rf /build-ssl
 # Build Qt #
 ############
 WORKDIR /build-qt
-COPY md5sums-qt.txt build-qt.sh /build-qt/
+COPY md5sums-qt.txt build-qt.sh qtbase.patch /build-qt/
 RUN PKG_CONFIG_PATH=/openssl/lib64/pkgconfig ./build-qt.sh && mv qt /qt && rm -rf /build-qt
 
 ###############
