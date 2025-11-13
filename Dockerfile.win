@@ -11,6 +11,10 @@
 # is stored in the updater/.git/modules directory.
 
 FROM docker.io/debian:bullseye-slim
+
+# Prevents warning spam from Qt 6's rcc
+ENV LANG=C.UTF-8
+
 RUN apt-get update && apt-get install -y \
     autoconf \
     autopoint \
