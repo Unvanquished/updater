@@ -37,8 +37,12 @@ SCRIPT_DIR=$(dirname "$0")
 INSTALL_DIR="${WORK_DIR}/qt"
 
 #FIXME bad warning in qtdeclarative-everywhere-src-6.8.3/src/quickwidgets/qquickwidget.cpp
+# TODO: no-pie linux-only
 
-common_options_cmake='-DQT_GENERATE_SBOM=OFF -DFEATURE_accessibility=OFF'
+common_options_cmake='
+    -DFEATURE_accessibility=OFF
+    -DQT_GENERATE_SBOM=OFF
+'
 options_qtbase="
     -opensource
     -confirm-license
@@ -48,6 +52,8 @@ options_qtbase="
     -static
     --c++std=17
     -disable-deprecated-up-to 0x060800
+    -reduce-exports
+    -gc-binaries
     -qpa xcb
     -nomake tests
     -nomake examples
@@ -95,7 +101,6 @@ options_qtbase="
     -DFEATURE_formlayout=OFF
     -DFEATURE_fscompleter=OFF
     -DFEATURE_future=OFF
-    -DFEATURE_gc_binaries=OFF
     -DFEATURE_gestures=OFF
     -DFEATURE_graphicsview=OFF
     -DFEATURE_groupbox=OFF
@@ -196,7 +201,7 @@ options_qtbase="
     -DFEATURE_whatsthis=OFF
     -DFEATURE_widgettextcontrol=ON
     -DFEATURE_wizard=OFF
-    -DFEATURE_xcb=1
+    -DFEATURE_xcb=ON
     -DFEATURE_xcb_glx_plugin=ON
     -DFEATURE_xml=OFF
     -DFEATURE_xmlstream=ON
