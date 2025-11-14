@@ -30,6 +30,7 @@ ENV XCB_MINIMUM_PACKAGES=' \
 RUN apt-get update && apt-get install -y \
     autoconf \
     autopoint \
+    ca-certificates \
     curl \
     gettext \
     git \
@@ -48,7 +49,7 @@ RUN apt-get update && apt-get install -y \
     xz-utils \
     zlib1g-dev \
     $XCB_MINIMUM_PACKAGES && \
-    echo 'deb https://archive.debian.org/debian-archive/debian bullseye-backports main' > /etc/apt/sources.list.d/backports.list && \
+    echo 'deb https://archive.debian.org/debian bullseye-backports main' > /etc/apt/sources.list.d/backports.list && \
     apt-get update && apt-get install -y cmake/bullseye-backports
 RUN rm /usr/lib/x86_64-linux-gnu/libxcb-*.so
 

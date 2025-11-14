@@ -10,3 +10,15 @@ diff -u -r qtbase.old/cmake/3rdparty/extra-cmake-modules/find-modules/FindXCB.cm
  set(XCB_RENDERUTIL_component_deps XCB RENDER)
  set(XCB_XFIXES_component_deps XCB RENDER SHAPE)
  set(XCB_XVMC_component_deps XCB XV)
+diff -u -r qtbase.old/src/tools/rcc/rcc.cpp qtbase.new/src/tools/rcc/rcc.cpp
+--- qtbase.old/src/tools/rcc/rcc.cpp	2025-02-13 11:45:28.000000000 -0600
++++ qtbase.new/src/tools/rcc/rcc.cpp	2025-11-14 00:12:48.076214506 -0600
+@@ -32,7 +32,7 @@
+     CONSTANT_COMPRESSLEVEL_DEFAULT = -1,
+     CONSTANT_ZSTDCOMPRESSLEVEL_CHECK = 1,   // Zstd level to check if compressing is a good idea
+     CONSTANT_ZSTDCOMPRESSLEVEL_STORE = 14,  // Zstd level to actually store the data
+-    CONSTANT_COMPRESSTHRESHOLD_DEFAULT = 70
++    CONSTANT_COMPRESSTHRESHOLD_DEFAULT = 1
+ };
+ 
+ void RCCResourceLibrary::write(const char *str, int len)
