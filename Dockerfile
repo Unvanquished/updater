@@ -6,12 +6,11 @@ ENV LANG=C.UTF-8
 
 # OpenSSL build requires perl
 # Qt tarball requires xz-utils
-# Qt build requires libgl1-mesa-dev, libxkbcommon-dev, python, zlib1g-dev
-# Qt configuration additionally finds libxcb-glx0-dev/libx11-xcb-dev/libxext-dev. Without them, the
-# updater builds but icons (gear, download, etc.) are mysteriously missing, when built in the
-# Bullseye environment. It may be that not all are necessary.
+# Qt build requires libgl1-mesa-dev, libxkbcommon-dev, python, zlib1g-dev................
 # aria2 build requires autoconf, autopoint, gettext
 # git is used for cleaning unwanted files
+
+# For Qt's xcb_syslibs compile test
 ENV XCB_MINIMUM_PACKAGES=' \
     libxcb-cursor-dev \
     libxcb-icccm4-dev \
@@ -27,10 +26,12 @@ ENV XCB_MINIMUM_PACKAGES=' \
     libxcb-xkb-dev \
     libxcb-util-dev \
 '
+RUN echo 'deb http://archive.debian.org/debian bullseye-backports main' > /etc/apt/sources.list.d/backports.list
 RUN apt-get update && apt-get install -y \
     autoconf \
     autopoint \
-    ca-certificates \
+    cmake/bullseye-backports \
+    cmake-data/bullseye-backports \
     curl \
     gettext \
     git \
@@ -48,9 +49,7 @@ RUN apt-get update && apt-get install -y \
     python \
     xz-utils \
     zlib1g-dev \
-    $XCB_MINIMUM_PACKAGES && \
-    echo 'deb https://archive.debian.org/debian bullseye-backports main' > /etc/apt/sources.list.d/backports.list && \
-    apt-get update && apt-get install -y cmake/bullseye-backports
+    $XCB_MINIMUM_PACKAGES
 RUN rm /usr/lib/x86_64-linux-gnu/libxcb-*.so
 
 #################
