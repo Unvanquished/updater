@@ -10,6 +10,17 @@ diff -u -r qtbase.old/cmake/3rdparty/extra-cmake-modules/find-modules/FindXCB.cm
  set(XCB_RENDERUTIL_component_deps XCB RENDER)
  set(XCB_XFIXES_component_deps XCB RENDER SHAPE)
  set(XCB_XVMC_component_deps XCB XV)
+diff -u -r qtbase.old/cmake/QtBuildHelpers.cmake qtbase.new/cmake/QtBuildHelpers.cmake
+--- qtbase.old/cmake/QtBuildHelpers.cmake	2025-02-13 11:45:28.000000000 -0600
++++ qtbase.new/cmake/QtBuildHelpers.cmake	2025-11-15 00:50:19.933641770 -0600
+@@ -414,7 +414,6 @@
+     # Depends on qt_internal_set_cmake_build_type
+     qt_internal_setup_cmake_config_postfix()
+ 
+-    qt_internal_setup_position_independent_code()
+     qt_internal_set_link_depends_no_shared()
+     qt_internal_setup_default_install_prefix()
+     qt_internal_set_qt_source_tree_var()
 diff -u -r qtbase.old/src/tools/rcc/rcc.cpp qtbase.new/src/tools/rcc/rcc.cpp
 --- qtbase.old/src/tools/rcc/rcc.cpp	2025-02-13 11:45:28.000000000 -0600
 +++ qtbase.new/src/tools/rcc/rcc.cpp	2025-11-14 00:12:48.076214506 -0600

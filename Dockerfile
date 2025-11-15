@@ -61,7 +61,7 @@ RUN curl -LO http://github.com/openssl/openssl/releases/download/openssl-3.6.0/o
     sha256sum --check sha256sums-openssl.txt
 RUN tar -xzf openssl-3.6.0.tar.gz
 WORKDIR /build-ssl/openssl-3.6.0
-RUN ./config --prefix=/openssl --openssldir=/dev/null no-shared no-apps no-autoload-config no-capieng no-dso no-dynamic-engine no-engine no-loadereng no-module -Os
+RUN ./config --prefix=/openssl --openssldir=/dev/null no-shared no-apps no-autoload-config no-capieng no-dso no-dynamic-engine no-engine no-loadereng no-module -Os no-pic -fno-pic
 RUN make -j`nproc` && make install_sw && rm -rf /build-ssl
 
 ############
@@ -73,7 +73,7 @@ ARG release
 # Note: {foo:+bar} here is a syntax of the Dockerfile, not the shell!
 ENV IPO_ARG=${release:+-DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON}
 RUN echo IPO_ARG ${IPO_ARG}
-RUN BUILDQT_CMAKE_ARGS=${IPO_ARG} PKG_CONFIG_PATH=/openssl/lib64/pkgconfig ./build-qt.sh && mv qt /qt && rm -rf /build-qt
+RUN BUILDQT_CMAKE_ARGS="${IPO_ARG} -DCMAKE_POSITION_INDEPENDENT_CODE=OFF -DFEATURE_reduce_relocations=OFF" CXXFLAGS='-fno-pic -no-pie' CFLAGS='-fno-pic -no-pie' PKG_CONFIG_PATH=/openssl/lib64/pkgconfig ./build-qt.sh && mv qt /qt && rm -rf /build-qt
 
 ###############
 # Build aria2 #
@@ -83,7 +83,7 @@ COPY .git/modules/aria2 /updater/.git/modules/aria2
 COPY build-aria.sh /updater/
 WORKDIR /updater/aria2
 RUN OPENSSL_LIBS='-L/openssl/lib64 -lssl -lcrypto -lpthread -ldl' OPENSSL_CFLAGS='-I /openssl/include' \
-    CFLAGS=-Os CXXFLAGS=-Os ../build-aria.sh --with-openssl
+    CFLAGS='-Os -fno-pic -no-pie' CXXFLAGS='-Os -fno-pic -no-pie' ../build-aria.sh --with-openssl
 
 #################
 # Build updater #
@@ -91,8 +91,7 @@ RUN OPENSSL_LIBS='-L/openssl/lib64 -lssl -lcrypto -lpthread -ldl' OPENSSL_CFLAGS
 COPY . /updater
 RUN set -e; for D in . quazip fluid; do cd /updater/$D && git clean -dXff; done
 WORKDIR /build
-# TODO no-pie?
-RUN PKG_CONFIG_PATH=/openssl/lib64/pkgconfig cmake -G Ninja -DCMAKE_FIND_ROOT_PATH=/qt -DCMAKE_BUILD_TYPE=MinSizeRel ${IPO_ARG} /updater && ninja
+RUN PKG_CONFIG_PATH=/openssl/lib64/pkgconfig CXXFLAGS='-no-pie -fno-pic' CFLAGS='-no-pie -fno-pic' cmake -G Ninja -DCMAKE_POSITION_INDEPENDENT_CODE=OFF -DCMAKE_FIND_ROOT_PATH=/qt -DCMAKE_BUILD_TYPE=MinSizeRel ${IPO_ARG} /updater && ninja
 RUN mv updater updater-nonstripped && strip updater-nonstripped -o updater
 # Version check: do not depend on glibc > 2.31
 RUN echo GLIBC_2.31 > target_version && \
