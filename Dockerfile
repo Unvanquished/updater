@@ -69,7 +69,11 @@ RUN make -j`nproc` && make install_sw && rm -rf /build-ssl
 ############
 WORKDIR /build-qt
 COPY md5sums-qt.txt build-qt.sh qtbase.patch /build-qt/
-RUN PKG_CONFIG_PATH=/openssl/lib64/pkgconfig ./build-qt.sh && mv qt /qt && rm -rf /build-qt
+ARG release
+# Note: {foo:+bar} here is a syntax of the Dockerfile, not the shell!
+ENV IPO_ARG=${release:+-DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON}
+RUN echo IPO_ARG ${IPO_ARG}
+RUN BUILDQT_CMAKE_ARGS=${IPO_ARG} PKG_CONFIG_PATH=/openssl/lib64/pkgconfig ./build-qt.sh && mv qt /qt && rm -rf /build-qt
 
 ###############
 # Build aria2 #
@@ -88,14 +92,13 @@ COPY . /updater
 RUN set -e; for D in . quazip fluid; do cd /updater/$D && git clean -dXff; done
 WORKDIR /build
 # TODO no-pie?
-RUN PKG_CONFIG_PATH=/openssl/lib64/pkgconfig cmake -DCMAKE_FIND_ROOT_PATH=/qt -DCMAKE_BUILD_TYPE=MinSizeRel /updater && make -j`nproc`
+RUN PKG_CONFIG_PATH=/openssl/lib64/pkgconfig cmake -G Ninja -DCMAKE_FIND_ROOT_PATH=/qt -DCMAKE_BUILD_TYPE=MinSizeRel ${IPO_ARG} /updater && ninja
 RUN mv updater updater-nonstripped && strip updater-nonstripped -o updater
 # Version check: do not depend on glibc > 2.31
 RUN echo GLIBC_2.31 > target_version && \
     grep -aoE 'GLIBC_[0-9.]+' updater > symbol_versions && \
     cat target_version symbol_versions | sort -V | tail -1 | tee max_version && \
     diff -q target_version max_version
-ARG release
 RUN if [ -n "$release" ]; then cp updater UnvanquishedUpdater && 7z -tzip -mx=9 a UnvUpdaterLinux.zip UnvanquishedUpdater; fi
 ENV zipfile=${release:+UnvUpdaterLinux.zip}
 CMD cp updater updater-nonstripped $zipfile /build-docker

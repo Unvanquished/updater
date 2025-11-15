@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+
+# Usage: [EXTRA_CMAKE_ARGS=<args...>] build-qt.sh [<qt submodule>...]
+# installs to ./qt/
+
 set -e
 set -u
 set -o pipefail
@@ -40,10 +44,11 @@ INSTALL_DIR="${WORK_DIR}/qt"
 #FIXME bad warning in qtdeclarative-everywhere-src-6.8.3/src/quickwidgets/qquickwidget.cpp
 # TODO: no-pie linux-only
 
-common_options_cmake='
+common_options_cmake="
     -DFEATURE_accessibility=OFF
     -DQT_GENERATE_SBOM=OFF
-'
+    ${BUILDQT_CMAKE_ARGS:-}
+"
 options_qtbase="
     -opensource
     -confirm-license
