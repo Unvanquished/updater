@@ -25,8 +25,6 @@ build_module() {
     module_vars "${module}"
     cd "${WORK_DIR}/${dirname}"
     options_var="options_${module}"
-    truncate_var="truncate_${module}"
-    echo ${!truncate_var:-} | xargs --no-run-if-empty truncate -s 0
     if [[ "${module}" = qtbase ]]; then
         patch -p1 < "${SCRIPT_DIR}/qtbase.patch"
         ./configure ${!options_var} ${common_options_cmake}
@@ -42,7 +40,6 @@ SCRIPT_DIR=$(realpath "$(dirname "$0")")
 INSTALL_DIR="${WORK_DIR}/qt"
 
 #FIXME bad warning in qtdeclarative-everywhere-src-6.8.3/src/quickwidgets/qquickwidget.cpp
-# TODO: no-pie linux-only
 
 common_options_cmake="
     -DFEATURE_accessibility=OFF
@@ -241,7 +238,6 @@ options_qtdeclarative='
     -DFEATURE_quicktemplates2_hover=OFF
     -DFEATURE_quicktemplates2_multitouch=OFF
 '
-truncate_qtbase='src/tools/uic/CMakeLists.txt'
 
 # qt5compat depends on qtdeclarative
 # qtdeclarative depends on qtshadertools, qtsvg

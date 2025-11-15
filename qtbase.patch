@@ -33,3 +33,14 @@ diff -u -r qtbase.old/src/tools/rcc/rcc.cpp qtbase.new/src/tools/rcc/rcc.cpp
  };
  
  void RCCResourceLibrary::write(const char *str, int len)
+diff -u -r qtbase.old/src/tools/uic/CMakeLists.txt qtbase.new/src/tools/uic/CMakeLists.txt
+--- qtbase.old/src/tools/uic/CMakeLists.txt	2025-02-13 11:45:28.000000000 -0600
++++ qtbase.new/src/tools/uic/CMakeLists.txt	2025-11-16 23:07:55.067139397 -0600
+@@ -4,6 +4,7 @@
+ #####################################################################
+ ## uic Tool:
+ #####################################################################
++return()
+ 
+ qt_get_tool_target_name(target_name uic)
+ qt_internal_add_tool(${target_name}
