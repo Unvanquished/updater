@@ -75,7 +75,7 @@ brew install autoconf automake libtool pkg-config gettext
 cd aria2
 # If building on M1, target x86 by running in Rosetta: arch -x86_64 ../build-aria.sh
 # (the --target option to configure doesn't seem to have any effect)
-../build-aria.sh
+CFLAGS=-Os CXXFLAGS=-Os ../build-aria.sh
 cd ..
 ```
 
