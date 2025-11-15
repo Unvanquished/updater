@@ -47,7 +47,7 @@ The first line below runs the Docker build for Windows. The last 3 lines are to 
 ```
 docker build -t unvlauncher-win -f Dockerfile.win .
 docker create --name unvlauncher-win unvlauncher-win
-docker cp unvlauncher-win:/build/release/updater.exe ./build-docker
+docker cp unvlauncher-win:/build/updater.exe ./build-docker
 docker rm unvlauncher-win
 
 ```

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-# Usage: [EXTRA_CMAKE_ARGS=<args...>] build-qt.sh [<qt submodule>...]
-# installs to ./qt/
+# Usage: [EXTRA_CMAKE_ARGS=<args...>] build-qt.sh <sysname> [<qt submodule>...]
+# installs to ./qt_<sysname>/
 
 set -e
 set -u
@@ -16,7 +16,7 @@ prefix_output() {
 module_vars() {
     url="https://download.qt.io/archive/qt/6.8/6.8.3/submodules/${1}-everywhere-src-6.8.3.tar.xz"
     archive="${url##*/}"
-    dirname="${archive%.tar.*}"
+    dirname="build_${sysname}/${archive%.tar.*}"
 }
 
 
@@ -35,9 +35,12 @@ build_module() {
     cmake --install .
 }
 
+sysname="${1}"
+shift
+
 WORK_DIR="${PWD}"
 SCRIPT_DIR=$(realpath "$(dirname "$0")")
-INSTALL_DIR="${WORK_DIR}/qt"
+INSTALL_DIR="${WORK_DIR}/qt_${sysname}"
 
 #FIXME bad warning in qtdeclarative-everywhere-src-6.8.3/src/quickwidgets/qquickwidget.cpp
 
@@ -46,38 +49,8 @@ common_options_cmake="
     -DQT_GENERATE_SBOM=OFF
     ${BUILDQT_CMAKE_ARGS:-}
 "
-options_qtbase="
-    -opensource
-    -confirm-license
-    -release
-    -optimize-size
-    -no-shared
-    -static
-    --c++std=17
-    -disable-deprecated-up-to 0x060800
-    -reduce-exports
-    -gc-binaries
-    -qpa xcb
-    -nomake tests
-    -nomake examples
-    -no-gif
-    -no-icu
-    -no-glib
-    -opengl desktop
-    -no-eglfs
-    -no-opengles3
-    -no-egl
-    -xkbcommon
-    -dbus-runtime
-    -qt-freetype
-    -qt-pcre
-    -qt-harfbuzz
-    -qt-libpng
-    -qt-libjpeg
-    -system-zlib
-    -openssl-linked
-    -prefix ${INSTALL_DIR}
-    --
+
+base_features='
     -DFEATURE_androiddeployqt=OFF
     -DFEATURE_animation=ON
     -DFEATURE_cborstreamwriter=OFF
@@ -139,7 +112,6 @@ options_qtbase="
     -DFEATURE_mimetype_database=OFF
     -DFEATURE_movie=OFF
     -DFEATURE_networkdiskcache=OFF
-    -DFEATURE_opengl_desktop=ON
     -DFEATURE_pdf=OFF
     -DFEATURE_picture=OFF
     -DFEATURE_printsupport=OFF
@@ -171,6 +143,9 @@ options_qtbase="
     -DFEATURE_stringlistmodel=OFF
     -DFEATURE_style_fusion=OFF
     -DFEATURE_style_stylesheet=OFF
+    -DFEATURE_style_windows=ON
+    -DFEATURE_style_windows11=OFF
+    -DFEATURE_style_windowsvista=OFF
     -DFEATURE_syntaxhighlighter=OFF
     -DFEATURE_systemtrayicon=OFF
     -DFEATURE_tabbar=OFF
@@ -205,10 +180,39 @@ options_qtbase="
     -DFEATURE_whatsthis=OFF
     -DFEATURE_widgettextcontrol=ON
     -DFEATURE_wizard=OFF
-    -DFEATURE_xcb=ON
-    -DFEATURE_xcb_glx_plugin=ON
     -DFEATURE_xml=OFF
     -DFEATURE_xmlstream=ON
+'
+
+options_qtbase="
+    -opensource
+    -confirm-license
+    -release
+    -optimize-size
+    -no-shared
+    -static
+    --c++std=17
+    -disable-deprecated-up-to 0x060800
+    -reduce-exports
+    -gc-binaries
+    -nomake tests
+    -nomake examples
+    -no-gif
+    -no-icu
+    -no-glib
+    -opengl desktop
+    -no-eglfs
+    -no-opengles3
+    -no-egl
+    -qt-freetype
+    -qt-pcre
+    -qt-harfbuzz
+    -qt-libpng
+    -qt-libjpeg
+    -prefix ${INSTALL_DIR}
+    --
+    ${base_features}
+    -DFEATURE_opengl_desktop=ON
     -DQT_BUILD_DOCS=OFF
 "
 options_qt5compat='--'
@@ -239,9 +243,80 @@ options_qtdeclarative='
     -DFEATURE_quicktemplates2_multitouch=OFF
 '
 
+case "${sysname}" in
+linux)
+    options_qtbase="
+        -dbus-runtime
+        -openssl-linked
+        -qpa xcb
+        -system-zlib
+        -xkbcommon
+        ${options_qtbase}
+        -DFEATURE_xcb=ON
+        -DFEATURE_xcb_glx_plugin=ON
+    "
+    ;;
+macos)
+    ;;
+windows)
+    options_qtbase="
+        -device-option CROSS_COMPILE=i686-w64-mingw32-
+        -xplatform win32-g++
+        -schannel
+        ${options_qtbase}
+        -DFEATURE_imageformat_xpm=ON
+        -DFEATURE_library=ON
+        -DCMAKE_TOOLCHAIN_FILE=${SCRIPT_DIR}/cross-toolchain-mingw32.cmake
+        -DQT_HOST_PATH=${WORK_DIR}/qt_tools
+    "
+    # -no-feature-d3d12
+
+    ;;
+tools)
+    options_qtbase="
+        --c++std=17
+        -release
+        -static
+        -qpa none
+        -no-opengl
+        -no-harfbuzz
+        -no-freetype
+        -no-ico
+        -no-gif
+        -no-xkbcommon
+        -no-openssl
+        -prefix ${INSTALL_DIR}
+        --
+        ${base_features}
+        -DFEATURE_widgets=OFF
+        -DFEATURE_network=OFF
+        -DFEATURE_harfbuzz=OFF
+        -DFEATURE_evdev=OFF
+        -DFEATURE_cursor=OFF
+        -DFEATURE_linuxfb=OFF
+        -DFEATURE_freetype=OFF
+        -DxxxFEATURE_pcre2=OFF
+        -DFEATURE_libinput=OFF
+        -DFEATURE_imageformat_jpeg=OFF
+        -DFEATURE_imageformat_png=OFF
+        -DFEATURE_imageformatplugin=OFF
+    "
+    options_qtdeclarative='
+        --
+    '
+    ;;
+*)
+    echo 'arg 1 should be linux|macos|windows'
+    exit 1
+esac
+
 # qt5compat depends on qtdeclarative
-# qtdeclarative depends on qtshadertools, qtsvg
-MODULES=${@:-qtbase qtsvg qtshadertools qtdeclarative qt5compat}
+# qtdeclarative depends on qtshadertools
+# qtdeclarative optionally depends on qtsvg but we don't actually want that?
+# Also in the tools build we strategically build qtdeclarative before qtshadertools to disable
+# the bulk of QML targets (TODO: disable them explicitly with options?)
+
+MODULES=${@:-qtbase qtshadertools qtdeclarative qt5compat qtsvg}
 
 # for bloaty
 # options_qtbase="-force-debug-info ${options_qtbase}"
@@ -260,11 +335,13 @@ wait
 
 md5sum --check --ignore-missing "${SCRIPT_DIR}/md5sums-qt.txt"
 
+mkdir -p "${WORK_DIR}/build_${sysname}"
+
 # Nuke old dir; extract in parallel
 for module in $MODULES; do
     module_vars "${module}"
     rm -rf "${dirname}"
-    tar -xJf "${archive}" &
+    tar -C "${WORK_DIR}/build_${sysname}" -xJf "${archive}" &
 done
 wait
 

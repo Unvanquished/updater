@@ -72,7 +72,7 @@ COPY md5sums-qt.txt build-qt.sh qtbase.patch /build-qt/
 ARG release
 # Note: {foo:+bar} here is a syntax of the Dockerfile, not the shell!
 ENV IPO_ARG=${release:+-DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON}
-RUN BUILDQT_CMAKE_ARGS="${IPO_ARG} -DCMAKE_POSITION_INDEPENDENT_CODE=OFF -DFEATURE_reduce_relocations=OFF" CXXFLAGS='-fno-pic -no-pie' CFLAGS='-fno-pic -no-pie' PKG_CONFIG_PATH=/openssl/lib64/pkgconfig ./build-qt.sh && mv qt /qt && rm -rf /build-qt
+RUN BUILDQT_CMAKE_ARGS="${IPO_ARG} -DCMAKE_POSITION_INDEPENDENT_CODE=OFF -DFEATURE_reduce_relocations=OFF" CXXFLAGS='-fno-pic -no-pie' CFLAGS='-fno-pic -no-pie' PKG_CONFIG_PATH=/openssl/lib64/pkgconfig ./build-qt.sh linux && mv qt_linux /qt && rm -rf /build-qt
 
 ###############
 # Build aria2 #

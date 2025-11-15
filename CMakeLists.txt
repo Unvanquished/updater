@@ -5,6 +5,9 @@ project(updater LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# triggers in QML generated files
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-maybe-uninitialized")
+
 # important for quazip
 set(BUILD_SHARED_LIBS OFF)
 
@@ -18,6 +21,11 @@ find_package(Qt6 REQUIRED COMPONENTS Core Qml Quick QuickControls2 QuickDialogs2
 # Actually only used by Fluid and Quazip, not us. HACK: prevent warning spam
 find_package(Qt6 COMPONENTS Core5Compat)
 
+if (WIN32)
+    set(CMAKE_C_FLAGS "-static -static-libgcc ${CMAKE_C_FLAGS}")
+    set(CMAKE_CXX_FLAGS "-static -static-libgcc ${CMAKE_CXX_FLAGS}")
+endif()
+
 qt_standard_project_setup(REQUIRES 6.8)
 
 option(FLUID_WITH_GALLERY "" OFF)
@@ -28,6 +36,9 @@ add_subdirectory(fluid)
 set(QUAZIP_BZIP2 OFF)
 set(QUAZIP_ENABLE_TESTS OFF)
 set(QUAZIP_FETCH_LIBS OFF)
+if (WIN32)
+   set(QUAZIP_USE_QT_ZLIB ON)
+endif()
 add_subdirectory(quazip)
 
 set(SOURCES
@@ -61,7 +72,7 @@ else()
     list(APPEND SOURCES linux.cpp)
 endif()
 
-qt_add_executable(updater
+qt_add_executable(updater WIN32
     ${SOURCES}
     qml.qrc
 )
