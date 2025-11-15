@@ -51,7 +51,7 @@ COPY .git/modules/aria2 /updater/.git/modules/aria2
 COPY build-aria.sh /updater/
 WORKDIR /updater/aria2
 RUN git clean -dXff
-RUN ../build-aria.sh ARIA2_STATIC=yes --host i686-w64-mingw32
+RUN CFLAGS=-Os CXXFLAGS=-Os ../build-aria.sh ARIA2_STATIC=yes --host i686-w64-mingw32
 
 #################
 # Build updater #

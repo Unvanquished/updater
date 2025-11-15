@@ -37,7 +37,7 @@ RUN curl -LO https://github.com/openssl/openssl/releases/download/openssl-3.6.0/
     curl -L https://github.com/openssl/openssl/releases/download/openssl-3.6.0/openssl-3.6.0.tar.gz.sha256 | sha256sum --check
 RUN tar -xzf openssl-3.6.0.tar.gz
 WORKDIR /build-ssl/openssl-3.6.0
-RUN ./config --prefix=/openssl --openssldir=/dev/null no-shared no-apps no-autoload-config no-capieng no-dso no-dynamic-engine no-engine no-loadereng no-module
+RUN ./config --prefix=/openssl --openssldir=/dev/null no-shared no-apps no-autoload-config no-capieng no-dso no-dynamic-engine no-engine no-loadereng no-module -Os
 RUN make -j`nproc` && make install_sw && rm -rf /build-ssl
 
 ############
@@ -60,7 +60,8 @@ COPY aria2 /updater/aria2
 COPY .git/modules/aria2 /updater/.git/modules/aria2
 COPY build-aria.sh /updater/
 WORKDIR /updater/aria2
-RUN OPENSSL_LIBS='-L/openssl/lib64 -lssl -lcrypto -lpthread -ldl' OPENSSL_CFLAGS='-I /openssl/include' ../build-aria.sh --with-openssl
+RUN OPENSSL_LIBS='-L/openssl/lib64 -lssl -lcrypto -lpthread -ldl' OPENSSL_CFLAGS='-I /openssl/include' \
+    CFLAGS=-Os CXXFLAGS=-Os ../build-aria.sh --with-openssl
 
 #################
 # Build updater #
