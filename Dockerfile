@@ -49,7 +49,9 @@ RUN apt-get update && apt-get install -y \
     python \
     xz-utils \
     zlib1g-dev \
-    $XCB_MINIMUM_PACKAGES
+    $XCB_MINIMUM_PACKAGES \
+    && apt-get clean
+
 RUN rm /usr/lib/x86_64-linux-gnu/libxcb-*.so
 
 #################
