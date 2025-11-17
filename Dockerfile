@@ -73,7 +73,7 @@ RUN make -j`nproc` && make install_sw \
 # Build Qt #
 ############
 WORKDIR /build-qt
-COPY md5sums-qt.txt build-qt.sh qt*.patch /build-qt/
+COPY md5sums-qt.txt build-qt.sh trim-qt.sh qt*.patch /build-qt/
 ARG release
 # Note: {foo:+bar} here is a syntax of the Dockerfile, not the shell!
 ENV IPO_ARG=${release:+-DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON}

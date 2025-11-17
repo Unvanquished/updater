@@ -350,6 +350,8 @@ for module in $MODULES; do
 done
 wait
 
+./trim-qt.sh "${WORK_DIR}/build_${sysname}"
+
 for module in $MODULES; do
     prefix_output "${module}| " build_module "${module}"
 done
