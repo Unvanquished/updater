@@ -92,7 +92,7 @@ RUN OPENSSL_LIBS='-L/openssl/lib64 -lssl -lcrypto -lpthread -ldl' OPENSSL_CFLAGS
 COPY . /updater
 RUN set -e; for D in . quazip fluid; do cd /updater/$D && git clean -dXff; done
 WORKDIR /build
-RUN PKG_CONFIG_PATH=/openssl/lib64/pkgconfig CXXFLAGS='-no-pie -fno-pic' CFLAGS='-no-pie -fno-pic' cmake -G Ninja -DCMAKE_POSITION_INDEPENDENT_CODE=OFF -DCMAKE_FIND_ROOT_PATH=/qt -DCMAKE_BUILD_TYPE=MinSizeRel ${IPO_ARG} /updater && ninja
+RUN PKG_CONFIG_PATH=/openssl/lib64/pkgconfig CXXFLAGS='-no-pie -fno-pic -ffunction-sections -fdata-sections -Wl,--gc-sections' CFLAGS='-no-pie -fno-pic -ffunction-sections -fdata-sections -Wl,--gc-sections' cmake -G Ninja -DCMAKE_POSITION_INDEPENDENT_CODE=OFF -DCMAKE_FIND_ROOT_PATH=/qt -DCMAKE_BUILD_TYPE=MinSizeRel ${IPO_ARG} /updater && ninja
 RUN mv updater updater-nonstripped && strip updater-nonstripped -o updater
 # Version check: do not depend on glibc > 2.31
 RUN echo GLIBC_2.31 > target_version && \
