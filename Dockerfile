@@ -54,6 +54,8 @@ RUN apt-get update && apt-get install -y \
 
 RUN rm /usr/lib/x86_64-linux-gnu/libxcb-*.so
 
+ARG keep
+
 #################
 # Build OpenSSL #
 #################
@@ -64,7 +66,8 @@ RUN curl -LO http://github.com/openssl/openssl/releases/download/openssl-3.6.0/o
 RUN tar -xzf openssl-3.6.0.tar.gz
 WORKDIR /build-ssl/openssl-3.6.0
 RUN ./config --prefix=/openssl --openssldir=/dev/null no-shared no-apps no-autoload-config no-capieng no-dso no-dynamic-engine no-engine no-loadereng no-module -Os no-pic -fno-pic
-RUN make -j`nproc` && make install_sw && rm -rf /build-ssl
+RUN make -j`nproc` && make install_sw \
+    && if [ -z "${keep:-}" ]; then rm -rf /build-ssl; fi
 
 ############
 # Build Qt #
@@ -74,7 +77,9 @@ COPY md5sums-qt.txt build-qt.sh qt*.patch /build-qt/
 ARG release
 # Note: {foo:+bar} here is a syntax of the Dockerfile, not the shell!
 ENV IPO_ARG=${release:+-DCMAKE_INTERPROCEDURAL_OPTIMIZATION=ON}
-RUN BUILDQT_CMAKE_ARGS="${IPO_ARG} -DCMAKE_POSITION_INDEPENDENT_CODE=OFF -DFEATURE_reduce_relocations=OFF" CXXFLAGS='-fno-pic -no-pie' CFLAGS='-fno-pic -no-pie' PKG_CONFIG_PATH=/openssl/lib64/pkgconfig ./build-qt.sh linux && mv qt_linux /qt && rm -rf /build-qt
+RUN echo IPO_ARG ${IPO_ARG}
+RUN BUILDQT_CMAKE_ARGS="-DCMAKE_POSITION_INDEPENDENT_CODE=OFF ${IPO_ARG} -DFEATURE_reduce_relocations=OFF" CXXFLAGS='-fno-pic -no-pie' CFLAGS='-fno-pic -no-pie' PKG_CONFIG_PATH=/openssl/lib64/pkgconfig ./build-qt.sh linux && mv qt_linux /qt \
+    && if [ -z "${keep:-}" ]; then rm -rf /build-qt; fi
 
 ###############
 # Build aria2 #
