@@ -106,7 +106,7 @@ ApplicationWindow {
     Image {
         width: parent.width
         height: parent.height
-        source: "qrc:/resources/splash.png"
+        source: "qrc:/resources/splash.jpg"
     }
 
     FluidControls.BodyLabel {

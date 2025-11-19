@@ -8,13 +8,13 @@
         <file>NewsCard.qml</file>
         <file>DownloadInfo.qml</file>
         <file>UpdateFailed.qml</file>
-        <file>resources/splash.png</file>
+        <file>resources/splash.jpg</file>
         <file>splash.qml</file>
         <file>Settings.qml</file>
         <file>utils.js</file>
         <file>resources/unvanquished.png</file>
-        <file>resources/background.png</file>
-        <file>resources/header.png</file>
+        <file>resources/background.jpg</file>
+        <file>resources/header.jpg</file>
         <file>resources/logo.png</file>
         <file>resources/tyrant.png</file>
         <file>resources/net.unvanquished.Unvanquished.desktop</file>
