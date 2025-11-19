@@ -1,0 +1,79 @@
+diff --git a/tools/qsb/Qt6ShaderToolsMacros.cmake b/tools/qsb/Qt6ShaderToolsMacros.cmake
+index b58f7c7..0e7c69c 100644
+--- a/tools/qsb/Qt6ShaderToolsMacros.cmake
++++ b/tools/qsb/Qt6ShaderToolsMacros.cmake
+@@ -122,7 +122,7 @@ function(_qt_internal_add_shaders_impl target resourcename)
+             if (arg_GLSL)
+                 set(glsl_versions "${arg_GLSL}")
+             else()
+-                set(glsl_versions "100es,120,150") # both 'es' and ' es' are accepted by qsb
++                set(glsl_versions "120,150")
+             endif()
+             list(APPEND qsb_args "--glsl")
+             list(APPEND qsb_args "${glsl_versions}")
+@@ -234,6 +234,10 @@ function(_qt_internal_add_shaders_impl target resourcename)
+                     ${QT_CMAKE_EXPORT_NAMESPACE}::qsb ${qsb_args}
+                 COMMAND
+                     ${QT_CMAKE_EXPORT_NAMESPACE}::qsb ${qsb_replace_args}
++                COMMAND
++                    ${QT_CMAKE_EXPORT_NAMESPACE}::qsb "--erase" "spirv,100" "${qsb_result}"
++                COMMAND
++                    ${QT_CMAKE_EXPORT_NAMESPACE}::qsb "--erase" "spirv,100" "${qsb_result}" "-b"
+                 DEPENDS
+                     "${file_absolute}"
+                     ${QT_CMAKE_EXPORT_NAMESPACE}::qsb
+@@ -246,6 +250,10 @@ function(_qt_internal_add_shaders_impl target resourcename)
+                     ${qsb_result}
+                 COMMAND
+                     ${QT_CMAKE_EXPORT_NAMESPACE}::qsb ${qsb_args}
++                COMMAND
++                    ${QT_CMAKE_EXPORT_NAMESPACE}::qsb "--erase" "spirv,100" "${qsb_result}"
++                COMMAND
++                    ${QT_CMAKE_EXPORT_NAMESPACE}::qsb "--erase" "spirv,100" "${qsb_result}" "-b"
+                 DEPENDS
+                     "${file_absolute}"
+                     ${QT_CMAKE_EXPORT_NAMESPACE}::qsb
+@@ -264,12 +272,7 @@ function(_qt_internal_add_shaders_impl target resourcename)
+             set(qsb_multiview2_args "")
+             # GL_OVR_multiview works best starting with these GLSL versions
+             list(APPEND qsb_multiview2_args "--glsl")
+-            list(APPEND qsb_multiview2_args "330,300es")
+-            # view instancing needs Shader Model 6.1
+-            list(APPEND qsb_multiview2_args "--hlsl")
+-            list(APPEND qsb_multiview2_args "61")
+-            list(APPEND qsb_multiview2_args "--msl")
+-            list(APPEND qsb_multiview2_args "21")
++            list(APPEND qsb_multiview2_args "330")
+             list(APPEND qsb_multiview2_args "--view-count")
+             list(APPEND qsb_multiview2_args "2")
+             list(APPEND qsb_multiview2_args "${qsb_common_args}")
+@@ -290,6 +293,10 @@ function(_qt_internal_add_shaders_impl target resourcename)
+                     ${qsb_multiview2_result}
+                 COMMAND
+                     ${QT_CMAKE_EXPORT_NAMESPACE}::qsb ${qsb_multiview2_args}
++                COMMAND
++                    ${QT_CMAKE_EXPORT_NAMESPACE}::qsb "--erase" "spirv,100" "${qsb_multiview2_result}"
++                COMMAND
++                    ${QT_CMAKE_EXPORT_NAMESPACE}::qsb "--erase" "spirv,100" "${qsb_multiview2_result}" "-b"
+                 DEPENDS
+                     "${file_absolute}"
+                     ${QT_CMAKE_EXPORT_NAMESPACE}::qsb
+@@ -351,7 +358,7 @@ function(_qt_internal_add_shaders_impl target resourcename)
+ endfunction()
+ 
+ function(qt6_add_shaders)
+-    _qt_internal_add_shaders_impl(${ARGV})
++    _qt_internal_add_shaders_impl(${ARGV} NOHLSL NOMSL)
+     cmake_parse_arguments(PARSE_ARGV 1 arg "" "OUTPUT_TARGETS" "")
+     if (arg_OUTPUT_TARGETS)
+         set(${arg_OUTPUT_TARGETS} ${${arg_OUTPUT_TARGETS}} PARENT_SCOPE)
+@@ -370,7 +377,7 @@ endif()
+ 
+ # for use by Qt modules that need qt_internal_add_resource
+ function(qt_internal_add_shaders)
+-    _qt_internal_add_shaders_impl(${ARGV} _QT_INTERNAL)
++    _qt_internal_add_shaders_impl(${ARGV} _QT_INTERNAL NOHLSL NOMSL)
+     cmake_parse_arguments(PARSE_ARGV 1 arg "" "OUTPUT_TARGETS" "")
+     if (arg_OUTPUT_TARGETS)
+         set(${arg_OUTPUT_TARGETS} ${${arg_OUTPUT_TARGETS}} PARENT_SCOPE)
+
