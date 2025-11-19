@@ -25,15 +25,15 @@ build_module() {
     module_vars "${module}"
     cd "${WORK_DIR}/${dirname}"
     options_var="options_${module}"
-    if [[ "${module}" = qtbase ]]; then
-        patch -p1 < "${SCRIPT_DIR}/qtbase.patch"
+    find "${SCRIPT_DIR}" -maxdepth 1 -name "${module}-*.patch" -exec cat {} \; | patch -p1
+    case "${module}" in
+    qtbase)
         ./configure ${!options_var} ${common_options_cmake}
-    else
-        if [[ "${module}" = qtdeclarative ]]; then
-            patch -p1 < "${SCRIPT_DIR}/qtdeclarative-Propagate-modality-to-the-non-native-quick-dialogs.patch"
-        fi
+        ;;
+    *)
         "${INSTALL_DIR}/bin/qt-configure-module" . ${!options_var} ${common_options_cmake}
-    fi
+        ;;
+    esac
     ninja
     cmake --install .
 }

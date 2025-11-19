@@ -1,0 +1,48 @@
+diff -u -r a/cmake/3rdparty/extra-cmake-modules/find-modules/FindXCB.cmake b/cmake/3rdparty/extra-cmake-modules/find-modules/FindXCB.cmake
+--- a/cmake/3rdparty/extra-cmake-modules/find-modules/FindXCB.cmake	2025-02-13 11:45:28.000000000 -0600
++++ b/cmake/3rdparty/extra-cmake-modules/find-modules/FindXCB.cmake	2025-11-13 19:57:31.987415796 -0600
+@@ -145,7 +145,7 @@
+ set(XCB_XCB_component_deps)
+ set(XCB_COMPOSITE_component_deps XCB XFIXES)
+ set(XCB_DAMAGE_component_deps XCB XFIXES)
+-set(XCB_IMAGE_component_deps XCB SHM)
++set(XCB_IMAGE_component_deps XCB SHM UTIL)
+ set(XCB_RENDERUTIL_component_deps XCB RENDER)
+ set(XCB_XFIXES_component_deps XCB RENDER SHAPE)
+ set(XCB_XVMC_component_deps XCB XV)
+diff -u -r a/src/plugins/platforms/xcb/qxcbconnection_basic.cpp b/src/plugins/platforms/xcb/qxcbconnection_basic.cpp
+--- a/src/plugins/platforms/xcb/qxcbconnection_basic.cpp	2025-02-13 11:45:28.000000000 -0600
++++ b/src/plugins/platforms/xcb/qxcbconnection_basic.cpp	2025-11-23 02:23:12.697507021 -0600
+@@ -361,6 +361,9 @@
+ 
+ void QXcbBasicConnection::initializeXKB()
+ {
++    // Disable the xkb extension. This prevents a dependency on libx11-xkbcommon.so.
++    // Drawback: text can't be selected by shift + arrow keys
++    return;
+     const xcb_query_extension_reply_t *reply = xcb_get_extension_data(m_xcbConnection, &xcb_xkb_id);
+     if (!reply || !reply->present) {
+         qCWarning(lcQpaXcb, "XKeyboard extension not present on the X server");
+diff -u -r a/src/plugins/platforms/xcb/qxcbconnection_basic.h b/src/plugins/platforms/xcb/qxcbconnection_basic.h
+--- a/src/plugins/platforms/xcb/qxcbconnection_basic.h	2025-02-13 11:45:28.000000000 -0600
++++ b/src/plugins/platforms/xcb/qxcbconnection_basic.h	2025-11-23 01:31:27.807403222 -0600
+@@ -48,7 +48,7 @@
+     bool hasXShape() const { return m_hasXhape; }
+     bool hasXRandr() const { return m_hasXRandr; }
+     bool hasInputShape() const { return m_hasInputShape; }
+-    bool hasXKB() const { return m_hasXkb; }
++    bool hasXKB() const { return false; }
+     bool hasXRender(int major = -1, int minor = -1) const {
+         if (m_hasXRender && major != -1 && minor != -1)
+             return m_xrenderVersion >= std::pair(major, minor);
+diff -u -r a/src/tools/uic/CMakeLists.txt b/src/tools/uic/CMakeLists.txt
+--- a/src/tools/uic/CMakeLists.txt	2025-02-13 11:45:28.000000000 -0600
++++ b/src/tools/uic/CMakeLists.txt	2025-11-23 02:24:23.896939637 -0600
+@@ -4,6 +4,7 @@
+ #####################################################################
+ ## uic Tool:
+ #####################################################################
++return() # prevent build error
+ 
+ qt_get_tool_target_name(target_name uic)
+ qt_internal_add_tool(${target_name}
