@@ -52,7 +52,7 @@ ApplicationWindow {
     Image {
       width: parent.width
       height: parent.height
-      source: "qrc:/resources/background.png"
+      source: "qrc:/resources/background.jpg"
     }
 
     Rectangle {
@@ -70,7 +70,7 @@ ApplicationWindow {
             top: parent.top
             topMargin: parent.height * 0.1
         }
-        source: "qrc:/resources/header.png"
+        source: "qrc:/resources/header.jpg"
     }
     Rectangle {
         anchors.top: header.bottom
