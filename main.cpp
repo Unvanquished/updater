@@ -216,7 +216,13 @@ int main(int argc, char *argv[])
     engine.addImportPath(QLatin1String("qrc:/"));
     engine.addImageProvider(QLatin1String("fluidicons"), new IconsImageProvider());
     engine.addImageProvider(QLatin1String("fluidicontheme"), new IconThemeImageProvider());
+
+    // Top-level windows can be attached to this so that they aren't QObject-children of the
+    // splash screen. Must destruct before engine.
+    QObject motherOfWindows;
+
     auto* context = engine.rootContext();
+    context->setContextProperty("motherOfWindows", &motherOfWindows);
     context->setContextProperty("updaterSettings", &settings);
     context->setContextProperty("gameLauncher", &gameLauncher);
     context->setContextProperty("splashController", &splashController);

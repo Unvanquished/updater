@@ -53,8 +53,9 @@ ApplicationWindow {
 
     function showUpdater() {
         splashDownloaderConnections.enabled = false;
-        updaterWindowLoader.active = true
-        splash.hide();
+        var mainWindowComponent = Qt.createComponent("main.qml");
+        mainWindowComponent.createObject(motherOfWindows);
+        splash.close();
     }
 
     Connections {
@@ -96,10 +97,8 @@ ApplicationWindow {
         target: downloader
 
         function onFatalMessage(message) {
-            updateFailed.errorDetail = message;
-            updateFailedWindow.show();
-            updateFailed.open();
-            splash.hide();
+            updateFailedComponent.createObject(motherOfWindows, { errorDetail: message });
+            splash.close();
         }
     }
 
@@ -166,15 +165,10 @@ ApplicationWindow {
         Material.accent: Material.Teal
     }
 
-    Loader {
-        id: updaterWindowLoader
-        active: false
-        source: "qrc:/main.qml"
-    }
+    property Component updateFailedComponent: ApplicationWindow {
+        property alias errorDetail: updateFailed.errorDetail
 
-    ApplicationWindow {
-        id: updateFailedWindow
-        visible: false
+        visible: true
         width: updateFailed.width
         height: updateFailed.height
         maximumWidth: updateFailed.width
@@ -183,5 +177,6 @@ ApplicationWindow {
             id: updateFailed
             failedOperation: 'Launcher self-update'
         }
+        Component.onCompleted: updateFailed.open()
     }
 }
