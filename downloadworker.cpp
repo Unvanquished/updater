@@ -95,6 +95,7 @@ void DownloadWorker::onDownloadCallback(aria2::Session* session, aria2::Download
 
         case aria2::EVENT_ON_DOWNLOAD_ERROR:
             qDebug() << "onDownloadCallback event DOWNLOAD_ERROR";
+	    running_ = false;
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_PAUSE:
