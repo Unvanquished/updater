@@ -209,6 +209,9 @@ int main(int argc, char *argv[])
         return 0;
     }
 
+    // Needed to fetch disconnect_posts.json
+    qputenv("QML_XHR_ALLOW_FILE_READ", "1");
+
     SplashController splashController(
         options.relaunchCommand, options.updateUpdaterVersion, options.connectUrl, settings);
     splashController.checkForUpdate();
