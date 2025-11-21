@@ -16,10 +16,7 @@ set(CMAKE_AUTORCC ON)
 set(ARIA2_LIBS "${CMAKE_CURRENT_SOURCE_DIR}/aria2/src/.libs/libaria2.a" CACHE STRING "aria2 libraries")
 set(ARIA2_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/aria2/include" CACHE STRING "aria2 include directory")
 
-find_package(Qt6 REQUIRED COMPONENTS Core Qml Quick QuickControls2 QuickDialogs2   Network  Svg Gui Widgets          )
-
-# Actually only used by Fluid and Quazip, not us. HACK: prevent warning spam
-find_package(Qt6 COMPONENTS Core5Compat)
+find_package(Qt6 REQUIRED COMPONENTS Core Qml Quick QuickControls2 QuickDialogs2 Network Gui Widgets)
 
 if (WIN32)
     set(CMAKE_C_FLAGS "-static -static-libgcc ${CMAKE_C_FLAGS}")
@@ -28,10 +25,27 @@ endif()
 
 qt_standard_project_setup(REQUIRES 6.8)
 
-option(FLUID_WITH_GALLERY "" OFF)
-option(FLUID_WITH_DOCUMENTATION "" OFF)
 option(FLUID_INSTALL_ICONS "" OFF)
-add_subdirectory(fluid)
+option(FLUID_WITH_DOCUMENTATION "" OFF)
+option(FLUID_WITH_GALLERY "" OFF)
+option(FLUID_WITH_QML_MODULES "" ON)
+function(add_fluid) # Use function to emulate the new scope created by add_subdirectory
+    find_package(Qt6 6.8
+        REQUIRED
+        COMPONENTS
+            Core
+            Core5Compat
+            Gui
+            #GuiPrivate
+            Svg
+            Qml
+            Quick
+            QuickControls2
+    )
+    set(QT_QML_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/qml_modules")
+    include(fluid.cmake)
+endfunction()
+add_fluid()
 
 set(QUAZIP_BZIP2 OFF)
 set(QUAZIP_ENABLE_TESTS OFF)

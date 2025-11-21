@@ -34,11 +34,6 @@
 #include "splashcontroller.h"
 #include "system.h"
 
-#if 0
-#include <QtQml/QQmlExtensionPlugin>
-Q_IMPORT_QML_PLUGIN(Fluid)
-#endif
-
 namespace {
 
 QFile logFile;
@@ -218,10 +213,6 @@ int main(int argc, char *argv[])
     QmlDownloader downloader(options.ariaLogFilename, options.connectUrl, settings);
     QQmlApplicationEngine engine;
 
-    // HACK: Q_IMPORT_QML_PLUGIN(Fluid) gives a linker error
-    void qml_register_types_Fluid();
-    qml_register_types_Fluid();
-
     // Top-level windows can be attached to this so that they aren't QObject-children of the
     // splash screen. Must destruct before engine.
     QObject motherOfWindows;
@@ -237,9 +228,6 @@ int main(int argc, char *argv[])
     // This is done in order to use the DownloadState enum
     qmlRegisterUncreatableType<QmlDownloader>(
         "QmlDownloader", 1, 0, "QmlDownloader", "QmlDownloader not constructible");
-
-    // LOAD-BEARING POSTER - DO NOT TOUCH
-    engine.singletonInstance<QObject*>("Fluid", "foo");
 
     engine.load(QUrl(QLatin1String("qrc:/UnvUpdater/splash.qml")));
     return app.exec();
