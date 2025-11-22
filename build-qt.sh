@@ -45,15 +45,16 @@ INSTALL_DIR="${WORK_DIR}/qt_${sysname}"
 #FIXME bad warning in qtdeclarative-everywhere-src-6.8.3/src/quickwidgets/qquickwidget.cpp
 
 common_options_cmake="
-    -DFEATURE_accessibility=OFF
     -DQT_GENERATE_SBOM=OFF
     ${BUILDQT_CMAKE_ARGS:-}
 "
 
 base_features='
+    -DFEATURE_accessibility=OFF
     -DFEATURE_androiddeployqt=OFF
     -DFEATURE_animation=ON
     -DFEATURE_cborstreamwriter=OFF
+    -DFEATURE_clipboard=ON
     -DFEATURE_columnview=OFF
     -DFEATURE_commandlinkbutton=OFF
     -DFEATURE_completer=OFF
@@ -128,7 +129,7 @@ base_features='
     -DFEATURE_scroller=OFF
     -DFEATURE_sessionmanager=OFF
     -DFEATURE_settings=ON
-    -DFEATURE_shortcut=OFF
+    -DFEATURE_shortcut=ON
     -DFEATURE_sizegrip=OFF
     -DFEATURE_slider=OFF
     -DFEATURE_socks5=OFF

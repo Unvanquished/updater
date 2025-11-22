@@ -21,19 +21,6 @@ diff -u -r qtbase.old/cmake/QtBuildHelpers.cmake qtbase.new/cmake/QtBuildHelpers
      qt_internal_set_link_depends_no_shared()
      qt_internal_setup_default_install_prefix()
      qt_internal_set_qt_source_tree_var()
-diff -u -r qtbase.old/src/plugins/platforms/windows/qwindowsmenu.h qtbase.new/src/plugins/platforms/windows/qwindowsmenu.h
---- qtbase.old/src/plugins/platforms/windows/qwindowsmenu.h	2025-02-13 11:45:28.000000000 -0600
-+++ qtbase.new/src/plugins/platforms/windows/qwindowsmenu.h	2025-11-17 03:52:17.033997423 -0600
-@@ -76,7 +76,9 @@
-     bool m_checkable = false;
-     bool m_checked = false;
-     bool m_enabled = true;
-+#ifndef QT_NO_SHORTCUT
-     QKeySequence m_shortcut;
-+#endif
- };
- 
- class QWindowsMenu : public QPlatformMenu
 diff -u -r qtbase.old/src/tools/rcc/rcc.cpp qtbase.new/src/tools/rcc/rcc.cpp
 --- qtbase.old/src/tools/rcc/rcc.cpp	2025-02-13 11:45:28.000000000 -0600
 +++ qtbase.new/src/tools/rcc/rcc.cpp	2025-11-14 00:12:48.076214506 -0600
