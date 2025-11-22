@@ -71,6 +71,7 @@ base_features='
     -DFEATURE_draganddrop=OFF
     -DFEATURE_dtls=OFF
     -DFEATURE_easingcurve=ON
+    -DFEATURE_evdev=OFF
     -DFEATURE_filedialog=OFF
     -DFEATURE_filesystemmodel=OFF
     -DFEATURE_filesystemwatcher=OFF
