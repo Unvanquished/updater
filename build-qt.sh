@@ -10,7 +10,7 @@ set -o pipefail
 prefix_output() {
     prefix="${1}"
     shift
-    "$@" 2> >(sed "s/^/${prefix}/" >&2) | sed "s/^/${prefix}/"
+    "$@" 2>&1 | sed "s/^/${prefix}/"
 }
 
 module_vars() {
