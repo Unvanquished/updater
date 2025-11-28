@@ -38,7 +38,7 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /build-qt
 
 # Build host-mode tools and remove everything apart from the installed bin/ and lib/cmake/
-COPY md5sums-qt.txt build-qt.sh qtbase.patch cross-toolchain-mingw32.cmake /build-qt/
+COPY md5sums-qt.txt build-qt.sh qt*.patch cross-toolchain-mingw32.cmake /build-qt/
 RUN ./build-qt.sh tools qtbase qtdeclarative qtshadertools && \
     rm -r build_tools && \
     find qt_tools -mindepth 1 -maxdepth 1 ! -name bin ! -name lib ! -name libexec -exec rm -r {} + && \
