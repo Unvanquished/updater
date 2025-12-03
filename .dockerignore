@@ -8,3 +8,5 @@ Dockerfile*
 !build-aria.sh
 !build-qt.sh
 
+/resources/fonts/
+/resources/build/

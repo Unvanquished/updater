@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
 
     for (auto& fontName : fontNames)
     {
-        int fontId = QFontDatabase::addApplicationFont(":resources/" + fontName + "-Regular.ttf");
+        int fontId = QFontDatabase::addApplicationFont(":resources/" + fontName + "-Regular.otf");
         if (fontId == -1) {
             qDebug() << "Failed to register" << fontName << "font";
         } else {
