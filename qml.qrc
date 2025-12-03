@@ -2,6 +2,7 @@
     <qresource prefix="/">
         <file>qtquickcontrols2.conf</file>
         <file>resources/Roboto-Regular.otf</file>
+        <file>resources/NotoSansSymbols-Regular.otf</file>
         <file>resources/updater.png</file>
         <file>resources/splash.jpg</file>
         <file>resources/unvanquished.png</file>

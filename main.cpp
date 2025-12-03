@@ -164,6 +164,7 @@ int main(int argc, char *argv[])
     // The font is already needed to display our arg parsing error on Linux
     QString fontNames[] = {
         "Roboto",
+        "NotoSansSymbols",
     };
 
     for (auto& fontName : fontNames)
