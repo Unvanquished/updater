@@ -53,10 +53,10 @@ void CurrentVersionFetcher::fetchCurrentVersion()
     }
 }
 
-void ComponentVersionFetcher(QJsonObject components, QString name, QString system, QString *version, QString *url)
+void ComponentVersionFetcher(QJsonObject components, QString name, QString system, QString *version, QStringList *urls)
 {
-    QString mirror;
     QString path;
+    QJsonArray mirrors;
 
     QJsonObject component = components[name].toObject();
 
@@ -70,11 +70,9 @@ void ComponentVersionFetcher(QJsonObject components, QString name, QString syste
             *version = versionValue.toString();
         }
 
-        QJsonArray mirrors = component["mirrors"].toArray();
+        mirrors = component["mirrors"].toArray();
         if (!mirrors.count()) {
             qDebug() << "ComponentVersionFetcher: undefined “mirrors” key for " << name;
-        } else {
-            mirror = mirrors.first().toString();
         }
 
         QJsonObject parcels = component["parcels"].toObject();
@@ -95,25 +93,30 @@ void ComponentVersionFetcher(QJsonObject components, QString name, QString syste
         }
     }
 
-    *url = mirror + path;
-
     qDebug() << "ComponentVersionFetcher: fetched component =" << name;
     qDebug() << "ComponentVersionFetcher: fetched system =" << system;
     qDebug() << "ComponentVersionFetcher: fetched version =" << *version;
-    qDebug() << "ComponentVersionFetcher: fetched mirror =" << mirror;
     qDebug() << "ComponentVersionFetcher: fetched path =" << path;
-    qDebug() << "ComponentVersionFetcher: fetched url =" << *url;
+
+    for (auto m : mirrors)
+    {
+        QString mirror = m.toString();
+        qDebug() << "ComponentVersionFetcher: fetched mirror =" << mirror;
+        QString url = mirror + path;
+        qDebug() << "ComponentVersionFetcher: fetched url =" << url;
+        urls->append(url);
+    }
 }
 
 void CurrentVersionFetcher::reply(QNetworkReply* reply)
 {
     QString formatVersion;
     QString updaterVersion;
-    QString updaterUrl;
+    QStringList updaterUrls;
     QString gameVersion;
-    QString gameUrl;
+    QStringList gameUrls;
     QString newsVersion;
-    QString newsUrl;
+    QStringList newsUrls;
 
     if (reply->error() != QNetworkReply::NoError) {
         qDebug() << "CurrentVersionFetcher: network error";
@@ -121,7 +124,7 @@ void CurrentVersionFetcher::reply(QNetworkReply* reply)
         if (versionMirror) {
             fetchCurrentVersion();
         } else {
-            emit onCurrentVersions(updaterVersion, updaterUrl, gameVersion, gameUrl, newsUrl);
+            emit onCurrentVersions(updaterVersion, updaterUrls, gameVersion, gameUrls, "");
         }
         return;
     }
@@ -130,7 +133,7 @@ void CurrentVersionFetcher::reply(QNetworkReply* reply)
     QJsonDocument json = QJsonDocument::fromJson(reply->readAll(), &error);
     if (error.error != QJsonParseError::NoError) {
         qDebug() << "CurrentVersionFetcher: JSON parsing error";
-        emit onCurrentVersions(updaterVersion, updaterUrl, gameVersion, gameUrl, newsUrl);
+        emit onCurrentVersions(updaterVersion, updaterUrls, gameVersion, gameUrls, "");
         return;
     }
 
@@ -140,6 +143,8 @@ void CurrentVersionFetcher::reply(QNetworkReply* reply)
 
     if (formatVersionValue == QJsonValue::Undefined) {
         qDebug() << "ComponentVersionFetcher: missing “version” value in current.json";
+        emit onCurrentVersions(updaterVersion, updaterUrls, gameVersion, gameUrls, "");
+        return;
     } else {
         formatVersion = formatVersionValue.toString();
     }
@@ -148,18 +153,20 @@ void CurrentVersionFetcher::reply(QNetworkReply* reply)
 
     if (componentsValue == QJsonValue::Undefined) {
         qDebug() << "ComponentVersionFetcher: missing “components” array in current.json";
+        emit onCurrentVersions(updaterVersion, updaterUrls, gameVersion, gameUrls, "");
+        return;
     } else {
         qDebug() << "ComponentVersionFetcher: fetched format = " << formatVersion;
 
         QJsonObject components = componentsValue.toObject();
 
-        ComponentVersionFetcher(components, "updater", Sys::updaterSystem(), &updaterVersion, &updaterUrl);
+        ComponentVersionFetcher(components, "updater", Sys::updaterSystem(), &updaterVersion, &updaterUrls);
 
-        ComponentVersionFetcher(components, "game", "all-all", &gameVersion, &gameUrl);
+        ComponentVersionFetcher(components, "game", "all-all", &gameVersion, &gameUrls);
 
-        ComponentVersionFetcher(components, "news", "all-all", &newsVersion, &newsUrl);
+        ComponentVersionFetcher(components, "news", "all-all", &newsVersion, &newsUrls);
     }
 
-    emit onCurrentVersions(updaterVersion, updaterUrl, gameVersion, gameUrl, newsUrl);
+    emit onCurrentVersions(updaterVersion, updaterUrls, gameVersion, gameUrls, newsUrls.at(0));
 }
 

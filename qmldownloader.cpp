@@ -122,7 +122,17 @@ void QmlDownloader::onDownloadEvent(int event)
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_ERROR:
-            emit fatalMessage("Error received while downloading");
+            if (!downloadRestarter_) {
+                emit fatalMessage("Error: downloadRestarter unset");
+            }
+            setState(COMPLETED);
+            setDownloadSpeed(0);
+            setUploadSpeed(0);
+            setCompletedSize(0);
+            stopAria();
+            if (!(this->*downloadRestarter_)()) {
+                emit fatalMessage("Error received while downloading");
+            }
             break;
 
         case aria2::EVENT_ON_DOWNLOAD_PAUSE:
@@ -143,7 +153,7 @@ void QmlDownloader::onDownloadEvent(int event)
     }
 }
 
-void QmlDownloader::startUpdate(const QString& selectedInstallPath)
+void QmlDownloader::setInstallPath(const QString& selectedInstallPath)
 {
     qDebug() << "Selected install path:" << selectedInstallPath;
     if (!Sys::validateInstallPath(selectedInstallPath)) {
@@ -159,13 +169,12 @@ void QmlDownloader::startUpdate(const QString& selectedInstallPath)
             return;
         }
     }
+
     if (!QFileInfo(selectedInstallPath).isWritable()) {
         emit fatalMessage("Install dir not writable. Please select another");
         return;
     }
 
-	QString gameUrl = splashController_.gameUrl();
-    qDebug()  << "Using torrent file:" << gameUrl;
     // Persist the install path only now that download has been initiated and we know the path is good
     emit statusMessage("Installing to " + dir.canonicalPath());
     if (settings_.installPath() != selectedInstallPath) {
@@ -173,12 +182,25 @@ void QmlDownloader::startUpdate(const QString& selectedInstallPath)
         settings_.setInstalledVersion("");
     }
     settings_.setInstallPath(selectedInstallPath);
+}
+
+bool QmlDownloader::startUpdate()
+{
+    QString gameUrl = splashController_.gameUrl();
+    if (gameUrl.isEmpty()) {
+        return false;
+    }
+
+    qDebug()  << "Using torrent URL:" << gameUrl;
+
+    QDir dir(settings_.installPath());
 
     setState(DOWNLOADING);
     worker_ = new DownloadWorker(ariaLogFilename_);
     worker_->setDownloadDirectory(dir.canonicalPath().toStdString());
     worker_->addTorrent(gameUrl.toStdString());
     worker_->moveToThread(&thread_);
+    setDownloadRestarter(&QmlDownloader::startUpdate);
     connect(&thread_, SIGNAL(finished()), worker_, SLOT(deleteLater()));
     connect(worker_, SIGNAL(onDownloadEvent(int)), this, SLOT(onDownloadEvent(int)));
     connect(worker_, SIGNAL(downloadSpeedChanged(int)), this, SLOT(setDownloadSpeed(int)));
@@ -187,6 +209,8 @@ void QmlDownloader::startUpdate(const QString& selectedInstallPath)
     connect(worker_, SIGNAL(completedSizeChanged(int)), this, SLOT(setCompletedSize(int)));
     connect(&thread_, SIGNAL(started()), worker_, SLOT(download()));
     thread_.start();
+
+    return true;
 }
 
 void QmlDownloader::toggleDownload(QString installPath)
@@ -194,7 +218,8 @@ void QmlDownloader::toggleDownload(QString installPath)
     qDebug() << "QmlDownloader::toggleDownload called";
     if (state() == COMPLETED) return;
     if (!worker_) {
-        startUpdate(installPath);
+        setInstallPath(installPath);
+        startUpdate();
         return;
     }
     QMetaObject::invokeMethod(worker_, "toggle");
@@ -212,14 +237,22 @@ void QmlDownloader::stopAria()
     }
 }
 
-void QmlDownloader::startUpdaterUpdate(QString updaterUrl)
+bool QmlDownloader::startUpdaterUpdate()
 {
+    QString updaterUrl = splashController_.updaterUrl();
+    if (updaterUrl.isEmpty()) {
+        return false;
+    }
+
+    qDebug()  << "Using updater URL:" << updaterUrl;
+
     temp_dir_.reset(new QTemporaryDir());
     worker_ = new DownloadWorker(ariaLogFilename_);
     worker_->setDownloadDirectory(QDir(temp_dir_->path()).canonicalPath().toStdString());
     worker_->setConnectUrl(connectUrl_);
     worker_->addUpdaterUri(updaterUrl.toStdString());
     worker_->moveToThread(&thread_);
+    setDownloadRestarter(&QmlDownloader::startUpdaterUpdate);
     connect(&thread_, SIGNAL(finished()), worker_, SLOT(deleteLater()));
     connect(worker_, SIGNAL(onDownloadEvent(int)), this, SLOT(onDownloadEvent(int)));
     connect(worker_, SIGNAL(downloadSpeedChanged(int)), this, SLOT(setDownloadSpeed(int)));
@@ -228,6 +261,8 @@ void QmlDownloader::startUpdaterUpdate(QString updaterUrl)
     connect(worker_, SIGNAL(completedSizeChanged(int)), this, SLOT(setCompletedSize(int)));
     connect(&thread_, SIGNAL(started()), worker_, SLOT(download()));
     thread_.start();
+
+    return true;
 }
 
 QmlDownloader::DownloadState QmlDownloader::state() const
@@ -239,4 +274,9 @@ void QmlDownloader::setState(DownloadState state)
 {
     state_ = state;
     emit stateChanged(state);
+}
+
+void QmlDownloader::setDownloadRestarter(DownloadRestarter downloadRestarter)
+{
+    downloadRestarter_ = downloadRestarter;
 }

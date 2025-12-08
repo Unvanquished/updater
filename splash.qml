@@ -74,8 +74,8 @@ ApplicationWindow {
             splashController.autoLaunchOrUpdate();
         }
 
-        function onUpdaterUpdate(updaterUrl) {
-            downloader.startUpdaterUpdate(updaterUrl);
+        function onUpdaterUpdate() {
+            downloader.startUpdaterUpdate();
             updaterUpdateLabel.visible = true;
 
             // Now allow the window to go behind other windows in the z-order.

@@ -45,14 +45,26 @@ void SplashController::checkForUpdate()
             return;
     }
 
-    connect(&fetcher_, SIGNAL(onCurrentVersions(QString, QString, QString, QString, QString)),
-            this, SLOT(onCurrentVersions(QString, QString, QString, QString, QString)));
+    connect(&fetcher_, SIGNAL(onCurrentVersions(QString, QStringList, QString, QStringList, QString)),
+            this, SLOT(onCurrentVersions(QString, QStringList, QString, QStringList, QString)));
 
     fetcher_.fetchCurrentVersion();
 }
 
-QString SplashController::gameUrl() const {
-    return latestGameUrl_;
+QString SplashController::updaterUrl() {
+    if (latestUpdaterUrls_.isEmpty()) {
+        return "";
+    }
+
+    return latestUpdaterUrls_.takeFirst();
+}
+
+QString SplashController::gameUrl() {
+    if (latestGameUrls_.isEmpty()) {
+        return "";
+    }
+
+    return latestGameUrls_.takeFirst();
 }
 
 QString SplashController::newsUrl() const {
@@ -60,18 +72,18 @@ QString SplashController::newsUrl() const {
 }
 
 // Receives the results of the checkForUpdate request.
-void SplashController::onCurrentVersions(QString updaterVersion, QString updaterUrl, QString gameVersion, QString gameUrl, QString newsUrl)
+void SplashController::onCurrentVersions(QString updaterVersion, QStringList updaterUrls, QString gameVersion, QStringList gameUrls, QString newsUrl)
 {
     latestUpdaterVersion_ = updaterVersion;
-    latestUpdaterUrl_ = updaterUrl;
+    latestUpdaterUrls_ = updaterUrls;
     latestGameVersion_ = gameVersion;
-    latestGameUrl_ = gameUrl;
+    latestGameUrls_ = gameUrls;
     latestNewsUrl_ = newsUrl;
 
     emit newsUrlFetched(newsUrl);
 
     if (relaunchCommand_ == RelaunchCommand::UPDATE_UPDATER && updateUpdaterUrl_.isEmpty()) {
-        updateUpdaterUrl_ = latestUpdaterUrl_;
+        updateUpdaterUrl_ = latestUpdaterUrls_.at(0);
         emit updaterUpdateNeeded();
     }
 }
@@ -117,7 +129,7 @@ void SplashController::autoLaunchOrUpdate()
             if (!updateUpdaterUrl_.isEmpty()) {
                 qDebug() << "Updater update to" << updateUpdaterUrl_ << "requested as relaunch action";
                 // It is assumed the process is already elevated
-                emit updaterUpdate(updateUpdaterUrl_);
+                emit updaterUpdate();
             }
             return;
 
@@ -131,14 +143,14 @@ void SplashController::autoLaunchOrUpdate()
     // If no relaunch action, detect update needed based on versions.json
     if (!latestUpdaterVersion_.isEmpty() && latestUpdaterVersion_ != updaterAppVersion()) {
         qDebug() << "Updater update to version" << latestUpdaterVersion_ << "required";
-        QString updaterArgs = "--splashms 1 --internalcommand updateupdater --updaterurl " + latestUpdaterUrl_;
+        QString updaterArgs = "--splashms 1 --internalcommand updateupdater --updaterurl " + latestUpdaterUrls_.at(0);
         // Remember the URL if we are doing updater update
         if (!connectUrl_.isEmpty()) {
             updaterArgs += " -- " + connectUrl_;
         }
         switch (Sys::RelaunchElevated(updaterArgs)) {
             case Sys::ElevationResult::UNNEEDED:
-                emit updaterUpdate(latestUpdaterUrl_);
+                emit updaterUpdate();
                 return;
             case Sys::ElevationResult::RELAUNCHED:
                 QCoreApplication::quit();

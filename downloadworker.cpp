@@ -143,8 +143,6 @@ std::string DownloadWorker::getAriaIndexOut(size_t index, std::string path)
     return std::to_string(index) + "=" + oldPath.toStdString();
 }
 
-
-
 void DownloadWorker::download()
 {
     auto start = std::chrono::steady_clock::now();

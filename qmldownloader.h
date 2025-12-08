@@ -32,6 +32,7 @@
 #include "splashcontroller.h"
 #include "settings.h"
 
+
 class QmlDownloader : public QObject
 {
     Q_OBJECT
@@ -82,13 +83,17 @@ public slots:
     void onDownloadEvent(int event);
 
     Q_INVOKABLE void toggleDownload(QString installPath);
-    Q_INVOKABLE void startUpdaterUpdate(QString version);
+    Q_INVOKABLE bool startUpdaterUpdate();
 
 private:
+    using DownloadRestarter = bool (QmlDownloader::*)();
+
     void stopAria();
     void setState(DownloadState state);
+    void setInstallPath(const QString& selectedInstallPath);
     void startDownload(const QUrl& url, const QDir& destination);
-    void startUpdate(const QString& selectedInstallPath);
+    void setDownloadRestarter(DownloadRestarter downloadRestarter);
+    bool startUpdate();
     void launchGameIfInstalled();
 
     QString ariaLogFilename_;
@@ -102,6 +107,7 @@ private:
     std::chrono::seconds eta_;
     int totalSize_;
     int completedSize_;
+	DownloadRestarter downloadRestarter_ = nullptr;
 
     DownloadWorker* worker_;
     DownloadTimeCalculator downloadTime_;

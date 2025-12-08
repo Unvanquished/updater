@@ -56,9 +56,9 @@ private:
     // Latest versions fetching
     CurrentVersionFetcher fetcher_;
     QString latestUpdaterVersion_;
-    QString latestUpdaterUrl_;
+    QStringList latestUpdaterUrls_;
     QString latestGameVersion_;
-    QString latestGameUrl_;
+    QStringList latestGameUrls_;
     QString latestNewsUrl_;
 
 public:
@@ -66,7 +66,8 @@ public:
         RelaunchCommand command, const QString& updateUpdaterUrl,
         const QString& connectUrl, const Settings& settings);
     void checkForUpdate();
-    QString gameUrl() const;
+    QString gameUrl();
+    QString updaterUrl();
     QString newsUrl() const;
     Q_INVOKABLE bool relaunchForSettings();
     Q_INVOKABLE void autoLaunchOrUpdate();
@@ -74,11 +75,11 @@ public:
 signals:
     void updateNeeded(bool updateNeeded);
     void updaterUpdateNeeded();
-    void updaterUpdate(QString updaterUrl);
+    void updaterUpdate();
     void newsUrlFetched(QString newsUrl);
 
 private slots:
-    void onCurrentVersions(QString updaterVersion, QString updaterUrl, QString gameVersion, QString gameUrl, QString newsUrl);
+    void onCurrentVersions(QString updaterVersion, QStringList updaterUrls, QString gameVersion, QStringList gameUrls, QString newsUrl);
 
 private:
     void launchGameIfInstalled();
