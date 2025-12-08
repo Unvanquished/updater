@@ -31,10 +31,26 @@ CurrentVersionFetcher::CurrentVersionFetcher(QObject* parent) : QObject(parent),
     connect(manager_.get(), SIGNAL(finished(QNetworkReply*)), this, SLOT(reply(QNetworkReply*)));
 }
 
-void CurrentVersionFetcher::fetchCurrentVersion(QString url)
+static const QString versionMirrors[] = {
+    "https://cdn.unvanquished.net/",
+    "https://cdn.illwieckz.net/unvanquished/",
+    "https://webseed.unv.kangz.net/",
+    nullptr,
+};
+
+static const QString *versionMirror = &versionMirrors[0];
+
+void CurrentVersionFetcher::fetchCurrentVersion()
 {
-    QNetworkRequest request = QNetworkRequest(QUrl(url));
-    manager_->get(request);
+    static const QString versionFile = "current.json";
+
+    if (versionMirror) {
+        QString versionURL = versionMirror + versionFile;
+        qDebug() << "Fetching" << versionURL;
+        QNetworkRequest request = QNetworkRequest(QUrl(versionURL));
+        manager_->get(request);
+        versionMirror++;
+    }
 }
 
 void ComponentVersionFetcher(QJsonObject components, QString name, QString system, QString *version, QString *url)
@@ -101,7 +117,12 @@ void CurrentVersionFetcher::reply(QNetworkReply* reply)
 
     if (reply->error() != QNetworkReply::NoError) {
         qDebug() << "CurrentVersionFetcher: network error";
-        emit onCurrentVersions(updaterVersion, updaterUrl, gameVersion, gameUrl, newsUrl);
+
+        if (versionMirror) {
+            fetchCurrentVersion();
+        } else {
+            emit onCurrentVersions(updaterVersion, updaterUrl, gameVersion, gameUrl, newsUrl);
+        }
         return;
     }
 

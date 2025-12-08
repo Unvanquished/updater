@@ -48,7 +48,7 @@ void SplashController::checkForUpdate()
     connect(&fetcher_, SIGNAL(onCurrentVersions(QString, QString, QString, QString, QString)),
             this, SLOT(onCurrentVersions(QString, QString, QString, QString, QString)));
 
-    fetcher_.fetchCurrentVersion("https://cdn.unvanquished.net/current.json");
+    fetcher_.fetchCurrentVersion();
 }
 
 QString SplashController::gameUrl() const {
