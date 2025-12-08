@@ -29,11 +29,15 @@
 
 #include "downloadworker.h"
 #include "downloadtimecalculator.h"
+#include "splashcontroller.h"
 #include "settings.h"
+
 
 class QmlDownloader : public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString newsFallbackUrl READ newsFallbackUrl)
+    Q_PROPERTY(QString newsUrl READ newsUrl)
     Q_PROPERTY(int downloadSpeed READ downloadSpeed NOTIFY downloadSpeedChanged)
     Q_PROPERTY(int uploadSpeed READ uploadSpeed NOTIFY uploadSpeedChanged)
     Q_PROPERTY(int eta READ eta NOTIFY etaChanged)
@@ -50,7 +54,7 @@ public:
     };
     Q_ENUM(DownloadState)
 
-    QmlDownloader(QString ariaLogFilename, QString connectUrl, Settings& settings);
+    QmlDownloader(QString ariaLogFilename, QString connectUrl, SplashController& splashController, Settings& settings);
     ~QmlDownloader();
     int downloadSpeed() const;
     int uploadSpeed() const;
@@ -70,6 +74,8 @@ signals:
     void stateChanged(DownloadState state);
 
 public slots:
+    QString newsFallbackUrl() const;
+    QString newsUrl() const;
     void setDownloadSpeed(int speed);
     void setUploadSpeed(int speed);
     void setTotalSize(int size);
@@ -77,17 +83,22 @@ public slots:
     void onDownloadEvent(int event);
 
     Q_INVOKABLE void toggleDownload(QString installPath);
-    Q_INVOKABLE void startUpdaterUpdate(QString version);
+    Q_INVOKABLE bool startUpdaterUpdate();
 
 private:
+    using DownloadRestarter = bool (QmlDownloader::*)();
+
     void stopAria();
     void setState(DownloadState state);
+    void setInstallPath(const QString& selectedInstallPath);
     void startDownload(const QUrl& url, const QDir& destination);
-    void startUpdate(const QString& selectedInstallPath);
+    void setDownloadRestarter(DownloadRestarter downloadRestarter);
+    bool startUpdate();
     void launchGameIfInstalled();
 
     QString ariaLogFilename_;
     QString connectUrl_; // used for updater update
+    SplashController& splashController_;
     Settings& settings_;
 
     QThread thread_;
@@ -96,6 +107,7 @@ private:
     std::chrono::seconds eta_;
     int totalSize_;
     int completedSize_;
+	DownloadRestarter downloadRestarter_ = nullptr;
 
     DownloadWorker* worker_;
     DownloadTimeCalculator downloadTime_;

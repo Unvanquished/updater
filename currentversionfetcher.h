@@ -28,10 +28,10 @@ class CurrentVersionFetcher : public QObject
     Q_OBJECT
 public:
     explicit CurrentVersionFetcher(QObject *parent = nullptr);
-    void fetchCurrentVersion(QString url);
+    void fetchCurrentVersion();
 
 signals:
-    void onCurrentVersions(QString updater, QString game);
+    void onCurrentVersions(QString updaterVersion, QStringList updaterUrls, QString gameVersion, QStringList gameUrls, QString newsUrl);
 
 private slots:
     void reply(QNetworkReply* reply);

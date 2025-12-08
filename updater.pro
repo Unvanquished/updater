@@ -3,6 +3,8 @@ QT += qml quick network widgets
 include(fluid/fluid.pri)
 
 CONFIG += c++11
+CONFIG += debug
+CONFIG -= release
 
 HEADERS += ariadownloader.h \
     downloadtimecalculator.h \

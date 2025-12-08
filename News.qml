@@ -32,6 +32,11 @@ Item {
         bottomMargin: 10
     }
 
+    function fetchFallbackNews() {
+        console.log("fetching fallback posts json");
+        fetchNews(downloader.newsFallbackUrl);
+    }
+
     function fetchNews(jsonUrl) {
         var news = new XMLHttpRequest();
 
@@ -55,11 +60,8 @@ Item {
                 }
 
                 if (newsObj === null) {
-                    var fallbackJsonUrl = 'qrc:/resources/disconnected_posts.json';
-
-                    if (jsonUrl !== fallbackJsonUrl) {
-                        console.log("fetching fallback posts json");
-                        fetchNews(fallbackJsonUrl);
+                    if (jsonUrl !== downloader.newsFallbackUrl) {
+                        fetchFallbackNews();
                         return;
                     }
                 }
@@ -98,6 +100,14 @@ Item {
         news.send();
     }
 
+    Connections {
+        target: splashController
+
+        onNewsUrlFetched: {
+            fetchNews(newsUrl);
+        }
+    }
+
     SwipeView {
         id: swipe
 
@@ -111,7 +121,10 @@ Item {
         }
 
         Component.onCompleted: {
-            fetchNews('https://unvanquished.net/api/get_recent_posts/');
+            var newsUrl = downloader.newsUrl;
+            if (newsUrl != "") {
+                fetchNews(newsUrl);
+            }
         }
     }
 

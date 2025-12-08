@@ -53,6 +53,11 @@ QString archiveName()
     return "macos-amd64.zip";
 }
 
+QString updaterSystem()
+{
+    return "macos-amd64";
+}
+
 QString defaultInstallPath()
 {
     return QDir::homePath() +  "/Games/Unvanquished";
@@ -161,11 +166,6 @@ bool updateUpdater(const QString& updaterArchive, const QString&)
     }
     QCoreApplication::quit();
     return true;
-}
-
-QString updaterArchiveName()
-{
-    return "UnvUpdaterOSX.zip";
 }
 
 std::string getCertStore()
