@@ -48,7 +48,7 @@ class SplashController : public QObject
 private:
     // Actions from command line args
     RelaunchCommand relaunchCommand_;
-    QString updateUpdaterUrl_; // If command is UPDATE_UPDATER
+    QStringList updateUpdaterUrls_; // If command is UPDATE_UPDATER
     QString connectUrl_; // for pre-updater-update elevation
 
     const Settings& settings_;
@@ -63,7 +63,7 @@ private:
 
 public:
     SplashController(
-        RelaunchCommand command, const QString& updateUpdaterUrl,
+        RelaunchCommand command, const QStringList& updateUpdaterUrls,
         const QString& connectUrl, const Settings& settings);
     void checkForUpdate();
     QString gameUrl();

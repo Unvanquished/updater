@@ -63,7 +63,7 @@ struct CommandLineOptions {
     QString ariaLogFilename;
     int splashMilliseconds = 3000;
     RelaunchCommand relaunchCommand = RelaunchCommand::NONE;
-    QString updateUpdaterUrl;
+    QStringList updateUpdaterUrls;
     QString connectUrl;
 };
 
@@ -151,9 +151,9 @@ CommandLineOptions getCommandLineOptions(const QApplication& app) {
         } else if (command.startsWith("updateupdater")) {
             options.relaunchCommand = RelaunchCommand::UPDATE_UPDATER;
             if (optionParser.isSet(updaterUrl)) {
-                options.updateUpdaterUrl = optionParser.value(updaterUrl);
+                options.updateUpdaterUrls = optionParser.values(updaterUrl);
             } else {
-                options.updateUpdaterUrl = "";
+                options.updateUpdaterUrls = QStringList();
             }
         } else {
             argParseError("Invalid --internalcommand option: " + command);
@@ -216,7 +216,7 @@ int main(int argc, char *argv[])
     }
 
     SplashController splashController(
-        options.relaunchCommand, options.updateUpdaterUrl, options.connectUrl, settings);
+        options.relaunchCommand, options.updateUpdaterUrls, options.connectUrl, settings);
     splashController.checkForUpdate();
     QmlDownloader downloader(options.ariaLogFilename, options.connectUrl, splashController, settings);
     QQmlApplicationEngine engine;
