@@ -65,7 +65,7 @@ AriaDownloader::AriaDownloader(const std::string& ariaLogFilename) : callback_(n
 AriaDownloader::~AriaDownloader()
 {
     aria2::sessionFinal(session_);
-    aria2::libraryDeinit();
+//    aria2::libraryDeinit();
 }
 
 bool AriaDownloader::addUri(const std::string& uri)
