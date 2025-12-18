@@ -103,20 +103,22 @@ install(TARGETS ${LIBNAME}
 
 # qt_install_qml_module(${LIBNAME})
 
-if(FLUID_INSTALL_ICONS)
-    file(GLOB icons "${SOURCE_DIR}/icons/*/*.svg")
-    foreach(source_path IN LISTS icons)
-        string(REPLACE "${SOURCE_DIR}/icons/" "" icon_basename "${source_path}")
-        get_filename_component(_category "${icon_basename}" DIRECTORY)
-        install(FILES "${source_path}" DESTINATION "${QML_INSTALL_DIR}/Fluid/icons/${_category}")
-    endforeach()
-else()
-    file(GLOB_RECURSE _icons CONFIGURE_DEPENDS
-        "${SOURCE_DIR}/icons/*/*.svg"
-    )
-    qt_add_resources(${LIBNAME} FluidIcons
-        PREFIX "/liri.io/fluid"
-        BASE "${SOURCE_DIR}"
-        FILES ${_icons}
-    )
-endif()
+# grep iconUrl *.qml | grep -oP "(?<=['\"]).*(?=['\"])" | sort -u
+# TODO automate?
+set(_icons
+    "${SOURCE_DIR}/icons/action/settings.svg"
+    "${SOURCE_DIR}/icons/av/pause.svg"
+    "${SOURCE_DIR}/icons/av/play_arrow.svg"
+    "${SOURCE_DIR}/icons/file/file_download.svg"
+    "${SOURCE_DIR}/icons/file/folder.svg"
+    "${SOURCE_DIR}/icons/navigation/cancel.svg"
+    "${SOURCE_DIR}/icons/navigation/chevron_left.svg"
+    "${SOURCE_DIR}/icons/navigation/chevron_right.svg"
+)
+
+qt_add_resources(${LIBNAME} FluidIcons
+    PREFIX "/liri.io/fluid"
+    BASE "${SOURCE_DIR}"
+    FILES ${_icons}
+)
+
