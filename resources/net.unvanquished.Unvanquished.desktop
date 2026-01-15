@@ -13,3 +13,12 @@ StartupWMClass=net.unvanquished.Unvanquished
 SingleMainWindow=true
 # Probably doesn't work since the updater is initially launched, not daemon
 PrefersNonDefaultGPU=true
+Actions=RunWithoutUpdate;Update;
+
+[Desktop Action RunWithoutUpdate]
+Name=Open the game without checking for updates
+Exec=%1/updater --internalcommand playnow
+
+[Desktop Action Update]
+Name=Open the game updater
+Exec=%1/updater --internalcommand updategame
