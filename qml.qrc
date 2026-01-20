@@ -1,7 +1,8 @@
 <RCC>
     <qresource prefix="/">
         <file>qtquickcontrols2.conf</file>
-        <file>resources/Roboto-Regular.ttf</file>
+        <file>resources/Roboto-Regular.ttf.gz</file>
+        <file>resources/NotoSansSymbols-Regular.ttf.gz</file>
         <file>resources/updater.png</file>
         <file>resources/splash.jpg</file>
         <file>resources/unvanquished.png</file>
