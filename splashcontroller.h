@@ -34,6 +34,7 @@ enum class RelaunchCommand
 {
     NONE,
     PLAY_NOW,
+    UPDATE_ALL,
     UPDATE_GAME,
     UPDATE_UPDATER,
 };

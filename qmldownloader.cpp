@@ -203,12 +203,22 @@ void QmlDownloader::stopAria()
 
 void QmlDownloader::startUpdaterUpdate(QString version)
 {
+    QString withGame = ":withgame";
+    bool updateGame = version.endsWith(withGame);
+
+    if (updateGame) {
+        version = version.left(version.length() - withGame.length());
+    }
+
     QString url = UPDATER_BASE_URL + "/" + version + "/" + Sys::updaterArchiveName();
+    qDebug() << "Downloading updater" << version << "from" << url;
+
     temp_dir_.reset(new QTemporaryDir());
     worker_ = new DownloadWorker(ariaLogFilename_);
     worker_->setDownloadDirectory(QDir(temp_dir_->path()).canonicalPath().toStdString());
     worker_->setConnectUrl(connectUrl_);
     worker_->addUpdaterUri(url.toStdString());
+    worker_->setGameUpdate(updateGame);
     worker_->moveToThread(&thread_);
     connect(&thread_, SIGNAL(finished()), worker_, SLOT(deleteLater()));
     connect(worker_, SIGNAL(onDownloadEvent(int)), this, SLOT(onDownloadEvent(int)));

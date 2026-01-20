@@ -201,7 +201,7 @@ bool installUpdater(const QString& installPath) {
            // Yes it is really supposed to be 0x775 not 0775
 }
 
-bool updateUpdater(const QString& updaterArchive, const QString& connectUrl)
+bool updateUpdater(const QString& updaterArchive, const QString& connectUrl, bool updateGame)
 {
     QString current = QCoreApplication::applicationFilePath();
     QString backup = current + ".bak";
@@ -241,6 +241,9 @@ bool updateUpdater(const QString& updaterArchive, const QString& connectUrl)
 
     QStringList args;
     args << current;
+    if (updateGame) {
+        args << "--internalcommand" << "updategame";
+    }
     if (!connectUrl.isEmpty()) {
         args << "--" << connectUrl;
     }

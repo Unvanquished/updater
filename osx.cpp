@@ -105,7 +105,7 @@ bool installUpdater(const QString& installPath) {
     return ret == 0;
 }
 
-bool updateUpdater(const QString& updaterArchive, const QString&)
+bool updateUpdater(const QString& updaterArchive, const QString&, bool)
 {
     QString currentAppPath = extractAppPath(QCoreApplication::applicationFilePath());
     if (currentAppPath.isEmpty()) return false;

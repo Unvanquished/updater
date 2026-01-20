@@ -234,7 +234,7 @@ bool installUpdater(const QString& installPath) {
     return QFile::copy(src.absoluteFilePath(), dest.filePath());
 }
 
-bool updateUpdater(const QString& updaterArchive, const QString& connectUrl)
+bool updateUpdater(const QString& updaterArchive, const QString& connectUrl, bool updateGame)
 {
     QString current = QCoreApplication::applicationFilePath();
     QString backup = current + ".bak";
@@ -273,6 +273,9 @@ bool updateUpdater(const QString& updaterArchive, const QString& connectUrl)
     }
 
     QStringList args;
+    if (updateGame) {
+        args << "--internalcommand" << "updategame";
+    }
     if (!connectUrl.isEmpty()) {
         args << "--" << connectUrl;
     }
